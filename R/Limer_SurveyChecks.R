@@ -11,9 +11,9 @@
 
 
 check_distinct <- function(ubb) {
-  cli::cli_abort("This function is not ready yet. Adjust paths!")
+  #cli::cli_abort("This function is not ready yet. Adjust paths!")
   #We have a raw data set
-  meta_raw <- readxl::read_excel(here::here("data/meta_raw.xlsx"))
+  meta_raw <- readxl::read_excel(here::here("MasterData_2024_11_11.xlsx"))
 
 
   #We need to check for each template within the raw data set if there are any duplicates
@@ -39,7 +39,7 @@ check_distinct <- function(ubb) {
   if (nrow(check) == 0) {
     cli::cli_alert_success("All distinct, great!")
   }else {
-    cli::cli_alert_danger("Thou shalt not pass! Please check if these buggers:")
+    cli::cli_alert_danger("Thou shalt not pass! Please check these buggers:")
     return(check)
   }
 
@@ -52,7 +52,7 @@ check_distinct <- function(ubb) {
   #writexl::write_xlsx(check, "data/checkoverallUBB.xlsx")
 }
 
-#check_limeMeta(ubb = TRUE)
+#check_distinct(ubb = FALSE)
 
 
 
@@ -66,9 +66,12 @@ check_distinct <- function(ubb) {
 
 
 check_MasterTemplates <- function() {
-  allMasters <- get_MasterTemplate()
-  Masters_LimeSurvey <- allMasters$surveyls_title
-  Masters_LimeSurvey
+  #allMasters <- get_MasterTemplate()
+  #Masters_LimeSurvey <- allMasters$surveyls_title
+  #Masters_LimeSurvey
+
+  Masters_LimeSurvey <- Limer_GetMaster(template = FALSE)
+  Masters_LimeSurvey <- Masters_LimeSurvey$surveyls_title
 
   df <- DB_Table("master_to_template")
   Masters_Template <- df$surveyls_title
@@ -94,7 +97,7 @@ check_MasterTemplates <- function() {
   }
 }
 
-#check_mastertemplates()
+#check_MasterTemplates()
 
 # From Gisla To Master
 #' Get the templates
@@ -104,26 +107,34 @@ check_MasterTemplates <- function() {
 
 
 check_SurveyTemplates <- function() {
-  #df <- MetaMaster::MasterToTemplates
+  # #df <- MetaMaster::MasterToTemplates
+  # df <- DB_Table("master_to_template")
+  # MastersTemplates <- df$template
+  #
+  # report_meta <- readxl::read_excel(here::here("data/report_meta_dev.xlsx"),
+  #                                   sheet = "templates") |>
+  #   dplyr::select(surveys)
+  #
+  # surveys <- report_meta$surveys
+
   df <- DB_Table("master_to_template")
   MastersTemplates <- df$template
 
-  report_meta <- readxl::read_excel(here::here("data/report_meta_dev.xlsx"),
-                                    sheet = "templates") |>
-    dplyr::select(surveys)
 
-  surveys <- report_meta$surveys
+  MetaMasterMeta <- readxl::read_excel("MetaMasterMeta.xlsx") |>
+    dplyr::pull(template) |>
+    unique()
 
-  SurveyDifferences <- dplyr::setdiff(surveys, MastersTemplates)
+  SurveyDifferences <- dplyr::setdiff(MetaMasterMeta, MastersTemplates)
 
   if (rlang::is_empty(SurveyDifferences) == TRUE) {
-    cli::cli_alert_success("All templates found template-to-master file.")
+    cli::cli_alert_success("All survey templates available.")
   }else {
     cli::cli_alert_danger("Thou shalt not pass! These templates are not listed in the template-to-master file:")
     SurveyDifferences
   }
 }
 
-#check_templates()
+#check_SurveyTemplates()
 
 
