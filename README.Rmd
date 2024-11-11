@@ -9,6 +9,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
+  eval = FALSE,
   out.width = "100%"
 )
 ```
@@ -41,7 +42,7 @@ Test the meta data by running a test. A test run implies that all variables from
 # templates <- get_templates()
 # head(templates)
 library(MetaMaster)
-Sys.setenv(R_CONFIG_ACTIVE = "test")
+#Sys.setenv(R_CONFIG_ACTIVE = "test")
 df <- Limer_GetMaster(template = TRUE)
 head(df)
 
