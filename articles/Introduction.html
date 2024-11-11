@@ -75,7 +75,6 @@ LimeSurvey which are reproducible, tested, and in consequence
 error-free. The package provides functions to get the names of the
 master templates, the data of the master template, and to create new
 surveys based on a template.</p>
-<p><img src="images%2Flogo.png" alt="Meta master - Edgar Treischl" align="center" width="325"></p>
 <div class="section level2">
 <h2 id="preparation-steps">Preparation steps<a class="anchor" aria-label="anchor" href="#preparation-steps"></a>
 </h2>
@@ -97,10 +96,9 @@ next console shows the default parameters for the test instance.</p>
 <div class="section level2">
 <h2 id="meta-master-in-action">Meta Master in Action<a class="anchor" aria-label="anchor" href="#meta-master-in-action"></a>
 </h2>
-<p>The <code><a href="../reference/get_MasterTemplate.html">get_MasterTemplate()</a></code> function returns the name of
-master template for a specific school type
-(e.g. <code>sart = 'gs'</code>). If the parameter <code>sart</code> is
-missing, the function returns the all master templates.</p>
+<p>The <code><a href="../reference/Limer_GetMaster.html">Limer_GetMaster()</a></code> function returns the name of
+master template. If the parameter <code>template</code> is missing, the
+function returns the all master templates.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Load the package</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MetaMaster</span><span class="op">)</span></span>
@@ -126,21 +124,8 @@ the function exports the data as an Excel file.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Get metadata for all master templates</span></span>
 <span><span class="co">#get_AllMasterMeta(export = TRUE)</span></span></code></pre></div>
-<p>This file is used to create the meta data for all master templates.
-Based on the results from the <code><a href="../reference/get_AllMasterMeta.html">get_AllMasterMeta()</a></code> function,
-the function merges all report templates from Giselas manual meta data
-and append them to one file.</p>
-<p>The function comes with the <code>overallreports</code> parameter to
-create metadata that include also the meta data for the overall reports;
-and the <code>export</code> parameter let you export the metadata as an
-Excel file.</p>
-<p>Furthermore, the function informs you which report templates cannot
-be merged with the master templates from LimeSurvey. These
-inconsistencies need to be fixed manually.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Create metadata for all master templates</span></span>
-<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu">create_metadata</span><span class="op">(</span>export <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                overallreports <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>This file is used to create the meta data for all master
+templates.</p>
 <p>If a report template contains variables names that cannot be matched
 with the manual meta data, the function only appends variables names
 from LimeSurvey that cannot be matched. Thus, the result from
@@ -151,31 +136,20 @@ listed). For example, the last console showed that the template
 cannot be matched.</p>
 </div>
 <div class="section level2">
-<h2 id="section"></h2>
-</div>
-<div class="section level2">
 <h2 id="sent-via-api">Sent via API<a class="anchor" aria-label="anchor" href="#sent-via-api"></a>
 </h2>
 <p>Finally, the package provides a function to create a new survey based
 on a master template. The <code>send_survey()</code> function needs the
 path to the master template and the name of the new survey.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Create a new survey</span></span>
 <span><span class="fu"><a href="../reference/Limer_sendSurvey.html">Limer_sendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"struktur_LimeSurvey.lss"</span>,</span>
-<span>            name <span class="op">=</span> <span class="st">"SurveyName"</span><span class="op">)</span></span></code></pre></div>
+<span>                 name <span class="op">=</span> <span class="st">"SurveyName"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="further-helpers">Further Helpers<a class="anchor" aria-label="anchor" href="#further-helpers"></a>
 </h2>
-<p>In order to create PDF reports, we need to identify the survey and
-report template based on school characteristics. The
-<code><a href="../reference/get_metalist.html">get_metalist()</a></code> function returns the names of all survey and
-report templates and includes the school characteristics. The results
-are based on the <code>masterToTemplates</code> file and not via the
-LimeSurvey API.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Inspect all master and report templates</span></span>
-<span><span class="fu"><a href="../reference/get_metalist.html">get_metalist</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>…</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

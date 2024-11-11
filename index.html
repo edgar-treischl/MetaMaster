@@ -77,52 +77,37 @@
 <span>                       dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="test-the-meta-data">Test the meta data<a class="anchor" aria-label="anchor" href="#test-the-meta-data"></a>
+<h2 id="build-meta-data">Build meta data<a class="anchor" aria-label="anchor" href="#build-meta-data"></a>
 </h2>
-<p>Test the meta data by running a test. A test run implies that all variables from the LimeSurvey API are matched with the meta data and only the variables that can’t be matched are returned. Thus, a test run creates a list of unmatched variables per master and survey template that will result in an error. First, load the package and run the <code>get_templates()</code> function. It return unique names of survey templates. This information comes from the master to template file.</p>
+<p>The <code><a href="reference/Limer_GetMaster.html">Limer_GetMaster()</a></code> function returns the master template from LimeSurvey. The function returns all survey templates declared as <code>master_</code> in the limesurvey instance. Moreover, set the <code>template</code> argument to <code>TRUE</code> to get the survey templates. The latter comes from the meta to data list.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Get the names all unique survey templates</span></span>
-<span><span class="co"># templates &lt;- get_templates()</span></span>
-<span><span class="co"># head(templates)</span></span>
+<code class="sourceCode R"><span><span class="co">#Let's get started</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MetaMaster</span><span class="op">)</span></span>
-<span><span class="co">#Sys.setenv(R_CONFIG_ACTIVE = "test")</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_CONFIG_ACTIVE <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Limer_GetMaster.html">Limer_GetMaster</a></span><span class="op">(</span>template <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
-<p>A master template can be used more than once, which is why we start with the survey template and we match it with the master template. The function <code>get_master()</code> returns the name of the master template for a survey template. This function also relies on the master to template file. Thus, we need to take care that all mastertemplates are listed in the master to template file and that all survey templates are correctly matched.</p>
+<p>Since we know the master template, we can retrieve survey question via the API. The function <code><a href="reference/get_MasterMeta.html">get_MasterMeta()</a></code> returns the survey questions of a given master template. The function takes the survey ID (<code>sid</code>) and the name of the survey (<code>name</code>) as arguments.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#mastername &lt;- get_master(templatename = "tmpl_bfr_allg_gm_elt_00_2022_p1")</span></span>
-<span><span class="co">#mastername</span></span></code></pre></div>
-<p>Since we know the master template, we can retrieve survey question via the API. The function <code>get_masters()</code> is a wrapper function for these steps. It returns a list of all survey templates and the corresponding master templates.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/get_MasterMeta.html">get_MasterMeta</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">sid</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, </span>
+<span>               name <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">surveyls_title</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p>Moreover, the function <code><a href="reference/testrun.html">testrun()</a></code> takes the input of the list of survey templates and master templates and merges the results as a list.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mastertemplatesList</span> <span class="op">&lt;-</span> <span class="fu">get_masters</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#Survey templates</span></span>
-<span><span class="co">#head(mastertemplatesList$template)</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Master templates</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mastertemplatesList</span><span class="op">$</span><span class="va">master</span><span class="op">)</span></span></code></pre></div>
-<p>The function <code><a href="reference/get_TemplateDF.html">get_TemplateDF()</a></code> returns question variables (vars) of a given master template.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">master</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_TemplateDF.html">get_TemplateDF</a></span><span class="op">(</span>mastername <span class="op">=</span> <span class="st">"master_01_bfr_allg_gm_elt_00_2022_v4"</span><span class="op">)</span></span>
-<span><span class="va">master</span></span></code></pre></div>
-<p>Internally, it picks the survey ID (<code>sid</code>) from the <code>allMastersLimeSurvey.xlsx</code> file. Make sure this file is up to date. Create a new file with the <code><a href="reference/update_allMastersLimeSurvey.html">update_allMastersLimeSurvey()</a></code> function. The latter runs <code><a href="reference/get_MasterTemplate.html">get_MasterTemplate()</a></code> which returns all masters templates and saves the result as an Excel file.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/get_MasterTemplate.html">get_MasterTemplate</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>To match the result from the LimeSurvey API, we need the manually created meta data. The function <code><a href="reference/gisela_report.html">gisela_report()</a></code> returns the variable list of a report for a given survey template.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/gisela_report.html">gisela_report</a></span><span class="op">(</span>template <span class="op">=</span> <span class="st">"tmpl_bfr_allg_gm_elt_00_2022_p1"</span><span class="op">)</span></span></code></pre></div>
-<p>Finally, there are two wrapper function to create a test run. First, we need to match the results from the API with the meta data. The function <code><a href="reference/joinMetaGisela.html">joinMetaGisela()</a></code> does this. Moreover, the function <code><a href="reference/testrun.html">testrun()</a></code> takes the input of the list of survey templates and master templates and merges the results as a list.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/testrun.html">testrun</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>The latter is wrapper function around <code><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">purrr::map2()</a></code> and <code><a href="reference/joinMetaGisela.html">joinMetaGisela()</a></code>, as the next console shows for the first five survey and master templates.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>The latter is wrapper function around <code><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">purrr::map2()</a></code> and <code>joinMetaGisela()</code>, as the next console shows for the first five survey and master templates.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Join the meta data with the LimeSurvey API for all survey and master templates</span></span>
-<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span><span class="va">mastertemplatesList</span><span class="op">$</span><span class="va">template</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span>
-<span>            <span class="va">mastertemplatesList</span><span class="op">$</span><span class="va">master</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span>
-<span>            <span class="va">joinMetaGisela</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">sid</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span>
+<span>            <span class="va">df</span><span class="op">$</span><span class="va">surveyls_title</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span>
+<span>            <span class="va">get_MasterMeta</span><span class="op">)</span></span></code></pre></div>
 <p>Share the results of the test run with the <code><a href="reference/send_testrun.html">send_testrun()</a></code> function. This function sends the results of the test run via email.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Send the test run</span></span>
 <span><span class="fu"><a href="reference/send_testrun.html">send_testrun</a></span><span class="op">(</span>sendto <span class="op">=</span> <span class="st">"john.doe@johndoe.com"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="tbd">TBD<a class="anchor" aria-label="anchor" href="#tbd"></a>
+</h2>
+<p>Create a new file with the <code><a href="reference/update_allMastersLimeSurvey.html">update_allMastersLimeSurvey()</a></code> function. The latter runs <code>get_MasterTemplate()</code> which returns all masters templates and saves the result as an Excel file.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
