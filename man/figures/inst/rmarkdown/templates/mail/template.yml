@@ -1,0 +1,4 @@
+name: MetaMaster Mail Template
+description: >
+   This is the Mail Template to send the results of the MetaMaster checks.
+create_dir: FALSE
