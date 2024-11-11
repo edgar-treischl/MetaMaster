@@ -94,5 +94,10 @@ send_testrun(sendto = "john.doe@johndoe.com")
 Create a new file with the `update_allMastersLimeSurvey()` function. The latter runs `get_MasterTemplate()` which returns all masters templates and saves the result as an Excel file. 
 
 
+```{r, eval=FALSE}
+Limer_GetMasterData(export = TRUE)
+buildMetaMaster(path = "MasterData_2024_11_11.xlsx", export = TRUE)
+send_testrun(sendto = "johndoe@doe.com")
+```
 
 
