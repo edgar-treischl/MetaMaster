@@ -1,3 +1,31 @@
+# get_AllMasterMeta <- function(export = FALSE) {
+#
+#   mastertemplatesdf <- get_MasterTemplate()
+#
+#   sids <- mastertemplatesdf$sid
+#   master_names <- mastertemplatesdf$surveyls_title
+#
+#
+#
+#
+#   metalist <- purrr::map2(sids,
+#                           master_names,
+#                           get_MasterMeta, .progress = TRUE)
+#
+#
+#   MasterMetaList <- metalist |>  dplyr::bind_rows()
+#
+#
+#   if (export == TRUE) {
+#     writexl::write_xlsx(MasterMetaList, here::here("data/meta_raw.xlsx"))
+#     cli::cli_alert_success("RAW Master Data Exported")
+#   }else {
+#     #cli::cli_progress_done()
+#     return(MasterMetaList)
+#   }
+#
+# }
+
 # get_metalist <- function() {
 #   #Read master data
 #   mastertemplate <- readxl::read_excel(here::here("data/Edgar_master_to_template.xlsx"))

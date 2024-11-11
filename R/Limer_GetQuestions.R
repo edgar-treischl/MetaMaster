@@ -131,47 +131,43 @@ get_MasterMeta <- function(id, name) {
 }
 
 
-#' Adjust: Get ALL meta data from LimeSurvey master templates.
+#' Get the Master Date from LimeSurvey
 #'
-#' @description This function gets the meta data from LimeSurvey master templates.
+#' @description This function gets the meta data from LimeSurvey for all master templates.
 #' @param export Export the data to an Excel file.
 #' @return Results from the API.
 #' @examples \dontrun{
-#' get_AllMasterMeta(export = FALSE)
+#' Limer_GetMasterData(export = FALSE)
 #' }
 #' @export
 
 
-get_AllMasterMeta <- function(export = FALSE) {
+Limer_GetMasterData <- function(export = FALSE) {
+  #Get all the masters ids and names from LimeSurvey
+  limerdf <- Limer_GetMaster(template = FALSE)
+  sid <- limerdf$sid
+  surveyls_title <- limerdf$surveyls_title
 
-  mastertemplatesdf <- get_MasterTemplate()
+  #Get the metadata for all the masters
+  allmasters <- purrr::map2(sid,
+                            surveyls_title,
+                            get_MasterMeta, .progress = TRUE)
 
-  sids <- mastertemplatesdf$sid
-  master_names <- mastertemplatesdf$surveyls_title
-
-
-
-
-  metalist <- purrr::map2(sids,
-                          master_names,
-                          get_MasterMeta, .progress = TRUE)
-
-
-  MasterMetaList <- metalist |>  dplyr::bind_rows()
-
+  #Bind all the metadata
+  allmasters <- allmasters |> dplyr::bind_rows()
 
   if (export == TRUE) {
-    writexl::write_xlsx(MasterMetaList, here::here("data/meta_raw.xlsx"))
-    cli::cli_alert_success("RAW Master Data Exported")
-  }else {
-    #cli::cli_progress_done()
-    return(MasterMetaList)
-  }
+    #get a string with todays date: 2024_11_11
+    today <- format(Sys.Date(), "%Y_%m_%d")
 
+    writexl::write_xlsx(allmasters, paste0("MasterData_", today, ".xlsx"))
+    cli::cli_alert_success("Master Data exported.")
+  }else {
+    return(allmasters)
+  }
 }
 
-
-
+#Limer_GetMasterData(export = FALSE)
 
 
 
