@@ -14,5 +14,5 @@ A data frame with the table data or a list of all available tables in the databa
 }
 \description{
 This function fetches a table from the database and returns it as a data frame.
-If no table is specified, it returns a list of all available tables in the database.
+ If no table is specified, it returns a list of all available tables in the database.
 }

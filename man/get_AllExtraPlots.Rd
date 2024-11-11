@@ -8,5 +8,5 @@ get_AllExtraPlots(export = FALSE, filter = FALSE)
 }
 \description{
 This is a wrapper function that returns all extra plots based
-on the report_meta_dev data.
+ on the report_meta_dev data.
 }

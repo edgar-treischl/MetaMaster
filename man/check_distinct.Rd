@@ -8,8 +8,8 @@ check_distinct(ubb)
 }
 \description{
 This function checks if all variables names of the meta data
-are distinct. It counts if a variable name is used more than once and returns
-a data frame with the results.
+ are distinct. It counts if a variable name is used more than once and returns
+   a data frame with the results.
 }
 \examples{
 \dontrun{

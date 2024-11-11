@@ -18,7 +18,7 @@ Results from the API (sometimes plain text, sometimes base64-encoded text).
 }
 \description{
 This function makes a generic call to the LimeSurvey API.
-See \url{https://manual.limesurvey.org/RemoteControl_2_API} for API documentation.
+ See \url{https://manual.limesurvey.org/RemoteControl_2_API} for API documentation.
 }
 \examples{
 \dontrun{

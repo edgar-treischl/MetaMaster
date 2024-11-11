@@ -11,9 +11,9 @@ check_manualmeta()
 }
 \value{
 A message from the DB_send function indicating if the table was
-successfully uploaded to the database
+ successfully uploaded to the database
 }
 \description{
 This function reads an Excel file with metadata and uploads
-each sheet as a table in the database.
+ each sheet as a table in the database.
 }

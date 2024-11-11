@@ -11,11 +11,12 @@ add_report_template()
 
 \item{data}{Meta data
 
+
 Add report template}
 }
 \description{
 This wrapper function appends all overall reports for
-the final meta data.
+ the final meta data.
 
 Bla bla
 }

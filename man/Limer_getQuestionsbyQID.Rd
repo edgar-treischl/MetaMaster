@@ -14,5 +14,5 @@ A tibble with columns 'title', 'plot', and 'question'
 }
 \description{
 This function retrieves the question title, plot name,
-and question text for a given question ID.
+ and question text for a given question ID.
 }

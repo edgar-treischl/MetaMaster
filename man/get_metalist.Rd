@@ -14,13 +14,13 @@ Get a list with unique meta data}
 }
 \description{
 This helper function extracts the individual surveys (parents, kids, etc.)
-for the overall reports.
+ for the overall reports.
 
 Append overall reports
 
 This helper function appends the overall reports for one
-survey package
+ survey package
 
 This function creates a list with unique meta data based on the
-input from the Master to template file.
+ input from the Master to template file.
 }

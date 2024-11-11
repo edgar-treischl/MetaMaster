@@ -11,7 +11,7 @@ Results from the API.
 }
 \description{
 This function uploads the master templates as survey templates
-to LimeSurvey.
+ to LimeSurvey.
 }
 \examples{
 \dontrun{

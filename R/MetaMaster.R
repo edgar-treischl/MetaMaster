@@ -12,6 +12,8 @@ get_templates <- function() {
 
   master_to_template <- readxl::read_excel("data/master_to_template.xlsx")
 
+  #master_to_template <- DB_Table("master_to_template")
+
   templates <- master_to_template |>
     dplyr::arrange(surveyls_title) |>
     dplyr::pull(template)
@@ -29,6 +31,9 @@ get_templates <- function() {
 #' @export
 get_master <- function(templatename) {
   master_to_template <- readxl::read_excel("data/master_to_template.xlsx")
+
+  #master_to_template <- DB_Table("master_to_template")
+
 
   mastername <- master_to_template |>
     dplyr::filter(template == templatename) |>

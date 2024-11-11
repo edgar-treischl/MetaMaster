@@ -8,5 +8,5 @@ get_ExtraPlots(reporttemplate)
 }
 \description{
 This helper function splits the report_meta_dev data
-and returns the extra plots for a given report template.
+ and returns the extra plots for a given report template.
 }

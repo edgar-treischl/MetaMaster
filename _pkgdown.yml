@@ -1,4 +1,15 @@
-url: https://edgar-treischl.github.io/MetaMaster/
+url: ~
 template:
   bootstrap: 5
-
+  bslib:
+    heading_font: {google: "Bungee"}
+    base_font: {google: "Lato"}
+navbar:
+  structure:
+    left:
+    - intro
+    - reference
+    - articles
+authors:
+  Edgar Treischl:
+    href: https://www.edgar-treischl.de/

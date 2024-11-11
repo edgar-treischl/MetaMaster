@@ -11,5 +11,5 @@ extract_html(input)
 }
 \description{
 Some text in LimeSurvey are stored in HTML format.
-This helper function extracts it from the HTML code.
+ This helper function extracts it from the HTML code.
 }

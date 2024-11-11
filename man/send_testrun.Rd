@@ -11,5 +11,5 @@ send_testrun(sendto)
 }
 \description{
 This function sends the results of a test run via mail to a
-specified email address. It expects a file named "TestRun_YYYY_MM_DD.xlsx".
+ specified email address. It expects a file named "TestRun_YYYY_MM_DD.xlsx".
 }

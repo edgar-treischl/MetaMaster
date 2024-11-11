@@ -1,13 +1,35 @@
+Type: Package
 Package: MetaMaster
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Be the Master of the Meta Data Universe
+Version: 0.0.1
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Edgar", "Treischl", , "edgar.treischl@isb.bayern.de", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-5627-9125"))
+Description: The package provides a set of functions to extract and
+    manipulate data from LimeSurvey and combine it meta data from other
+    sources.
+License: GPL (>= 3)
+Imports: 
+    base64enc,
+    cli,
+    config,
+    dplyr,
+    here,
+    httr,
+    jsonlite,
+    purrr,
+    readxl,
+    rvest,
+    stringr,
+    tibble,
+    utils,
+    writexl
 Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
+LazyData: true
 RoxygenNote: 7.3.2
-URL: https://edgar-treischl.github.io/MetaMaster/
+Depends: 
+    R (>= 2.10)
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
