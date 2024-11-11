@@ -1,3 +1,235 @@
+# get_metalist <- function() {
+#   #Read master data
+#   mastertemplate <- readxl::read_excel(here::here("data/Edgar_master_to_template.xlsx"))
+#   mastertemplate <- mastertemplate |> dplyr::select(4:6)
+#
+#   templates_unique <- unique(mastertemplate$template)
+#
+#
+#   #Create a stringified version of the template names
+#   fromString <- as.data.frame(stringr::str_split_fixed(templates_unique,
+#                                                        pattern = "_",
+#                                                        n = 8))
+#
+#   #bring survey type back together
+#   fromString$sart <- paste0(fromString$V3, "_", fromString$V4)
+#   fromString$sart <- stringr::str_replace_all(fromString$sart,
+#                                               pattern = "allg_",
+#                                               replacement = "")
+#
+#   #Select the relevant columns
+#   stringified <- fromString |>
+#     dplyr::select(ubb = V2,
+#                   stype = sart,
+#                   type = V5,
+#                   ganztag = V8)
+#
+#   #Add template
+#   stringified$template <- templates_unique
+#
+#   #Replace the strings with the correct values
+#   stringified$ganztag <- stringr::str_replace_all(stringified$ganztag, pattern = "p1",
+#                                                   replacement = "FALSE")
+#   stringified$ganztag <- stringr::str_replace_all(stringified$ganztag, pattern = "p2",
+#                                                   replacement = "TRUE")
+#
+#   #Some for UBB
+#   stringified$ubb <- stringr::str_replace_all(stringified$ubb, pattern = "bfr",
+#                                               replacement = "FALSE")
+#
+#   stringified$ubb <- stringr::str_replace_all(stringified$ubb, pattern = "ubb",
+#                                               replacement = "TRUE")
+#
+#
+#   #Some Gisla checks
+#   # surveyls_title <- stringified$surveyls_title
+#   # report_meta_dev <- readxl::read_excel("data/report_meta_dev.xlsx", na = "NA")
+#   # report_meta_dev <- na.omit(report_meta_dev)
+#   # giselasurvey <- report_meta_dev |>
+#   #   dplyr::pull(surveys)
+#   #
+#   # dplyr::setdiff(giselasurvey, surveyls_title)
+#   # dplyr::setdiff(surveyls_title, giselasurvey)
+#
+#   #Join the stringified data to the master data
+#   mastertemplate <- mastertemplate |>
+#     dplyr::left_join(stringified, by = "template") |>
+#     dplyr::rename(master = surveyls_title) |>
+#     dplyr::arrange(master)
+#
+#
+#
+#   return(mastertemplate)
+# }
+
+
+# splitTemplateString <- function(variables) {
+#
+#   MasterMetaList <- readxl::read_excel(here::here("data/meta_raw.xlsx"))
+#
+#   templates_unique <- unique(MasterMetaList$template)
+#
+#
+#   fromString <- as.data.frame(stringr::str_split_fixed(templates_unique, pattern = "_", n = 9))
+#
+#
+#   stringified <- fromString |>
+#     dplyr::select(master = V2,
+#                   survey = V3,
+#                   type = V4,
+#                   sart = V5,
+#                   audience = V6,
+#                   gnztag = V7,
+#                   year = V8,
+#                   version = V9)
+#
+#
+#   stringified$template <- templates_unique
+#   stringified
+#
+#   MasterMetaList <- MasterMetaList |>
+#     dplyr::left_join(stringified, by = "template")
+#
+#   return(MasterMetaList)
+# }
+
+
+# get_MasterTemplate <- function(sart = NULL) {
+#
+#   #Get specs from config
+#   get <- config::get()
+#   tmp.server <- get$tmp.server
+#   tmp.user <- get$tmp.user
+#   tmp.credential <- get$tmp.credential
+#   #Connect
+#   tmp.session <- surveyConnectLs(user = tmp.user,
+#                                  credential = tmp.credential,
+#                                  server = tmp.server)
+#
+#
+#   allsurveys <- call_limer(method = "list_surveys")
+#
+#   release_session_key()
+#
+#   if (missing(sart) == FALSE) {
+#     allsurveys$sart <- stringr::str_detect(allsurveys$surveyls_title,
+#                                            pattern = paste0("_", sart, "_"))
+#
+#     allsurveys <- allsurveys |> dplyr::filter(sart == TRUE)
+#
+#   }
+#
+#   allsurveys$master <- stringr::str_detect(allsurveys$surveyls_title, pattern = "master_")
+#
+#
+#   mastertemplates <- allsurveys |>
+#     dplyr::filter(master == TRUE) |>
+#     dplyr::select(sid, surveyls_title) |>
+#     dplyr::arrange(surveyls_title)
+#
+#   df <- tibble::as_tibble(mastertemplates)
+#   return(df)
+# }
+
+
+# get_TemplateDF <- function(mastername) {
+#
+#   allMasters <- readxl::read_excel(here::here("data/allMastersLimeSurvey.xlsx"))
+#
+#   MasterID <- allMasters |>
+#     dplyr::filter(surveyls_title == mastername) |>
+#     dplyr::pull(sid)
+#
+#
+#   master01 <- get_MasterMeta(id = MasterID,
+#                              name = mastername)
+#
+#
+#   #rename columns variable to vars
+#   master01 <- master01 |> dplyr::rename(vars = variable)
+#   master01
+# }
+
+
+# joinMetaGisela <- function(templatename,
+#                            mastername,
+#                            mistakes = TRUE,
+#                            update = FALSE) {
+#   gisela_report <- gisela_report(template = templatename)
+#   master <- get_TemplateDF(mastername = mastername)
+#
+#   report_template <- gisela_report$reporttemplate
+#   report <- gisela_report$report
+#
+#   #match master with report by variable: vars
+#   master_universe <- master |> dplyr::left_join(report,
+#                                                 by = "vars")
+#
+#   #Stefan fragen`?`
+#   # dplyr::setdiff(master$vars, report$vars)
+#   # dplyr::setdiff(report$vars, master$vars)
+#
+#   # master_universe <- master |> dplyr::left_join(report,
+#   #                                                 by = "vars",
+#   #                                                 relationship = "one-to-one",
+#   #                                                 unmatched = "error")
+#
+#   if (nrow(master_universe) == 0) {
+#     cli::cli_abort("No matching variables between master and report")
+#   }
+#
+#   if (mistakes == TRUE) {
+#     master_universe <- master_universe |> dplyr::filter(is.na(report) == TRUE)
+#
+#     if (nrow(master_universe) > 0) {
+#       excel_name <- dplyr::setdiff(report$vars, master$vars)
+#       master_universe$report <- report_template
+#       if (length(master_universe$vars) == length(excel_name)) {
+#         master_universe$excel_name <- excel_name
+#
+#       }
+#     }
+#
+#   }
+#
+#
+#
+#
+#
+#   master_universe$surveytemplate <- templatename
+#   #master_universe |> dplyr::select(surveyID, template, vars, plot, report, surveytemplate)
+#
+#   return(master_universe)
+#
+# }
+
+
+
+# gisela_report <- function(template) {
+#   report_meta_dev <- readxl::read_excel("data/report_meta_dev.xlsx")
+#
+#   report_template <- report_meta_dev |>
+#     dplyr::filter(surveys == template) |>
+#     dplyr::pull(report_tmpl)
+#
+#   report_meta_rep <- readxl::read_excel("data/report_meta_dev.xlsx",
+#                                         sheet = "reports")
+#
+#
+#
+#
+#   reportdf <- report_meta_rep |>
+#     dplyr::filter(report == report_template) |>
+#     dplyr::select(-label)
+#
+#   gisela_report <- list("reporttemplate" = report_template,
+#                         "report" = reportdf)
+#
+#   return(gisela_report)
+# }
+
+
+
 # get_templates <- function() {
 #
 #   master_to_template <- readxl::read_excel("data/master_to_template.xlsx")

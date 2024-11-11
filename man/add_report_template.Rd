@@ -2,21 +2,10 @@
 % Please edit documentation in R/utils.R
 \name{add_report_template}
 \alias{add_report_template}
-\title{Append all overall reports}
+\title{Add report template}
 \usage{
 add_report_template()
 }
-\arguments{
-\item{overalls}{List of individual reports}
-
-\item{data}{Meta data
-
-
-Add report template}
-}
 \description{
-This wrapper function appends all overall reports for
- the final meta data.
-
 Bla bla
 }

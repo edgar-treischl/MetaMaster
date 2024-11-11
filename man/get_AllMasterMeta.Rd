@@ -2,7 +2,7 @@
 % Please edit documentation in R/Limer_GetQuestions.R
 \name{get_AllMasterMeta}
 \alias{get_AllMasterMeta}
-\title{Get ALL meta data from LimeSurvey master templates.}
+\title{Adjust: Get ALL meta data from LimeSurvey master templates.}
 \usage{
 get_AllMasterMeta(export = FALSE)
 }

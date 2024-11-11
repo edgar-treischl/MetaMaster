@@ -33,70 +33,36 @@ remotes::install_local("MetaMaster.gz",
 ```
 
 
-## Test the meta data
+## Build meta data
 
-Test the meta data by running a test. A test run implies that all variables from the LimeSurvey API are matched with the meta data and only the variables that can't be matched are returned. Thus, a test run creates a list of unmatched variables per master and survey template that will result in an error. First, load the package and run the `get_templates()` function. It return unique names of survey templates. This information comes from the master to template file. 
+The `Limer_GetMaster()` function returns the master template from LimeSurvey. The function returns all survey templates declared as `master_` in the limesurvey instance. Moreover, set the `template` argument to `TRUE` to get the survey templates. The latter comes from the meta to data list.
 
 ```{r}
-#Get the names all unique survey templates
-# templates <- get_templates()
-# head(templates)
+#Let's get started
 library(MetaMaster)
-#Sys.setenv(R_CONFIG_ACTIVE = "test")
+Sys.setenv(R_CONFIG_ACTIVE = "test")
 df <- Limer_GetMaster(template = TRUE)
 head(df)
 
 ```
 
-A master template can be used more than once, which is why we start with the survey template and we match it with the master template. The function `get_master()` returns the name of the master template for a survey template. This function also relies on the master to template file. Thus, we need to take care that all mastertemplates are listed in the master to template file and that all survey templates are correctly matched. 
+
+
+
+Since we know the master template, we can retrieve survey question via the API. The function `get_MasterMeta()` returns the survey questions of a given master template. The function takes the survey ID (`sid`) and the name of the survey (`name`) as arguments.
 
 
 ```{r}
-#mastername <- get_master(templatename = "tmpl_bfr_allg_gm_elt_00_2022_p1")
-#mastername
-```
-
-Since we know the master template, we can retrieve survey question via the API. The function `get_masters()` is a wrapper function for these steps. It returns a list of all survey templates and the corresponding master templates.
-
-
-```{r}
-mastertemplatesList <- get_masters()
-#Survey templates
-#head(mastertemplatesList$template)
-```
-
-
-```{r}
-#Master templates
-head(mastertemplatesList$master)
+get_MasterMeta(id = df$sid[1], 
+               name = df$surveyls_title[1])
 ```
 
 
 
 
-The function `get_TemplateDF()` returns question variables (vars) of a given master template. 
 
 
-```{r, eval=FALSE}
-master <- get_TemplateDF(mastername = "master_01_bfr_allg_gm_elt_00_2022_v4")
-master
-```
-
-Internally, it picks the survey ID (`sid`) from the `allMastersLimeSurvey.xlsx` file. Make sure this file is up to date. Create a new file with the `update_allMastersLimeSurvey()` function. The latter runs `get_MasterTemplate()` which returns all masters templates and saves the result as an Excel file. 
-
-```{r}
-get_MasterTemplate()
-```
-
-To match the result from the LimeSurvey API, we need the manually created meta data. The function `gisela_report()` returns the variable list of a report for a given survey template. 
-
-
-```{r, eval=FALSE}
-gisela_report(template = "tmpl_bfr_allg_gm_elt_00_2022_p1")
-```
-
-
-Finally,  there are two wrapper function to create a test run. First, we need to match the results from the API with the meta data. The function `joinMetaGisela()` does this. Moreover, the function `testrun()` takes the input of the list of survey templates and master templates and merges the results as a list. 
+Moreover, the function `testrun()` takes the input of the list of survey templates and master templates and merges the results as a list. 
 
 
 ```{r, eval=FALSE}
@@ -106,11 +72,11 @@ testrun(export = TRUE)
 The latter is wrapper function around `purrr::map2()` and `joinMetaGisela()`, as the next console shows for the first five survey and master templates.
 
 
-```{r, eval=FALSE}
+```{r, eval=F}
 #Join the meta data with the LimeSurvey API for all survey and master templates
-purrr::map2(mastertemplatesList$template[1:5],
-            mastertemplatesList$master[1:5],
-            joinMetaGisela)
+purrr::map2(df$sid[1:5],
+            df$surveyls_title[1:5],
+            get_MasterMeta)
 ```
 
 
@@ -122,6 +88,10 @@ Share the results of the test run with the `send_testrun()` function. This funct
 send_testrun(sendto = "john.doe@johndoe.com")
 ```
 
+
+## TBD
+
+Create a new file with the `update_allMastersLimeSurvey()` function. The latter runs `get_MasterTemplate()` which returns all masters templates and saves the result as an Excel file. 
 
 
 

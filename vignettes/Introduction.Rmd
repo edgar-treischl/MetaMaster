@@ -19,12 +19,7 @@ library(MetaMaster)
 Sys.setenv(R_CONFIG_ACTIVE = "default")
 ```
 
-The goal of the MetaMaster package is to create meta data for LimeSurvey which are reproducible, tested, and in consequence error-free. The package provides functions to get the names of the master templates, the data of the master template, and to create new surveys based on a template. 
-
-<img src='images/logo.png' alt='Meta master - Edgar Treischl' align='center' width='325'/>
-
-
-
+The goal of the MetaMaster package is to create meta data for LimeSurvey which are reproducible, tested, and in consequence error-free. The package provides functions to get the names of the master templates, the data of the master template, and to create new surveys based on a template.
 
 
 
@@ -48,7 +43,7 @@ Sys.setenv(R_CONFIG_ACTIVE = "test")
 
 ## Meta Master in Action
 
-The `get_MasterTemplate()` function returns the name of master template for a specific school type (e.g. `sart = 'gs'`). If the parameter `sart` is missing, the function returns the all master templates.
+The `Limer_GetMaster()` function returns the name of master template. If the parameter `template` is missing, the function returns the all master templates.
 
 ```{r}
 #Load the package
@@ -75,17 +70,13 @@ The `get_AllMasterMeta()` is a wrapper function for `get_MasterMeta` that return
 #get_AllMasterMeta(export = TRUE)
 ```
 
-This file is used to create the meta data for all master templates. Based on the results from the `get_AllMasterMeta()` function, the function merges all report templates from Giselas manual meta data and append them to one file.
+This file is used to create the meta data for all master templates. 
 
-The function comes with the `overallreports` parameter to create metadata that include also the meta data for the overall reports; and the `export` parameter let you export the metadata as an Excel file.
 
-Furthermore, the function informs you which report templates cannot be merged with the master templates from LimeSurvey. These inconsistencies need to be fixed manually.
 
-```{r, eval = FALSE}
-#Create metadata for all master templates
-metadata <- create_metadata(export = FALSE,
-                overallreports = TRUE)
-```
+
+
+
 
 If a report template contains variables names that cannot be matched with the manual meta data, the function only appends variables names from LimeSurvey that cannot be matched. Thus, the result from `create_metadata` shows templates without errors (all columns are filled) and templates with errors (only variables names and text are listed). For example, the last console showed that the template `rpt_elt_p1` contains errors. The file shows which variables cannot be matched.
 
@@ -97,7 +88,6 @@ If a report template contains variables names that cannot be matched with the ma
 
 
 
-## 
 
 
 
@@ -109,14 +99,11 @@ Finally, the package provides a function to create a new survey based on a maste
 ```{r, eval=FALSE}
 #Create a new survey
 Limer_sendSurvey(lss = "struktur_LimeSurvey.lss",
-            name = "SurveyName")
+                 name = "SurveyName")
 ```
 
 ## Further Helpers
 
-In order to create PDF reports, we need to identify the survey and report template based on school characteristics. The `get_metalist()` function returns the names of all survey and report templates and includes the school characteristics. The results are based on the `masterToTemplates` file and not via the LimeSurvey API.
+... 
 
-```{r, eval=FALSE}
-#Inspect all master and report templates
-get_metalist()
-```
+

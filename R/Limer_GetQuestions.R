@@ -1,52 +1,3 @@
-#' Get master templates from LimeSurvey
-#'
-#' @description This function gets the master templates from Lime Survey.
-#' @param sart School type.
-#' @return Results from the API.
-#' @examples \dontrun{
-#' get_MasterTemplate(sart = "gs")
-#' }
-#' @export
-
-get_MasterTemplate <- function(sart = NULL) {
-
-  #Get specs from config
-  get <- config::get()
-  tmp.server <- get$tmp.server
-  tmp.user <- get$tmp.user
-  tmp.credential <- get$tmp.credential
-  #Connect
-  tmp.session <- surveyConnectLs(user = tmp.user,
-                                 credential = tmp.credential,
-                                 server = tmp.server)
-
-
-  allsurveys <- call_limer(method = "list_surveys")
-
-  release_session_key()
-
-  if (missing(sart) == FALSE) {
-    allsurveys$sart <- stringr::str_detect(allsurveys$surveyls_title,
-                                           pattern = paste0("_", sart, "_"))
-
-    allsurveys <- allsurveys |> dplyr::filter(sart == TRUE)
-
-  }
-
-  allsurveys$master <- stringr::str_detect(allsurveys$surveyls_title, pattern = "master_")
-
-
-  mastertemplates <- allsurveys |>
-    dplyr::filter(master == TRUE) |>
-    dplyr::select(sid, surveyls_title) |>
-    dplyr::arrange(surveyls_title)
-
-  df <- tibble::as_tibble(mastertemplates)
-  return(df)
-}
-
-
-
 #' Get meta data from LimeSurvey master templates.
 #'
 #' @description This function gets the meta data from LimeSurvey master templates.
@@ -180,7 +131,7 @@ get_MasterMeta <- function(id, name) {
 }
 
 
-#' Get ALL meta data from LimeSurvey master templates.
+#' Adjust: Get ALL meta data from LimeSurvey master templates.
 #'
 #' @description This function gets the meta data from LimeSurvey master templates.
 #' @param export Export the data to an Excel file.
@@ -228,153 +179,11 @@ get_AllMasterMeta <- function(export = FALSE) {
 
 
 
-#Start here##############
-
-#' Split template string.
-#'
-#' @description This function splits the template text string from LimeSurvey.
-#' @param variables Variables.
-#' @return Text string.
-
-# splitTemplateString <- function(variables) {
-#
-#   MasterMetaList <- readxl::read_excel(here::here("data/meta_raw.xlsx"))
-#
-#   templates_unique <- unique(MasterMetaList$template)
-#
-#
-#   fromString <- as.data.frame(stringr::str_split_fixed(templates_unique, pattern = "_", n = 9))
-#
-#
-#   stringified <- fromString |>
-#     dplyr::select(master = V2,
-#                   survey = V3,
-#                   type = V4,
-#                   sart = V5,
-#                   audience = V6,
-#                   gnztag = V7,
-#                   year = V8,
-#                   version = V9)
-#
-#
-#   stringified$template <- templates_unique
-#   stringified
-#
-#   MasterMetaList <- MasterMetaList |>
-#     dplyr::left_join(stringified, by = "template")
-#
-#   return(MasterMetaList)
-# }
 
 
-#' Get report templates.
-#'
-#' @description This function gets the master templates.
-#' @param reports Reports as vector.
-#' @examples \dontrun{
-#' get_ReportTemplates()
-#' }
-
-# get_ReportTemplates <- function(reports = FALSE) {
-#
-#   #Check if a unique report template is in the master list
-#   check <- readxl::read_excel(here::here("data/Edgar_master_to_template.xlsx"),
-#                               sheet = "pckg_master_tmpl") |>
-#     dplyr::select(template = surveyls_title, report_template = report) |>
-#     dplyr::pull(report_template) |>
-#     unique()
-#
-#
-#   df <- readxl::read_excel(here::here("data/Edgar_master_to_template.xlsx"),
-#                              sheet = "Liste master") |>
-#     dplyr::select(template = surveyls_title, report_template = report) |>
-#     dplyr::arrange(template)
-#
-#
-#   test <- df |>
-#     dplyr::pull(report_template) |>
-#     unique()
-#
-#   checkval <- dplyr::setdiff(test, check)
-#
-#   #stop if not
-#   if (length(checkval) > 0) {
-#     cli::cli_abort(paste0("The following report templates are not in the master list: ", checkval))
-#   }
-#
-#   if (reports == FALSE) {
-#     # reports <- readxl::read_excel(here::here("data/Edgar_master_to_template.xlsx")) |>
-#     #   dplyr::select(template = surveyls_title, report_template = report) |>
-#     #   dplyr::distinct()
-#
-#     reports <- df
-#
-#   }else {
-#     reports <- df |>
-#       dplyr::pull(report_template) |>
-#       unique()
-#   }
-#
-#
-#   return(reports)
-# }
 
 
-#' Merge Meta Data with Lime Survey Data
-#'
-#' @description This function merges the meta data with the Lime Survey data.
-#' @param mastertemplate Master Template.
-#' @param rpttemplate Report Template.
-#' @return Data frame.
 
-# merge_MetaLime <- function(mastertemplate, rpttemplate) {
-#
-#   reports <- get_ReportTemplates()
-#   MasterMetaList <- splitTemplateString()
-#
-#   #Now merge MasterMetaList with reports
-#   MasterMerged <- MasterMetaList |>
-#     dplyr::left_join(reports, by = "template", relationship = "many-to-many")
-#
-#   #return(MasterMerged)
-#
-#
-#   report <- MasterMerged |>
-#     dplyr::filter(template == mastertemplate) |>
-#     dplyr::filter(report_template == rpttemplate) |>
-#     dplyr::select(report_template, variable, var_text) |>
-#     dplyr::arrange(variable)
-#
-#   #return(report)
-#   #Giselas Meta Liste
-#   report_meta_dev <- readxl::read_excel(here::here("data/report_meta_dev.xlsx"),
-#                                         sheet = "reports")
-#
-#   gisela <- report_meta_dev |>
-#     dplyr::filter(report == rpttemplate) |>
-#     dplyr::select(variable = vars, plot, label_short, sets, report)
-#
-#
-#   #giselas <- unique(gisela$variable)
-#   #dplyr::setdiff(report$variable, giselas)
-#   #dplyr::setdiff(giselas, report$variable)
-#
-#
-#   finalrep <- report |>
-#     dplyr::left_join(gisela, dplyr::join_by(report_template == report,
-#                                             variable == variable))
-#
-#
-#   notmatched <- finalrep |> dplyr::filter(is.na(plot) == TRUE)
-#
-#   if (nrow(notmatched) == 0) {
-#     return(finalrep)
-#   }else {
-#     cli::cli_alert_danger(paste0("Some variables cannot be matched, check: ", rpttemplate))
-#     return(notmatched)
-#   }
-#
-# }
 
 
 
