@@ -68,7 +68,7 @@ Limer_GetMaster <- function(template = FALSE) {
 }
 
 
-#Limer_GetMaster(template = FALSE)
+#Limer_GetMaster(template = TRUE)
 
 
 #' Upload Master Templates as Survey Templates to LimeSurvey
@@ -84,7 +84,7 @@ Limer_GetMaster <- function(template = FALSE) {
 
 
 Limer_UploadTemplates <- function() {
-  cli::cli_abort("This function is not ready yet.")
+  cli::cli_abort("This function is not ready yet. Adjust paths!")
   masters <- Limer_GetMaster(template = TRUE)
 
   #List all files with ending lss here: data/MasterTemplates/Minke_Master_Backup/

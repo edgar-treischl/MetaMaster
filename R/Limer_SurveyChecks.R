@@ -11,6 +11,7 @@
 
 
 check_distinct <- function(ubb) {
+  cli::cli_abort("This function is not ready yet. Adjust paths!")
   #We have a raw data set
   meta_raw <- readxl::read_excel(here::here("data/meta_raw.xlsx"))
 

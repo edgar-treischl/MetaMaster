@@ -6,8 +6,13 @@
 #' @export
 
 get_ExtraPlots <- function(reporttemplate) {
-  report_meta_dev <- readxl::read_excel("data/report_meta_dev.xlsx",
-                                        sheet = "reports")
+
+
+  # report_meta_dev <- readxl::read_excel("data/report_meta_dev.xlsx",
+  #                                       sheet = "reports")
+
+  report_meta_dev <- DB_Table("reports")
+
 
 
   report_meta_dev |>
@@ -32,14 +37,19 @@ get_AllExtraPlots <- function(export = FALSE,
                               filter = FALSE) {
 
   #cli::cli_warn("This function is not ready yet. We need to clarify how extra plots are defined. What about n>2?")
-
-  gisela_reports <- readxl::read_excel("data/report_meta_dev.xlsx",
-                                       sheet = "reports") |>
+  gisela_reports <- DB_Table("reports") |>
     dplyr::select(report) |>
     dplyr::pull() |>
     unique()
 
-  mtf <- DBTable(table = "master_to_template")
+
+  # gisela_reports <- readxl::read_excel("data/report_meta_dev.xlsx",
+  #                                      sheet = "reports") |>
+  #   dplyr::select(report) |>
+  #   dplyr::pull() |>
+  #   unique()
+
+  mtf <- DB_Table("master_to_template")
   reports <-mtf$report
 
 

@@ -1,68 +1,6 @@
 # library(MetaMaster)
 # Sys.setenv(R_CONFIG_ACTIVE = "test")
-#Master to Template
 
-
-#' Get the templates Deprecated
-#' @description Some text in LimeSurvey are stored in HTML format.
-#'  This helper function extracts it from the HTML code.
-#' @export
-
-get_templates <- function() {
-
-  master_to_template <- readxl::read_excel("data/master_to_template.xlsx")
-
-  #master_to_template <- DB_Table("master_to_template")
-
-  templates <- master_to_template |>
-    dplyr::arrange(surveyls_title) |>
-    dplyr::pull(template)
-
-  return(templates)
-}
-
-#templates <- get_templates()
-
-
-#' Deprecated: Get the templates
-#' @description Some text in LimeSurvey are stored in HTML format.
-#'  This helper function extracts it from the HTML code.
-#' @param templatename Template name
-#' @export
-get_master <- function(templatename) {
-  master_to_template <- readxl::read_excel("data/master_to_template.xlsx")
-
-  #master_to_template <- DB_Table("master_to_template")
-
-
-  mastername <- master_to_template |>
-    dplyr::filter(template == templatename) |>
-    dplyr::pull(surveyls_title)
-
-
-  return(mastername)
-
-}
-
-
-#mastername <- get_master(templatename = "tmpl_bfr_allg_gm_elt_00_2022_p1")
-
-#' Get the templates
-#' @description Some text in LimeSurvey are stored in HTML format.
-#'  This helper function extracts it from the HTML code.
-#' @export
-
-get_masters <- function() {
-
-  templates <- get_templates()
-  allmasters <- purrr::map_chr(templates, get_master)
-
-  list("template" = templates,
-       "master" = allmasters)
-
-}
-
-#mastertemplatesList <- get_masters()
 
 
 

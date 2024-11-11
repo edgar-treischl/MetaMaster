@@ -45,6 +45,8 @@ Limer_sendSurvey <- function(lss, name = NULL) {
 
 
 Limer_sendSurveys <- function() {
+  cli::cli_abort("This function is not ready yet. Adjust paths!")
+
   lssfiles <- list.files(here::here("data/MasterTemplates/Minke_Master_Backup"),
                          full.names = TRUE)
 
