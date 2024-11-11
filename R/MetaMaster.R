@@ -3,21 +3,21 @@
 #Master to Template
 
 
-#' Deprecated: Get the templates Deprecated
+#' Get the templates Deprecated
 #' @description Some text in LimeSurvey are stored in HTML format.
 #'  This helper function extracts it from the HTML code.
 #' @export
 
-# get_templates <- function() {
-#
-#   master_to_template <- readxl::read_excel("data/master_to_template.xlsx")
-#
-#   templates <- master_to_template |>
-#     dplyr::arrange(surveyls_title) |>
-#     dplyr::pull(template)
-#
-#   return(templates)
-# }
+get_templates <- function() {
+
+  master_to_template <- readxl::read_excel("data/master_to_template.xlsx")
+
+  templates <- master_to_template |>
+    dplyr::arrange(surveyls_title) |>
+    dplyr::pull(template)
+
+  return(templates)
+}
 
 #templates <- get_templates()
 
@@ -27,17 +27,17 @@
 #'  This helper function extracts it from the HTML code.
 #' @param templatename Template name
 #' @export
-# get_master <- function(templatename) {
-#   master_to_template <- readxl::read_excel("data/master_to_template.xlsx")
-#
-#   mastername <- master_to_template |>
-#     dplyr::filter(template == templatename) |>
-#     dplyr::pull(surveyls_title)
-#
-#
-#   return(mastername)
-#
-# }
+get_master <- function(templatename) {
+  master_to_template <- readxl::read_excel("data/master_to_template.xlsx")
+
+  mastername <- master_to_template |>
+    dplyr::filter(template == templatename) |>
+    dplyr::pull(surveyls_title)
+
+
+  return(mastername)
+
+}
 
 
 #mastername <- get_master(templatename = "tmpl_bfr_allg_gm_elt_00_2022_p1")
