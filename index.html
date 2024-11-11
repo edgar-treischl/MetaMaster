@@ -79,7 +79,7 @@
 <div class="section level2">
 <h2 id="test-the-meta-data">Test the meta data<a class="anchor" aria-label="anchor" href="#test-the-meta-data"></a>
 </h2>
-<p>Test the meta data by running a test. A test run implies that all variables from the LimeSurvey API are matched with the meta data and only the variables that can’t be matched are returned. Thus, a test run creates a list of unmatched variables per master and survey template that will result in an error. First, load the package and run the <code><a href="reference/get_templates.html">get_templates()</a></code> function. It return unique names of survey templates. This information comes from the master to template file.</p>
+<p>Test the meta data by running a test. A test run implies that all variables from the LimeSurvey API are matched with the meta data and only the variables that can’t be matched are returned. Thus, a test run creates a list of unmatched variables per master and survey template that will result in an error. First, load the package and run the <code>get_templates()</code> function. It return unique names of survey templates. This information comes from the master to template file.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Get the names all unique survey templates</span></span>
 <span><span class="co"># templates &lt;- get_templates()</span></span>
@@ -88,13 +88,13 @@
 <span><span class="co">#Sys.setenv(R_CONFIG_ACTIVE = "test")</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Limer_GetMaster.html">Limer_GetMaster</a></span><span class="op">(</span>template <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
-<p>A master template can be used more than once, which is why we start with the survey template and we match it with the master template. The function <code><a href="reference/get_master.html">get_master()</a></code> returns the name of the master template for a survey template. This function also relies on the master to template file. Thus, we need to take care that all mastertemplates are listed in the master to template file and that all survey templates are correctly matched.</p>
+<p>A master template can be used more than once, which is why we start with the survey template and we match it with the master template. The function <code>get_master()</code> returns the name of the master template for a survey template. This function also relies on the master to template file. Thus, we need to take care that all mastertemplates are listed in the master to template file and that all survey templates are correctly matched.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#mastername &lt;- get_master(templatename = "tmpl_bfr_allg_gm_elt_00_2022_p1")</span></span>
 <span><span class="co">#mastername</span></span></code></pre></div>
-<p>Since we know the master template, we can retrieve survey question via the API. The function <code><a href="reference/get_masters.html">get_masters()</a></code> is a wrapper function for these steps. It returns a list of all survey templates and the corresponding master templates.</p>
+<p>Since we know the master template, we can retrieve survey question via the API. The function <code>get_masters()</code> is a wrapper function for these steps. It returns a list of all survey templates and the corresponding master templates.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mastertemplatesList</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_masters.html">get_masters</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">mastertemplatesList</span> <span class="op">&lt;-</span> <span class="fu">get_masters</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#Survey templates</span></span>
 <span><span class="co">#head(mastertemplatesList$template)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
