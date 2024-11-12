@@ -55,6 +55,76 @@ check_distinct <- function(ubb) {
 #check_distinct(ubb = FALSE)
 
 
+check_distinct2 <- function(ubb, export = FALSE) {
+  # Ensure 'ubb' is logical
+  if (!is.logical(ubb)) {
+    stop("'ubb' must be a logical value (TRUE or FALSE).")
+  }
+
+  # Define the file path
+  file_path <- here::here("MasterData_2024_11_11.xlsx")
+
+  # Check if the file exists
+  if (!file.exists(file_path)) {
+    stop("The file does not exist at the expected location: ", file_path)
+  }
+
+  # Load the raw data
+  meta_raw <- readxl::read_excel(file_path)
+
+  # Check if required columns are in the dataset
+  required_cols <- c("template", "variable", "text")
+  missing_cols <- setdiff(required_cols, colnames(meta_raw))
+  if (length(missing_cols) > 0) {
+    stop("Missing required columns: ", paste(missing_cols, collapse = ", "))
+  }
+
+  # Add the 'ubb' column based on the 'template' column
+  meta_raw$ubb <- stringr::str_detect(meta_raw$template, pattern = "_ubb_")
+
+  # Use embrace ({{ }}) for non-standard evaluation and tidy selection
+  check_df <- meta_raw |>
+    dplyr::filter(ubb == {{ ubb }})
+
+  # Define column names using `sym()` for tidy evaluation
+  variable_col <- rlang::sym("variable")
+  text_col <- rlang::sym("text")
+
+  # Check for duplicates within 'variable' and 'text' using `add_count()`
+  check <- check_df |>
+    dplyr::select(!!variable_col, !!text_col) |>
+    dplyr::group_by(!!variable_col) |>
+    dplyr::add_count(name = "n") |>
+    dplyr::filter(n > 1)
+
+  # Output results to the console
+  if (nrow(check) == 0) {
+    cli::cli_alert_success("All distinct, great!")
+  } else {
+    cli::cli_alert_danger("Thou shalt not pass! Please check these duplicates:")
+    print(check)
+  }
+
+  # If export is TRUE, save the results to an Excel file
+  if (export) {
+    # Generate a proper file name based on the current date
+    output_file <- paste0("distinct_table_", format(Sys.Date(), "%Y_%m_%d"), ".xlsx")
+
+    # Export the results as an Excel file
+    writexl::write_xlsx(check, output_file)
+
+    # Inform the user that the file has been saved
+    cli::cli_alert_info(paste("Results have been exported to:", output_file))
+  }
+
+  # If export is FALSE, return the results as a data frame
+  if (!export) {
+    return(check)
+  }
+}
+
+
+
 
 #' Get the templates
 #' @description Some text in LimeSurvey are stored in HTML format.

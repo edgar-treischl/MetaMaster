@@ -11,17 +11,24 @@ Description: The package provides a set of functions to extract and
 License: GPL (>= 3)
 Imports: 
     base64enc,
+    blastula,
     cli,
     config,
+    DBI,
     dplyr,
+    glue,
     here,
     httr,
     jsonlite,
+    openxlsx,
     purrr,
     readxl,
+    rlang,
+    RPostgres,
     rvest,
     stringr,
     tibble,
+    tidyr,
     utils,
     writexl
 Encoding: UTF-8

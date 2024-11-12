@@ -36,7 +36,9 @@ update_allMastersLimeSurvey <- function() {
 
 
 add_report_template <- function() {
-  mastertmp <- MetaMaster::MasterToTemplates
+
+  mastertmp <- DB_Table("master_to_template")
+
 
   template <- mastertmp$template
 

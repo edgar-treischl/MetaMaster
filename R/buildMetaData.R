@@ -21,10 +21,10 @@ buildMetaMaster <- function(path, export = FALSE) {
 
 
 
-  df <- mtt |> dplyr::left_join(df, by = "master_template", relationship = "many-to-many")
+  df <- mtt |> dplyr::left_join(df, by = "master_template",
+                                relationship = "many-to-many")
 
-
-
+  sart <- V2 <- V5 <- V8 <- NULL
 
   fromString <- as.data.frame(stringr::str_split_fixed(df$template,
                                                        pattern = "_",
@@ -76,6 +76,8 @@ buildMetaMaster <- function(path, export = FALSE) {
 
   #01templates#############
 
+  templates <- NULL
+
   varlist <- c("surveyID", "master_template", "report", "template", "ubb", "stype", "type", "ganztag")
 
   templates <- mastertemplate |>
@@ -87,7 +89,7 @@ buildMetaMaster <- function(path, export = FALSE) {
 
   #02reports#############
 
-  mastertemplate
+  reports <- NULL
 
   varlist <- c("report", "plot", "variable", "text", "text")
 
@@ -131,7 +133,7 @@ buildMetaMaster <- function(path, export = FALSE) {
 
 
 
-
+  set_data <- sets <- plots_headers <- plots_headers_ubb <- extraplots <- NULL
 
   #03set data#############
   set_data <- DB_Table("set_data")
