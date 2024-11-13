@@ -91,7 +91,7 @@ buildMetaMaster <- function(path, export = FALSE) {
 
   reports <- NULL
 
-  varlist <- c("report", "plot", "variable", "text", "text")
+  varlist <- c("report", "plot", "variable", "text", "type")
 
   reports <- mastertemplate |>
     dplyr::select(dplyr::all_of(varlist)) |>

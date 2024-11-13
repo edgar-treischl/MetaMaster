@@ -59,6 +59,22 @@ add_report_template <- function() {
 
 #add_report_template()
 
+#' Remove white spaces and combine text
+#' @description
+#' @export
+
+remove_and_combine <- function(input_vector) {
+  # Use strsplit to split each string by one or more whitespace characters
+  split_text <- strsplit(input_vector, "\\s+")
+
+  # Use sapply to collapse the split strings with exactly one space between words
+  result <- sapply(split_text, function(x) paste(x, collapse = " "))
+
+  return(result)
+}
+
+#remove_and_combine(input_vector = "What   a difference a day makes.")
+
 
 
 
