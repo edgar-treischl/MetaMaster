@@ -19,6 +19,7 @@
 <url><loc>/reference/add_report_template.html</loc></url>
 <url><loc>/reference/base64_to_df.html</loc></url>
 <url><loc>/reference/buildMetaMaster.html</loc></url>
+<url><loc>/reference/buildOverallReport.html</loc></url>
 <url><loc>/reference/call_limer.html</loc></url>
 <url><loc>/reference/check_MasterTemplates.html</loc></url>
 <url><loc>/reference/check_SurveyTemplates.html</loc></url>
@@ -32,6 +33,7 @@
 <url><loc>/reference/get_session_key.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/release_session_key.html</loc></url>
+<url><loc>/reference/remove_and_combine.html</loc></url>
 <url><loc>/reference/send_testrun.html</loc></url>
 <url><loc>/reference/surveyConnectLs.html</loc></url>
 <url><loc>/reference/testrun.html</loc></url>
