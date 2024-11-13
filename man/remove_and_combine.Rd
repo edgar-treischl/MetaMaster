@@ -7,5 +7,5 @@
 remove_and_combine(input_vector)
 }
 \description{
-Remove white spaces and combine text
+This function removes white spaces and combines text.
 }

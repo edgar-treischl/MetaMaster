@@ -9,92 +9,46 @@
 #'}
 #' @export
 
-
-check_distinct <- function(ubb) {
-  #cli::cli_abort("This function is not ready yet. Adjust paths!")
-  #We have a raw data set
-  meta_raw <- readxl::read_excel(here::here("MasterData_2024_11_11.xlsx"))
-
-
-  #We need to check for each template within the raw data set if there are any duplicates
-  meta_raw$ubb <- stringr::str_detect(meta_raw$template, pattern = "_ubb_")
-
-  #Check for duplicates
-  if (ubb == TRUE) {
-    check_df <- meta_raw |>
-      dplyr::filter(ubb == TRUE)
-
-  }else {
-    check_df <- meta_raw |>
-      dplyr::filter(ubb == FALSE)
-  }
-
-  check <- check_df |> dplyr::select(variable, text) |>
-    dplyr::arrange(variable) |>
-    dplyr::distinct() |>
-    dplyr::group_by(variable) |>
-    dplyr::mutate(n = dplyr::n()) |>
-    dplyr::filter(n > 1)
-
-  if (nrow(check) == 0) {
-    cli::cli_alert_success("All distinct, great!")
-  }else {
-    cli::cli_alert_danger("Thou shalt not pass! Please check these buggers:")
-    return(check)
-  }
-
-
-
-
-
-
-  #Export this file as excel
-  #writexl::write_xlsx(check, "data/checkoverallUBB.xlsx")
-}
-
-#check_distinct(ubb = FALSE)
-
-
-check_distinct2 <- function(ubb, export = FALSE) {
+check_distinct <- function(ubb, export = FALSE) {
   # Ensure 'ubb' is logical
   if (!is.logical(ubb)) {
     stop("'ubb' must be a logical value (TRUE or FALSE).")
   }
 
-  # Define the file path
-  file_path <- here::here("MasterData_2024_11_11.xlsx")
-
-  # Check if the file exists
-  if (!file.exists(file_path)) {
-    stop("The file does not exist at the expected location: ", file_path)
-  }
-
   # Load the raw data
-  meta_raw <- readxl::read_excel(file_path)
-
-  # Check if required columns are in the dataset
-  required_cols <- c("template", "variable", "text")
-  missing_cols <- setdiff(required_cols, colnames(meta_raw))
-  if (length(missing_cols) > 0) {
-    stop("Missing required columns: ", paste(missing_cols, collapse = ", "))
-  }
+  meta_raw <- DB_Table("all_mastertemplates")
 
   # Add the 'ubb' column based on the 'template' column
-  meta_raw$ubb <- stringr::str_detect(meta_raw$template, pattern = "_ubb_")
+  meta_raw$survey <- stringr::str_detect(meta_raw$template, pattern = "_ubb_")
 
-  # Use embrace ({{ }}) for non-standard evaluation and tidy selection
+
   check_df <- meta_raw |>
-    dplyr::filter(ubb == {{ ubb }})
+    dplyr::filter(survey == ubb)
+
+  check_df$text <- remove_and_combine(input_vector = check_df$text)
 
   # Define column names using `sym()` for tidy evaluation
-  variable_col <- rlang::sym("variable")
-  text_col <- rlang::sym("text")
+  #variable_col <- rlang::sym("variable")
+  #text_col <- rlang::sym("text")
 
-  # Check for duplicates within 'variable' and 'text' using `add_count()`
+
+  # # Check for duplicates within 'variable' and 'text' using `add_count()`
+  # check <- check_df |>
+  #   dplyr::select(!!variable_col, !!text_col) |>
+  #   dplyr::arrange(!!variable_col) |>
+  #   dplyr::distinct() |>
+  #   dplyr::group_by(!!variable_col) |>
+  #   dplyr::mutate(n = dplyr::n()) |>
+  #   #dplyr::add_count(name = "n") |>
+  #   dplyr::filter(n > 1)
+
+  #Old version
   check <- check_df |>
-    dplyr::select(!!variable_col, !!text_col) |>
-    dplyr::group_by(!!variable_col) |>
-    dplyr::add_count(name = "n") |>
+    dplyr::select(variable, text) |>
+    dplyr::arrange(variable) |>
+    dplyr::distinct() |>
+    dplyr::group_by(variable) |>
+    dplyr::mutate(n = dplyr::n()) |>
     dplyr::filter(n > 1)
 
   # Output results to the console
@@ -107,22 +61,15 @@ check_distinct2 <- function(ubb, export = FALSE) {
 
   # If export is TRUE, save the results to an Excel file
   if (export) {
-    # Generate a proper file name based on the current date
-    output_file <- paste0("distinct_table_", format(Sys.Date(), "%Y_%m_%d"), ".xlsx")
-
-    # Export the results as an Excel file
+    output_file <- paste0("distinct_", format(Sys.Date(), "%Y_%m_%d"), ".xlsx")
     writexl::write_xlsx(check, output_file)
-
-    # Inform the user that the file has been saved
     cli::cli_alert_info(paste("Results have been exported to:", output_file))
   }
 
-  # If export is FALSE, return the results as a data frame
-  if (!export) {
-    return(check)
-  }
+
 }
 
+#check_distinct(ubb = FALSE)
 
 
 

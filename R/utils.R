@@ -60,7 +60,7 @@ add_report_template <- function() {
 #add_report_template()
 
 #' Remove white spaces and combine text
-#' @description
+#' @description This function removes white spaces and combines text.
 #' @export
 
 remove_and_combine <- function(input_vector) {

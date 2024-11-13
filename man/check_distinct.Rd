@@ -4,7 +4,7 @@
 \alias{check_distinct}
 \title{Check if All Variables of the Meta Data are Distinct}
 \usage{
-check_distinct(ubb)
+check_distinct(ubb, export = FALSE)
 }
 \description{
 This function checks if all variables names of the meta data
