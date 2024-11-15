@@ -1,7 +1,16 @@
 # library(MetaMaster)
 # Sys.setenv(R_CONFIG_ACTIVE = "test")
 # #Get master template for all school types
-# LimeSurveytemplates <- get_MasterTemplate()
+# LimeSurveytemplates <- Limer_GetMaster()
+
+
+
+
+# library(readxl)
+# reports <- read_excel("~/bycsdrive/Personal/OES_MetaData/report_meta_devE.xlsx",
+#                                sheet = "reports")
+#
+# DB_send(reports, name = "reports")
 
 
 workaround <- function(sid, master_title) {
@@ -15,17 +24,21 @@ workaround <- function(sid, master_title) {
   names(LimeSurveyMaster)[names(LimeSurveyMaster) == "plot"] <- "code"
 
   #Which report in this case is the master report
-  report_template <- readxl::read_excel("data/master_to_template.xlsx") |>
+  report_template <- DB_Table("master_to_template")
+
+  report_template <- report_template |>
     dplyr::filter(surveyls_title == master_title) |>
-    dplyr::pull(report)
+    dplyr::pull(rpt)
 
   #report_template <- unique(report_template)
   report_template <- report_template[1]
 
 
   #Get the plots for the master report for that report
-  Gisela_plots <- readxl::read_excel("data/report_meta_dev.xlsx",
-                                     sheet = "reports") |>
+
+  Gisela_plots <- DB_Table("reports")
+
+  Gisela_plots <- Gisela_plots |>
     dplyr::filter(report == report_template) |>
     dplyr::select(vars, plot_meta = plot)
 
@@ -46,10 +59,6 @@ workaround <- function(sid, master_title) {
   Gisela_plots$plot_meta_filled <- stringr::str_pad(Gisela_plots$plot_meta_filled, width = 4, side = "right", pad = "a")
 
 
-
-  #combine master and report plots: Matching variable is variable == vars
-  MasterGiselaLS <- dplyr::left_join(LimeSurveyMaster, Gisela_plots, by = c("variable" = "vars"))
-
   #Filter out the plots that are not unique
   #MasterGiselaLS$filter <- stringr::str_detect(MasterGiselaLS$plot_meta, pattern = "W")
   extraplots <- get_ExtraPlots(reporttemplate = report_template)
@@ -62,10 +71,14 @@ workaround <- function(sid, master_title) {
 
 
   #filter if the are not the extraplots
-  MasterGiselaLS <- MasterGiselaLS |> dplyr::filter(!plot_meta %in% extraplots)
+  Gisela_plots <- Gisela_plots |> dplyr::filter(!plot_meta %in% extraplots)
 
 
-  MasterGiselaLS$masterplots <- stringr::str_c(MasterGiselaLS$code, MasterGiselaLS$variable, MasterGiselaLS$plot_meta_filled)
+  #combine master and report plots: Matching variable is variable == vars
+  MasterGiselaLS <- dplyr::left_join(LimeSurveyMaster, Gisela_plots, by = c("variable" = "vars"))
+
+
+  MasterGiselaLS$masterplots <- stringr::str_c(MasterGiselaLS$variable, MasterGiselaLS$plot_meta_filled)
 
 
   MasterGiselaLS$report <- report_template
@@ -78,16 +91,28 @@ workaround <- function(sid, master_title) {
     print(paste("Export: ", master_title))
   }
 
+  #get a string with date and time
+  date <- format(Sys.time(), "%Y_%m_%d")
+  folder <- paste0("automation_", date)
+  folder <- here::here(folder)
+
+  fs::dir_create(folder)
+
+  filename <- here::here(folder, paste0(master_title, ".xlsx"))
+
 
   ##Export MasterGiselaLS as excel
-  writexl::write_xlsx(df, path = paste0("data/MasterTemplates/Automated/", master_title, "_Automated.xlsx"))
-  #return(MasterGiselaLS)
+  #writexl::write_xlsx(df, path = filename)
+  return(MasterGiselaLS)
 }
 
 
-# workaround(sid = LimeSurveytemplates$sid[1],
-#            master_title = LimeSurveytemplates$surveyls_title[1])
-#
+
+
+
+
+# workaround(sid = LimeSurveytemplates$sid[22],
+#            master_title = LimeSurveytemplates$surveyls_title[22])
 #
 # purrr::map2(LimeSurveytemplates$sid,
 #             LimeSurveytemplates$surveyls_title,

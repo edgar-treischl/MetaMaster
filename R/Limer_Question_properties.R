@@ -53,13 +53,11 @@ Limer_GetQlist <- function(id) {
     dplyr::filter(type == "T", qid != "0")
 
   # Extract unique question IDs
-  qidls <- unique(as.character(lslist_filtered$qid))
+  qidls <- unique(as.character(lslist$qid))
 
   # Return the unique question IDs
   return(qidls)
 }
-
-
 
 
 
@@ -136,14 +134,7 @@ Limer_getQuestionsbyQID <- function(qid) {
 }
 
 
-# Limer_getQuestionsbyQID(qid = "3307")
-
-
-
-
-
-
-
+#Limer_getQuestionsbyQID(qid = "3307")
 
 
 
