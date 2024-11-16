@@ -37,7 +37,7 @@ remotes::install_local("MetaMaster.gz",
 
 The `Limer_GetMaster()` function returns the master template from LimeSurvey. The function returns all survey templates declared as `master_` in the limesurvey instance. Moreover, set the `template` argument to `TRUE` to get the survey templates. The latter comes from the meta to data list.
 
-```{r}
+```{r, eval=TRUE}
 #Let's get started
 library(MetaMaster)
 Sys.setenv(R_CONFIG_ACTIVE = "test")

@@ -37,6 +37,15 @@ library(MetaMaster)
 Sys.setenv(R_CONFIG_ACTIVE = "test")
 df <- Limer_GetMasterTemplates(template = TRUE)
 head(df)
+#> # A tibble: 6 × 3
+#>      sid surveyls_title                       template                       
+#>    <int> <chr>                                <chr>                          
+#> 1 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_gm_elt_00_2022_p1
+#> 2 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_gm_elt_00_2022_p3
+#> 3 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_rs_elt_00_2022_p1
+#> 4 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_beru_ws_elt_00_2022_p1
+#> 5 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p2
+#> 6 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p4
 ```
 
 Since we know the master template, we can retrieve survey question via
