@@ -1,7 +1,7 @@
-# library(MetaMaster)
-# Sys.setenv(R_CONFIG_ACTIVE = "test")
-# #Get master template for all school types
-# LimeSurveytemplates <- Limer_GetMaster()
+library(MetaMaster)
+Sys.setenv(R_CONFIG_ACTIVE = "test")
+#Get master template for all school types
+LimeSurveytemplates <- Limer_GetMasterTemplates()
 
 
 

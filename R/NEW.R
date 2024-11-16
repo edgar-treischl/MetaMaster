@@ -2,15 +2,16 @@
 # Sys.setenv(R_CONFIG_ACTIVE = "test")
 # df <- Limer_GetMaster(template = FALSE)
 
-
-
-
-
 #' Get the Quesion from the Master File
 #' @description This function gets the questions (plot, variable, text)
 #'  from the master file.
+#' @param id Survey ID.
+#' @param name Survey name (surveyls_title).
+#' @return Results from the API.
+#' @examples \dontrun{
+#' Limer_GetMasterQuesions()
+#' }
 #' @export
-
 
 Limer_GetMasterQuesions <- function(id, name) {
   #Get specs from config

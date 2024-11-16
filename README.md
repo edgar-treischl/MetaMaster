@@ -4,6 +4,7 @@
 # MetaMaster
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of the MetaMaster package is to create meta data for LimeSurvey
@@ -34,7 +35,7 @@ the meta to data list.
 #Let's get started
 library(MetaMaster)
 Sys.setenv(R_CONFIG_ACTIVE = "test")
-df <- Limer_GetMaster(template = TRUE)
+df <- Limer_GetMasterTemplates(template = TRUE)
 head(df)
 ```
 

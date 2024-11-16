@@ -17,7 +17,7 @@ buildMetaMaster <- function(path, export = FALSE) {
   mtt <- DB_Table("master_to_template")
   mtt <- mtt |> dplyr::select(master_template = surveyls_title, template, report = rpt)
 
-  #masterlist <- Limer_GetMaster(template = TRUE)
+  #masterlist <- Limer_GetMasterTemplates(template = TRUE)
 
 
 

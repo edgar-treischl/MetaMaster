@@ -46,7 +46,7 @@ buildOverallReport <- function(packagename) {
 
 # library(MetaMaster)
 # Sys.setenv(R_CONFIG_ACTIVE = "test")
-# df <- Limer_GetMaster(template = TRUE)
+# df <- Limer_GetMasterTemplate(template = TRUE)
 #
 # df |> print(n = 20)
 #

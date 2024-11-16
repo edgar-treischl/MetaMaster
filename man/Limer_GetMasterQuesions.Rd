@@ -6,7 +6,20 @@
 \usage{
 Limer_GetMasterQuesions(id, name)
 }
+\arguments{
+\item{id}{Survey ID.}
+
+\item{name}{Survey name (surveyls_title).}
+}
+\value{
+Results from the API.
+}
 \description{
 This function gets the questions (plot, variable, text)
  from the master file.
+}
+\examples{
+\dontrun{
+Limer_GetMasterQuesions()
+}
 }

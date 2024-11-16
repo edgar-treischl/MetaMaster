@@ -41,7 +41,7 @@ The `Limer_GetMaster()` function returns the master template from LimeSurvey. Th
 #Let's get started
 library(MetaMaster)
 Sys.setenv(R_CONFIG_ACTIVE = "test")
-df <- Limer_GetMaster(template = TRUE)
+df <- Limer_GetMasterTemplates(template = TRUE)
 head(df)
 
 ```

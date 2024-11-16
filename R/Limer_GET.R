@@ -14,7 +14,7 @@
 #' @export
 
 
-Limer_GetMaster <- function(template = FALSE) {
+Limer_GetMasterTemplates <- function(template = FALSE) {
   # Step 1: Get configuration settings (no error handling)
   get <- config::get()
   tmp.server <- get$tmp.server
@@ -68,7 +68,46 @@ Limer_GetMaster <- function(template = FALSE) {
 }
 
 
-#Limer_GetMaster(template = TRUE)
+#Limer_GetMasterTemplate(template = TRUE)
+
+
+#' Get the Master Date from LimeSurvey
+#'
+#' @description This function gets the meta data from LimeSurvey for all master templates.
+#' @param export Export the data to an Excel file.
+#' @return Results from the API.
+#' @examples \dontrun{
+#' Limer_GetMasterData(export = FALSE)
+#' }
+#' @export
+
+
+Limer_GetMasterData <- function(export = FALSE) {
+  #Get all the masters ids and names from LimeSurvey
+  limerdf <- Limer_GetMasterTemplates(template = FALSE)
+  sid <- limerdf$sid
+  surveyls_title <- limerdf$surveyls_title
+
+  #Get the metadata for all the masters
+  allmasters <- purrr::map2(sid,
+                            surveyls_title,
+                            Limer_GetMasterQuesions, .progress = TRUE)
+
+  #Bind all the metadata
+  allmasters <- allmasters |> dplyr::bind_rows()
+
+  if (export == TRUE) {
+    #get a string with todays date: 2024_11_11
+    today <- format(Sys.Date(), "%Y_%m_%d")
+
+    writexl::write_xlsx(allmasters, paste0("MasterData_", today, ".xlsx"))
+    cli::cli_alert_success("Master Data exported.")
+  }else {
+    return(allmasters)
+  }
+}
+
+#Limer_GetMasterData(export = FALSE)
 
 
 #' Upload Master Templates as Survey Templates to LimeSurvey
@@ -85,7 +124,7 @@ Limer_GetMaster <- function(template = FALSE) {
 
 Limer_UploadTemplates <- function() {
   cli::cli_abort("This function is not ready yet. Adjust paths!")
-  masters <- Limer_GetMaster(template = TRUE)
+  masters <- Limer_GetMasterTemplates(template = TRUE)
 
   #List all files with ending lss here: data/MasterTemplates/Minke_Master_Backup/
   lssfiles <- list.files(here::here("data/MasterTemplates/Minke_Master_Backup/"),
