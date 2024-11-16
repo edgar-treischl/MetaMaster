@@ -11,6 +11,7 @@
 <url><loc>/reference/Limer_DeleteSurvey.html</loc></url>
 <url><loc>/reference/Limer_GetMaster.html</loc></url>
 <url><loc>/reference/Limer_GetMasterData.html</loc></url>
+<url><loc>/reference/Limer_GetMasterQuesions.html</loc></url>
 <url><loc>/reference/Limer_GetQlist.html</loc></url>
 <url><loc>/reference/Limer_UploadTemplates.html</loc></url>
 <url><loc>/reference/Limer_getQuestionsbyQID.html</loc></url>
@@ -32,6 +33,7 @@
 <url><loc>/reference/get_responses.html</loc></url>
 <url><loc>/reference/get_session_key.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/is_html.html</loc></url>
 <url><loc>/reference/release_session_key.html</loc></url>
 <url><loc>/reference/remove_and_combine.html</loc></url>
 <url><loc>/reference/send_testrun.html</loc></url>
