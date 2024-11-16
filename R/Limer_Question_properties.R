@@ -49,11 +49,14 @@ Limer_GetQlist <- function(id) {
   release_session_key()
 
   # Filter the list for questions of type "T" and exclude "0"
+  # lslist_filtered <- lslist |>
+  #   dplyr::filter(type == "T", qid != "0")
+
   lslist_filtered <- lslist |>
-    dplyr::filter(type == "T", qid != "0")
+    dplyr::filter(parent_qid == "0")
 
   # Extract unique question IDs
-  qidls <- unique(as.character(lslist$qid))
+  qidls <- as.character(lslist_filtered$qid)
 
   # Return the unique question IDs
   return(qidls)
@@ -126,8 +129,8 @@ Limer_getQuestionsbyQID <- function(qid) {
   )
 
   # Arrange the tibble by the 'plot' column
-  ls_df <- ls_df |>
-    dplyr::arrange(plot)
+  # ls_df <- ls_df |>
+  #   dplyr::arrange(plot)
 
   # Return the formatted tibble
   return(ls_df)

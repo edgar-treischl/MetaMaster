@@ -57,29 +57,52 @@ get_MasterMeta <- function(id, name) {
       dplyr::select(parent_qid, title)
 
 
-    # Create the new_title column using dplyr and tidyr
-    new_title <- df |>
-      dplyr::mutate(new_title = ifelse(parent_qid == 0, title, NA)) |>
-      tidyr::fill(new_title) |>
-      dplyr::mutate(new_title = ifelse(parent_qid == 0, new_title, paste0(new_title, title))) |>
-      dplyr::select(parent_qid, title = new_title) |>
-      dplyr::pull(title)
+    # Step 1: Extract plot titles (where parent_qid == 0)
+
+    titles <- df |>
+      dplyr::filter(parent_qid == 0) |>
+      dplyr::mutate(row_number = dense_rank(title)) |>
+      dplyr::select(row_number, plot = title, parent = parent_qid)
 
 
-    lslist$title <- new_title
-
-
-
-    titles <- lslist |>
+    var_titles <- df |>
       dplyr::filter(parent_qid != 0) |>
-      #dplyr::filter(parent_qid != 0) |>
-      dplyr::pull(title)
+      dplyr::mutate(row_number = dense_rank(parent_qid)) |>
+      dplyr::select(row_number, title, parentV = parent_qid)
 
-    #The first four characters
-    plot <- substr(titles, 1, 3)
 
-    #The rest of the string
-    varname <- substr(titles, 4, nchar(titles))
+    #Left join the two dataframes on row_number
+    matched_variables <- titles |>
+      dplyr::left_join(var_titles, by = "row_number")
+
+
+    plot <- matched_variables$plot
+    varname <- matched_variables$title
+
+
+    #OLD approach
+    # new_title <- df |>
+    #   dplyr::mutate(new_title = ifelse(parent_qid == 0, title, NA)) |>
+    #   tidyr::fill(new_title) |>
+    #   dplyr::mutate(new_title = ifelse(parent_qid == 0, new_title, paste0(new_title, title))) |>
+    #   dplyr::select(parent_qid, title = new_title) |>
+    #   dplyr::pull(title)
+    #
+    #
+    # lslist$title <- new_title
+    #
+    #
+    #
+    # titles <- lslist |>
+    #   dplyr::filter(parent_qid != 0) |>
+    #   #dplyr::filter(parent_qid != 0) |>
+    #   dplyr::pull(title)
+    #
+    # #The first four characters
+    # plot <- substr(titles, 1, 3)
+    #
+    # #The rest of the string
+    # varname <- substr(titles, 4, nchar(titles))
   }
 
 

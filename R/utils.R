@@ -76,5 +76,21 @@ remove_and_combine <- function(input_vector) {
 #remove_and_combine(input_vector = "What   a difference a day makes.")
 
 
+#' Test if String is HTML
+#' @description This function tests if the input is HTML. It uses the
+#'  `xml2` package to parse the input as HTML.
+#' @export
+
+
+# Function to check if a string is HTML
+is_html <- function(x) {
+  tryCatch({
+    # Try parsing the string as HTML
+    xml2::read_html(x)
+    TRUE  # If successful, it's HTML
+  }, error = function(e) {
+    FALSE  # If there's an error, it's not HTML
+  })
+}
 
 
