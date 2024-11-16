@@ -139,7 +139,9 @@ DB_Table <- function(table = NULL) {
   # If table argument is missing, return all available tables
   if (is.null(table)) {
     tables <- DBI::dbListTables(con)
-    cli::cli_alert_info("The following tables are available in the DB:")
+    if (interactive()) {
+      cli::cli_alert_info("The following tables are available in the DB:")
+    }
     DBI::dbDisconnect(con)
     return(tables)
   }
@@ -158,7 +160,7 @@ DB_Table <- function(table = NULL) {
 
 }
 
-#DB_Table()
+DB_Table()
 #DB_Table(table = "master_to_template")
 
 

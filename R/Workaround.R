@@ -1,7 +1,7 @@
-library(MetaMaster)
-Sys.setenv(R_CONFIG_ACTIVE = "test")
-#Get master template for all school types
-LimeSurveytemplates <- Limer_GetMasterTemplates()
+# library(MetaMaster)
+# Sys.setenv(R_CONFIG_ACTIVE = "test")
+# #Get master template for all school types
+# LimeSurveytemplates <- Limer_GetMasterTemplates()
 
 
 
@@ -15,7 +15,7 @@ LimeSurveytemplates <- Limer_GetMasterTemplates()
 
 workaround <- function(sid, master_title) {
   #Get master meta data from LimeSurvey
-  LimeSurveyMaster <- get_MasterMeta(id = sid,
+  LimeSurveyMaster <- Limer_GetMasterQuesions(id = sid,
                                      name = master_title)
 
   check <- length(LimeSurveyMaster$variable)
@@ -102,18 +102,14 @@ workaround <- function(sid, master_title) {
 
 
   ##Export MasterGiselaLS as excel
-  #writexl::write_xlsx(df, path = filename)
-  return(MasterGiselaLS)
+  writexl::write_xlsx(df, path = filename)
+  #return(MasterGiselaLS)
 }
-
-
-
-
 
 
 # workaround(sid = LimeSurveytemplates$sid[22],
 #            master_title = LimeSurveytemplates$surveyls_title[22])
-#
+# #
 # purrr::map2(LimeSurveytemplates$sid,
 #             LimeSurveytemplates$surveyls_title,
 #             workaround, .progress = TRUE)
