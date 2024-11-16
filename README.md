@@ -42,7 +42,7 @@ head(df)
 Since we know the master template, we can retrieve survey question via
 the API. The function `get_MasterMeta()` returns the survey questions of
 a given master template. The function takes the survey ID (`sid`) and
-the name of the survey (`name`) as arguments.
+the name of the survey (`name`) as function argument.
 
 ``` r
 get_MasterMeta(id = df$sid[1], 
