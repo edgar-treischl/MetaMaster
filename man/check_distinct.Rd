@@ -6,6 +6,11 @@
 \usage{
 check_distinct(ubb, export = FALSE)
 }
+\arguments{
+\item{ubb}{Logical value indicating if UBB or survey will be checked.}
+
+\item{export}{Export results to an Excel file (default is FALSE).}
+}
 \description{
 This function checks if all variables names of the meta data
  are distinct. It counts if a variable name is used more than once and returns

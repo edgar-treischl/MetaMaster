@@ -26,7 +26,7 @@ DB_send <- function(table, name) {
 
   # Check if connection is valid
   if (!DBI::dbIsValid(con)) {
-    cli_abort("Failed to connect to the database. Please check your credentials and network connection.")
+    cli::cli_abort("Failed to connect to the database. Please check your credentials and network connection.")
   }
 
   table$timestamp <- Sys.time()
@@ -40,7 +40,7 @@ DB_send <- function(table, name) {
   if (name %in% tableslisted) {
     cli::cli_alert_success(glue::glue("The table '{name}' has been successfully uploaded to the database."))
   } else {
-    cli::cli_alert_error(glue::glue("Failed to upload the table '{name}' to the database."))
+    cli::cli_alert_warning(glue::glue("Failed to upload the table '{name}' to the database."))
   }
 
 
@@ -69,7 +69,7 @@ DB_MetaUpdate <- function(path) {
 
   # Check if the file exists
   if (!file.exists(path)) {
-    cli::cli_abort(glue("The file '{path}' does not exist. Please check the path and try again."))
+    cli::cli_abort(glue::glue("The file '{path}' does not exist. Please check the path and try again."))
   }
 
   check_manualmeta()
@@ -95,7 +95,7 @@ DB_MetaUpdate <- function(path) {
         DB_send(table = metadata, name = .x)
       } else {
         # If reading the sheet failed, show an error
-        cli::cli_alert_danger(glue("Failed to read sheet {.x}"))
+        cli::cli_alert_danger(glue::glue("Failed to read sheet {.x}"))
       }
     })
 }
@@ -133,7 +133,7 @@ DB_Table <- function(table = NULL) {
 
   # Check if connection is valid
   if (!DBI::dbIsValid(con)) {
-    cli_abort("Failed to connect to the DB. Please check credentials and network.")
+    cli::cli_abort("Failed to connect to the DB. Please check credentials and network.")
   }
 
   # If table argument is missing, return all available tables

@@ -3,6 +3,8 @@
 #' @description This function checks if all variables names of the meta data
 #'  are distinct. It counts if a variable name is used more than once and returns
 #'    a data frame with the results.
+#' @param ubb Logical value indicating if UBB or survey will be checked.
+#' @param export Export results to an Excel file (default is FALSE).
 #'@examples
 #'\dontrun{
 #' check_distinct(ubb = TRUE)

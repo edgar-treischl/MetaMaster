@@ -6,6 +6,9 @@
 \usage{
 is_html(x)
 }
+\arguments{
+\item{x}{A character string}
+}
 \description{
 This function tests if the input is HTML. It uses the
  `xml2` package to parse the input as HTML.

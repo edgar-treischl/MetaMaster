@@ -30,6 +30,8 @@ get_ExtraPlots <- function(reporttemplate) {
 #' Get  Extra Plots for All Report Templates
 #' @description This is a wrapper function that returns all extra plots based
 #'  on the report_meta_dev data.
+#' @param export Logical. If TRUE, the function will export the result.
+#' @param filter Logical. If TRUE, the function returns the extra plots (W) only.
 #' @export
 
 

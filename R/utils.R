@@ -61,6 +61,7 @@ add_report_template <- function() {
 
 #' Remove white spaces and combine text
 #' @description This function removes white spaces and combines text.
+#' @param input_vector A character vector.
 #' @export
 
 remove_and_combine <- function(input_vector) {
@@ -79,6 +80,7 @@ remove_and_combine <- function(input_vector) {
 #' Test if String is HTML
 #' @description This function tests if the input is HTML. It uses the
 #'  `xml2` package to parse the input as HTML.
+#' @param x A character string
 #' @export
 
 
@@ -92,5 +94,7 @@ is_html <- function(x) {
     FALSE  # If there's an error, it's not HTML
   })
 }
+
+
 
 

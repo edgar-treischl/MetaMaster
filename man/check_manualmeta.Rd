@@ -6,9 +6,6 @@
 \usage{
 check_manualmeta()
 }
-\arguments{
-\item{path}{Path to the Excel file with metadata}
-}
 \value{
 A message from the DB_send function indicating if the table was
  successfully uploaded to the database

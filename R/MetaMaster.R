@@ -4,7 +4,7 @@
 
 
 
-#From Gisla To Master
+
 #' Get the templates
 #' @description Some text in LimeSurvey are stored in HTML format.
 #'  This helper function extracts it from the HTML code.
@@ -13,12 +13,12 @@
 
 testrun <- function(export = FALSE) {
 
-  mastertemplatesList <- get_masters()
+  #mastertemplatesList <- get_masters()
   #exclude <- c(-17, -18, -19, -68, -69, -70, -71)
 
-  metadf <- purrr::map2(mastertemplatesList$template,
-                        mastertemplatesList$master,
-                        joinMetaGisela, .progress = TRUE)
+  # metadf <- purrr::map2(mastertemplatesList$template,
+  #                       mastertemplatesList$master,
+  #                       joinMetaGisela, .progress = TRUE)
 
 
   #metadf <- metadf |> dplyr::bind_rows()

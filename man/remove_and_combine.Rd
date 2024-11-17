@@ -6,6 +6,9 @@
 \usage{
 remove_and_combine(input_vector)
 }
+\arguments{
+\item{input_vector}{A character vector.}
+}
 \description{
 This function removes white spaces and combines text.
 }

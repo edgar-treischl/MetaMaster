@@ -172,7 +172,7 @@ Limer_GetMasterQuesions <- function(id, name) {
 
 
 
-#limer_NEW(id = df$sid[31], name = df$surveyls_title[31])
+#Limer_GetMasterQuesions(id = df$sid[31], name = df$surveyls_title[31])
 
 #purrr::map2(df$sid, df$surveyls_title, limer_NEW)
 

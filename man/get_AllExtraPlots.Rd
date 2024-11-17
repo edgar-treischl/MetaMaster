@@ -6,6 +6,11 @@
 \usage{
 get_AllExtraPlots(export = FALSE, filter = FALSE)
 }
+\arguments{
+\item{export}{Logical. If TRUE, the function will export the result.}
+
+\item{filter}{Logical. If TRUE, the function returns the extra plots (W) only.}
+}
 \description{
 This is a wrapper function that returns all extra plots based
  on the report_meta_dev data.
