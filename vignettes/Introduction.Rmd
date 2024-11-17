@@ -29,10 +29,10 @@ In order to use the package, you may wish to adjust the parameters for the LimeS
 
 ``` yaml
 default:
-  tmp.server: "semiotikon"
-  api_url: "http://www.semiotikon.de/lime2/index.php/admin/remotecontrol"
-  tmp.user: "limeremote"
-  tmp.credential: "IWBD3SnMfxcu"
+  tmp.server: "Name"
+  api_url: "URL"
+  tmp.user: "user"
+  tmp.credential: "Password"
 ```
 
 To use the production parameters (OES server), set the `R_CONFIG_ACTIVE` to `production`.
@@ -51,7 +51,7 @@ library(MetaMaster)
 
 #Get master template for all school types
 #mastertemplatesdf <- get_MasterTemplate()
-mastertemplatesdf <- Limer_GetMasterTemplate(template = FALSE)
+mastertemplatesdf <- Limer_GetMasterTemplates(template = FALSE)
 head(mastertemplatesdf)
 ```
 
@@ -59,15 +59,13 @@ The latter is used to retrieve the meta data for all master templates: The `get_
 
 ```{r, eval=FALSE}
 #Get metadata for a specific master template
-get_MasterMeta(id = "197865",
-               name = "master_01_bfr_allg_gm_elt_00_2022_v4")
+Limer_GetMasterQuesions(id = "197865", name = "master_01_bfr_allg_gm_elt_00_2022_v4")
 ```
 
 The `get_AllMasterMeta()` is a wrapper function for `get_MasterMeta` that returns the metadata for all master templates in LimeSurvey. With the parameter `export = TRUE` the function exports the data as an Excel file.
 
 ```{r, eval = FALSE}
 #Get metadata for all master templates
-#get_AllMasterMeta(export = TRUE)
 ```
 
 This file is used to create the meta data for all master templates. 
