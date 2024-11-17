@@ -1,4 +1,4 @@
-.onAttach <- function(libname, pkgname){
+.onAttach <- function(libname, pkgname){# nocov start
   if (interactive()) {
     packageStartupMessage(
       paste(
@@ -25,4 +25,4 @@
       )
     )
   }
-}
+} # nocov end

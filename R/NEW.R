@@ -44,9 +44,9 @@ Limer_GetMasterQuesions <- function(id, name) {
   invalid_values <- questiontypes[!questiontypes %in% allowed_types]
 
   # If there are any invalid values, abort with a custom message
-  if (length(invalid_values) > 0) {
-    cli::cli_abort(paste("Invalid value(s) found in questiontypes:",
-                     paste(invalid_values, collapse = ", ")))
+  if (length(invalid_values) > 0) { # nocov
+    cli::cli_abort(paste("Invalid value(s) found in questiontypes:", # nocov
+                     paste(invalid_values, collapse = ", "))) # nocov
   }
 
 
@@ -126,17 +126,8 @@ Limer_GetMasterQuesions <- function(id, name) {
     checkhtml <- is_html(questions[1])
 
 
-    # q1 <- rvest::minimal_html(questions[1]) |>
-    #   rvest::html_elements("span") |>
-    #   rvest::html_elements("b") |>
-    #   rvest::html_text2()
-
-    #questions_rest <- questions[-1]
-
     q_rest <- purrr::map(questions, extract_html) |>
       purrr::flatten_chr()
-
-    #q_rest <- q_rest[q_rest != " "]
 
     questions <- stringr::str_trim(q_rest)
 

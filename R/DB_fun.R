@@ -8,7 +8,7 @@
 
 DB_send <- function(table, name) {
 
-  get <- config::get()
+  get <- config::get(file = here::here("config.yml"))
   db <- get$db
   db_host <- get$db_host
   db_port <- get$db_port
@@ -115,6 +115,8 @@ DB_MetaUpdate <- function(path) {
 
 
 DB_Table <- function(table = NULL) {
+  #config_path <- normalizePath(here::here("config.yml"))
+  #get <- config::get(file = config_path)
   get <- config::get()
   db <- get$db
   db_host <- get$db_host

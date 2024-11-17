@@ -70,6 +70,7 @@ Limer_GetQlist <- function(id) {
 
 
 
+
 #' Get Question Title, Plot Name, and Question Text by Question ID
 #' @description This function retrieves the question title, plot name,
 #'  and question text for a given question ID.
@@ -138,8 +139,5 @@ Limer_getQuestionsbyQID <- function(qid) {
 
 
 #Limer_getQuestionsbyQID(qid = "3307")
-
-
-
 
 
