@@ -79,17 +79,42 @@
 <div class="section level2">
 <h2 id="build-meta-data">Build meta data<a class="anchor" aria-label="anchor" href="#build-meta-data"></a>
 </h2>
-<p>The <code><a href="reference/Limer_GetMaster.html">Limer_GetMaster()</a></code> function returns the master template from LimeSurvey. The function returns all survey templates declared as <code>master_</code> in the limesurvey instance. Moreover, set the <code>template</code> argument to <code>TRUE</code> to get the survey templates. The latter comes from the meta to data list.</p>
+<p>The <code>Limer_GetMaster()</code> function returns the master template from LimeSurvey. The function returns all survey templates declared as <code>master_</code> in the limesurvey instance. Moreover, set the <code>template</code> argument to <code>TRUE</code> to get the survey templates. The latter comes from the meta to data list.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Let's get started</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MetaMaster</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_CONFIG_ACTIVE <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Limer_GetMaster.html">Limer_GetMaster</a></span><span class="op">(</span>template <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
-<p>Since we know the master template, we can retrieve survey question via the API. The function <code><a href="reference/get_MasterMeta.html">get_MasterMeta()</a></code> returns the survey questions of a given master template. The function takes the survey ID (<code>sid</code>) and the name of the survey (<code>name</code>) as arguments.</p>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Limer_GetMasterTemplates.html">Limer_GetMasterTemplates</a></span><span class="op">(</span>template <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># A tibble: 6 × 3</span></span>
+<span><span class="co">#      sid surveyls_title                       template                       </span></span>
+<span><span class="co">#    &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                          </span></span>
+<span><span class="co"># 1 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_gm_elt_00_2022_p1</span></span>
+<span><span class="co"># 2 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_gm_elt_00_2022_p3</span></span>
+<span><span class="co"># 3 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_rs_elt_00_2022_p1</span></span>
+<span><span class="co"># 4 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_beru_ws_elt_00_2022_p1</span></span>
+<span><span class="co"># 5 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p2</span></span>
+<span><span class="co"># 6 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p4</span></span></code></pre></div>
+<p>Since we know the master template, we can retrieve survey question via the API. The function <code>get_MasterMeta()</code> returns the survey questions of a given master template. The function takes the survey ID (<code>sid</code>) and the name of the survey (<code>name</code>) as function argument.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/get_MasterMeta.html">get_MasterMeta</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">sid</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, </span>
-<span>               name <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">surveyls_title</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/Limer_GetMasterQuesions.html">Limer_GetMasterQuesions</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">sid</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, name <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">surveyls_title</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># A tibble: 29 × 5</span></span>
+<span><span class="co">#    surveyID template                             plot  variable  text                   </span></span>
+<span><span class="co">#       &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;                  </span></span>
+<span><span class="co">#  1   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B131W124E An dieser Schule herrs…</span></span>
+<span><span class="co">#  2   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132a     Mein Sohn/meine Tochte…</span></span>
+<span><span class="co">#  3   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132c     Die Räume der Schule b…</span></span>
+<span><span class="co">#  4   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B133b     Die Schule ist ein sic…</span></span>
+<span><span class="co">#  5   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125a An dieser Schule wird …</span></span>
+<span><span class="co">#  6   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125b Wenn es Konflikte gibt…</span></span>
+<span><span class="co">#  7   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B333      Mein Sohn/meine Tochte…</span></span>
+<span><span class="co">#  8   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A632e     Mein Sohn/meine Tochte…</span></span>
+<span><span class="co">#  9   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A633e     Mein Sohn/meine Tochte…</span></span>
+<span><span class="co"># 10   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A631      Mein Sohn/meine Tochte…</span></span>
+<span><span class="co"># ℹ 19 more rows</span></span>
+<span><span class="co"># ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>Moreover, the function <code><a href="reference/testrun.html">testrun()</a></code> takes the input of the list of survey templates and master templates and merges the results as a list.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/testrun.html">testrun</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -98,7 +123,92 @@
 <code class="sourceCode R"><span><span class="co">#Join the meta data with the LimeSurvey API for all survey and master templates</span></span>
 <span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">sid</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span>
 <span>            <span class="va">df</span><span class="op">$</span><span class="va">surveyls_title</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span>
-<span>            <span class="va">get_MasterMeta</span><span class="op">)</span></span></code></pre></div>
+<span>            <span class="va">Limer_GetMasterQuesions</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># [[1]]</span></span>
+<span><span class="co"># # A tibble: 29 × 5</span></span>
+<span><span class="co">#    surveyID template                             plot  variable  text                                   </span></span>
+<span><span class="co">#       &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;                                  </span></span>
+<span><span class="co">#  1   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B131W124E An dieser Schule herrscht ein freundli…</span></span>
+<span><span class="co">#  2   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132a     Mein Sohn/meine Tochter fühlt sich an …</span></span>
+<span><span class="co">#  3   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132c     Die Räume der Schule bieten eine angen…</span></span>
+<span><span class="co">#  4   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B133b     Die Schule ist ein sicherer Ort.       </span></span>
+<span><span class="co">#  5   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125a An dieser Schule wird konsequent gegen…</span></span>
+<span><span class="co">#  6   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125b Wenn es Konflikte gibt, trägt die Schu…</span></span>
+<span><span class="co">#  7   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B333      Mein Sohn/meine Tochter lernt an diese…</span></span>
+<span><span class="co">#  8   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A632e     Mein Sohn/meine Tochter lernt in der S…</span></span>
+<span><span class="co">#  9   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A633e     Mein Sohn/meine Tochter erfährt in der…</span></span>
+<span><span class="co"># 10   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A631      Mein Sohn/meine Tochter lernt in der S…</span></span>
+<span><span class="co"># # ℹ 19 more rows</span></span>
+<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># [[2]]</span></span>
+<span><span class="co"># # A tibble: 29 × 5</span></span>
+<span><span class="co">#    surveyID template                             plot  variable  text                                   </span></span>
+<span><span class="co">#       &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;                                  </span></span>
+<span><span class="co">#  1   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B131W124E An dieser Schule herrscht ein freundli…</span></span>
+<span><span class="co">#  2   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132a     Mein Sohn/meine Tochter fühlt sich an …</span></span>
+<span><span class="co">#  3   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132c     Die Räume der Schule bieten eine angen…</span></span>
+<span><span class="co">#  4   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B133b     Die Schule ist ein sicherer Ort.       </span></span>
+<span><span class="co">#  5   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125a An dieser Schule wird konsequent gegen…</span></span>
+<span><span class="co">#  6   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125b Wenn es Konflikte gibt, trägt die Schu…</span></span>
+<span><span class="co">#  7   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B333      Mein Sohn/meine Tochter lernt an diese…</span></span>
+<span><span class="co">#  8   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A632e     Mein Sohn/meine Tochter lernt in der S…</span></span>
+<span><span class="co">#  9   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A633e     Mein Sohn/meine Tochter erfährt in der…</span></span>
+<span><span class="co"># 10   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A631      Mein Sohn/meine Tochter lernt in der S…</span></span>
+<span><span class="co"># # ℹ 19 more rows</span></span>
+<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># [[3]]</span></span>
+<span><span class="co"># # A tibble: 29 × 5</span></span>
+<span><span class="co">#    surveyID template                             plot  variable  text                                   </span></span>
+<span><span class="co">#       &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;                                  </span></span>
+<span><span class="co">#  1   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B131W124E An dieser Schule herrscht ein freundli…</span></span>
+<span><span class="co">#  2   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132a     Mein Sohn/meine Tochter fühlt sich an …</span></span>
+<span><span class="co">#  3   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132c     Die Räume der Schule bieten eine angen…</span></span>
+<span><span class="co">#  4   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B133b     Die Schule ist ein sicherer Ort.       </span></span>
+<span><span class="co">#  5   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125a An dieser Schule wird konsequent gegen…</span></span>
+<span><span class="co">#  6   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125b Wenn es Konflikte gibt, trägt die Schu…</span></span>
+<span><span class="co">#  7   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B333      Mein Sohn/meine Tochter lernt an diese…</span></span>
+<span><span class="co">#  8   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A632e     Mein Sohn/meine Tochter lernt in der S…</span></span>
+<span><span class="co">#  9   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A633e     Mein Sohn/meine Tochter erfährt in der…</span></span>
+<span><span class="co"># 10   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A631      Mein Sohn/meine Tochter lernt in der S…</span></span>
+<span><span class="co"># # ℹ 19 more rows</span></span>
+<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># [[4]]</span></span>
+<span><span class="co"># # A tibble: 29 × 5</span></span>
+<span><span class="co">#    surveyID template                             plot  variable  text                                   </span></span>
+<span><span class="co">#       &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;                                  </span></span>
+<span><span class="co">#  1   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B131W124E An dieser Schule herrscht ein freundli…</span></span>
+<span><span class="co">#  2   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132a     Mein Sohn/meine Tochter fühlt sich an …</span></span>
+<span><span class="co">#  3   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132c     Die Räume der Schule bieten eine angen…</span></span>
+<span><span class="co">#  4   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B133b     Die Schule ist ein sicherer Ort.       </span></span>
+<span><span class="co">#  5   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125a An dieser Schule wird konsequent gegen…</span></span>
+<span><span class="co">#  6   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125b Wenn es Konflikte gibt, trägt die Schu…</span></span>
+<span><span class="co">#  7   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B333      Mein Sohn/meine Tochter lernt an diese…</span></span>
+<span><span class="co">#  8   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A632e     Mein Sohn/meine Tochter lernt in der S…</span></span>
+<span><span class="co">#  9   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A633e     Mein Sohn/meine Tochter erfährt in der…</span></span>
+<span><span class="co"># 10   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A631      Mein Sohn/meine Tochter lernt in der S…</span></span>
+<span><span class="co"># # ℹ 19 more rows</span></span>
+<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># [[5]]</span></span>
+<span><span class="co"># # A tibble: 38 × 5</span></span>
+<span><span class="co">#    surveyID template                             plot  variable  text                                   </span></span>
+<span><span class="co">#       &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;                                  </span></span>
+<span><span class="co">#  1   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E01   B131W124E An dieser Schule herrscht ein freundli…</span></span>
+<span><span class="co">#  2   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E01   B132a     Mein Sohn/meine Tochter fühlt sich an …</span></span>
+<span><span class="co">#  3   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E01   B132c     Die Räume der Schule bieten eine angen…</span></span>
+<span><span class="co">#  4   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E01   B133b     Die Schule ist ein sicherer Ort.       </span></span>
+<span><span class="co">#  5   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E02   B334W125a An dieser Schule wird konsequent gegen…</span></span>
+<span><span class="co">#  6   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E02   B334W125b Wenn es Konflikte gibt, trägt die Schu…</span></span>
+<span><span class="co">#  7   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E02   B333      Mein Sohn/meine Tochter lernt an diese…</span></span>
+<span><span class="co">#  8   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E03   A632e     Mein Sohn/meine Tochter lernt in der S…</span></span>
+<span><span class="co">#  9   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E03   A633e     Mein Sohn/meine Tochter erfährt in der…</span></span>
+<span><span class="co"># 10   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E03   A631      Mein Sohn/meine Tochter lernt in der S…</span></span>
+<span><span class="co"># # ℹ 28 more rows</span></span>
+<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>Share the results of the test run with the <code><a href="reference/send_testrun.html">send_testrun()</a></code> function. This function sends the results of the test run via email.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Send the test run</span></span>

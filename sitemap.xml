@@ -9,9 +9,9 @@
 <url><loc>/reference/DB_Table.html</loc></url>
 <url><loc>/reference/DB_send.html</loc></url>
 <url><loc>/reference/Limer_DeleteSurvey.html</loc></url>
-<url><loc>/reference/Limer_GetMaster.html</loc></url>
 <url><loc>/reference/Limer_GetMasterData.html</loc></url>
 <url><loc>/reference/Limer_GetMasterQuesions.html</loc></url>
+<url><loc>/reference/Limer_GetMasterTemplates.html</loc></url>
 <url><loc>/reference/Limer_GetQlist.html</loc></url>
 <url><loc>/reference/Limer_UploadTemplates.html</loc></url>
 <url><loc>/reference/Limer_getQuestionsbyQID.html</loc></url>
@@ -29,7 +29,6 @@
 <url><loc>/reference/extract_html.html</loc></url>
 <url><loc>/reference/get_AllExtraPlots.html</loc></url>
 <url><loc>/reference/get_ExtraPlots.html</loc></url>
-<url><loc>/reference/get_MasterMeta.html</loc></url>
 <url><loc>/reference/get_responses.html</loc></url>
 <url><loc>/reference/get_session_key.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
