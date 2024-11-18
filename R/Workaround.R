@@ -1,9 +1,7 @@
 # library(MetaMaster)
-# Sys.setenv(R_CONFIG_ACTIVE = "test")
+# Sys.setenv(R_CONFIG_ACTIVE = "default")
 # #Get master template for all school types
 # LimeSurveytemplates <- Limer_GetMasterTemplates()
-
-
 
 
 # library(readxl)
@@ -11,6 +9,19 @@
 #                                sheet = "reports")
 #
 # DB_send(reports, name = "reports")
+
+
+#' Workaround (Soft depreciated)
+#' @description This helper function matches the manual meta data with master
+#'  templates from LimeSurvey. This way, the function check which variables
+#'  of the manual meta data can be merged. Furthermore, the function adds the
+#'  plot name to the variable name. Once we get code, variable and names and
+#'  plot via the API, this function will be depreciated. Thus, this is a helper
+#'  function to create a running system without any manual steps.
+#' @param sid The survey id
+#' @param master_title The title of the master template
+#' @export
+
 
 
 workaround <- function(sid, master_title) {
@@ -102,14 +113,14 @@ workaround <- function(sid, master_title) {
 
 
   ##Export MasterGiselaLS as excel
-  writexl::write_xlsx(df, path = filename)
-  #return(MasterGiselaLS)
+  #writexl::write_xlsx(df, path = filename)
+  return(df)
 }
 
 
-# workaround(sid = LimeSurveytemplates$sid[22],
-#            master_title = LimeSurveytemplates$surveyls_title[22])
-# #
+# workaround(sid = LimeSurveytemplates$sid[1],
+#            master_title = LimeSurveytemplates$surveyls_title[1])
+#
 # purrr::map2(LimeSurveytemplates$sid,
 #             LimeSurveytemplates$surveyls_title,
 #             workaround, .progress = TRUE)
@@ -117,89 +128,71 @@ workaround <- function(sid, master_title) {
 
 
 
+#' Adjust the Titles of the LLS Limesurvey file
+#' @description This helper function adjusts the titles of the LLS Limesurvey file.
+#'  It extracts the title from the LLS File, matches it with Meta Data and
+#'  exports the new LLS file. By doing so, this helper function automates the
+#'  process of adjusting the titles of the LLS file. This function is a workaround
+#'  until we get the code, variable and plot name via the API. Once we get the
+#'  code, variable and plot name via the API, this function will be depreciated.
+#' @param file The LLS file
+#' @export
 
 
+AdjustLLSTitles <- function(file) {
+
+  #Read file
+  xml_file <- xml2::read_xml(file)
+
+  #Get the survey id
+  id <- xml2::xml_find_all(xml_file, "//surveyls_survey_id")
+  sid <- xml2::xml_text(id) |> unique()
+
+  #Get the master template
+  mastertmpl <- xml2::xml_find_all(xml_file, "//surveyls_title")
+  mastertmpl <- xml2::xml_text(mastertmpl) |> unique()
+  mastertmpl <- stringr::str_subset(mastertmpl, pattern = "^master_")
+  mastertmpl
+
+  #Get the title of a survey item
+  title <- xml2::xml_find_all(xml_file, "//title")
+
+  #Replace the title of the survey item with the title from the master template
+  master <- readxl::read_excel(here::here("automation_2024_11_18/master_01_bfr_allg_gm_elt_00_2022_v4.xlsx")) |>
+    dplyr::filter(template == mastertmpl)
+
+  #Create vectors with code and variable names
+  codes <- master$code |> unique()
+  codes <- stringr::str_sort(codes)
+
+  #New one
+  masterplots <- master$masterplots
+  masterplots <- c(codes, masterplots)
+
+  #Old one
+  oldvar <- c(codes, master$variable)
+
+  #Create a mapping
+  title_mapping <- setNames(masterplots, oldvar)
+
+  #Replace the title with the title from the master template
+  xml2::xml_text(title) <- purrr::map_chr(xml2::xml_text(title), ~ title_mapping[.])
+
+  #Save the modified XML file
+  limesurveyMod <- paste0("limesurvey_survey_", sid, ".lss")
+  cli::cli_alert_success(paste0("Export: ", limesurveyMod))
+  xml2::write_xml(xml_file, file = limesurveyMod)
 
 
+  # Limer_sendSurvey(lss = limesurveyMod,
+  #                  name = mastertemplate)
+}
 
 
-#Create new LimeSurvey Template###################################################
+lssfile <- list.files("automation_2024_11_18", pattern = ".lss", full.names = TRUE)
 
 
-# # masternew |>
-# #   dplyr::filter(variable == "Z1E") |>
-# #   dplyr::select(plot, variable, plot_old, masterplots)
-# #
-# #
-# # masternew |>
-# #   dplyr::filter(variable == "B131W124E") |>
-# #   dplyr::select(plot, variable, plot_old, masterplots)
-#
-#
-# master_tpl1 <- readr::read_delim("data/MasterTemplates/limesurvey_survey_197865.txt",
-#                                        delim = "\t", escape_double = FALSE,
-#                                        trim_ws = TRUE)
-#
-# master_tpl1 |> dplyr::filter(name == masternew$variable[1])
-# master_tpl1
-#
-# # master_tpl1 |>
-# #   dplyr::filter(class == "SQ") |>
-# #   dplyr::filter(language  == "de") |>
-# #   dplyr::select(name) |>
-# #   unique()
-#
-#
-# # #Replace the variable name in the master template with the new variable name
-# # master_tpl1$name <- stringr::str_replace_all(master_tpl1$name, pattern = masternew$variable[1],
-# #                          replacement = masternew$masterplots[1])
-#
-# # Create a named vector of replacements
-#
-# replacements <- setNames(masternew$masterplots, masternew$variable)
-#
-#
-# # Replace all patterns in master_tpl1$name using reduce
-# master_tpl1$nameNew <- purrr::reduce(names(replacements), function(x, pattern) {
-#   stringr::str_replace_all(x, pattern, replacements[pattern])
-# }, .init = master_tpl1$name)
-#
-#
-#
-# #View(master_tpl1)
-#
-#
-# test <- master_tpl1 |>
-#   dplyr::filter(class == "SQ") |>
-#   dplyr::filter(language  == "de") |>
-#   dplyr::select(name, nameNew)
-#
-# View(test)
-#
-# test <- master_tpl1 |>
-#   dplyr::filter(class == "SQ") |>
-#   dplyr::filter(language  == "de") |>
-#   dplyr::select(nameNew)
-#
-#
-#
-#
-# dplyr::setdiff(test$nameNew, masternew$masterplots)
-#
-# dplyr::union(master_tpl1$nameNew, master_tpl1$name)
-#
-#
-#
-#
-# test <- master_tpl1 |>
-#   dplyr::select(name, nameNew)
-#
-#
-# View(test)
-
-
-
-
+#AdjustLLSTitles(file = lssfile)
 
 
 
