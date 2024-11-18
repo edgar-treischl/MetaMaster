@@ -25,58 +25,17 @@ The goal of the MetaMaster package is to create meta data for LimeSurvey which a
 
 ## Preparation steps
 
-In order to use the package, you may wish to adjust the parameters for the LimeSurvey API (user name, LimeSurvey instance, etc.). All parameters that are necessary to retrieve data from a test or production LimeSurvey instance are saved in the `config.yml` file. The next console shows the default parameters for the test instance.
 
-``` yaml
-default:
-  tmp.server: "Name"
-  api_url: "URL"
-  tmp.user: "user"
-  tmp.credential: "Password"
-```
 
-To use the production parameters (OES server), set the `R_CONFIG_ACTIVE` to `production`.
 
-```{r, eval=FALSE}
-Sys.setenv(R_CONFIG_ACTIVE = "test")
-```
 
 ## Meta Master in Action
 
-The `Limer_GetMaster()` function returns the name of master template. If the parameter `template` is missing, the function returns the all master templates.
-
-```{r, eval=FALSE}
-#Load the package
-library(MetaMaster)
-
-#Get master template for all school types
-#mastertemplatesdf <- get_MasterTemplate()
-mastertemplatesdf <- Limer_GetMasterTemplates(template = FALSE)
-head(mastertemplatesdf)
-```
-
-The latter is used to retrieve the meta data for all master templates: The `get_MasterMeta()` function returns the metadata for a specific master template. As the next console underlines, it needs a `surveyID` and `name` of the survey. The function returns variable names and text from the LimeSurvey API.
-
-```{r, eval=FALSE}
-#Get metadata for a specific master template
-Limer_GetMasterQuesions(id = "197865", name = "master_01_bfr_allg_gm_elt_00_2022_v4")
-```
-
-The `get_AllMasterMeta()` is a wrapper function for `get_MasterMeta` that returns the metadata for all master templates in LimeSurvey. With the parameter `export = TRUE` the function exports the data as an Excel file.
-
-```{r, eval = FALSE}
-#Get metadata for all master templates
-```
-
-This file is used to create the meta data for all master templates. 
 
 
 
 
 
-
-
-If a report template contains variables names that cannot be matched with the manual meta data, the function only appends variables names from LimeSurvey that cannot be matched. Thus, the result from `create_metadata` shows templates without errors (all columns are filled) and templates with errors (only variables names and text are listed). For example, the last console showed that the template `rpt_elt_p1` contains errors. The file shows which variables cannot be matched.
 
 
 
