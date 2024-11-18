@@ -5,6 +5,7 @@
 <url><loc>/articles/index.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
+<url><loc>/reference/AdjustLLSTitles.html</loc></url>
 <url><loc>/reference/DB_MetaUpdate.html</loc></url>
 <url><loc>/reference/DB_Table.html</loc></url>
 <url><loc>/reference/DB_send.html</loc></url>
@@ -39,5 +40,6 @@
 <url><loc>/reference/surveyConnectLs.html</loc></url>
 <url><loc>/reference/testrun.html</loc></url>
 <url><loc>/reference/update_allMastersLimeSurvey.html</loc></url>
+<url><loc>/reference/workaround.html</loc></url>
 </urlset>
 
