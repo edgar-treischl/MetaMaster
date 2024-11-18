@@ -10,6 +10,11 @@ navbar:
     - intro
     - reference
     - articles
+    - news
+news:
+  file: NEWS.md
+  title: "News"
+  one_page: true
 authors:
   Edgar Treischl:
     href: https://www.edgar-treischl.de/
