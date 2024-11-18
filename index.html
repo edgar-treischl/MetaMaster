@@ -67,7 +67,7 @@
 </div>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>The goal of the MetaMaster package is to create meta data for LimeSurvey which are reproducible, tested, and in consequence error-free. The package provides functions to get the names of the master templates, the data of the master template, and to create new surveys based on a template.</p>
+<p>The goal of the MetaMaster package is to create meta data for LimeSurvey which are reproducible, tested, and in consequence error-free. The package provides functions to retrieve data from the LimeSurvey API: Get template names, survey questions, and text. Furthermore, the packages implements function to perform consistency checks, which also increase the reliablility of the meta data and it implements HTML methods, for example, to upload survey templates via the API.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -78,10 +78,23 @@
 <span>                       dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="build-meta-data">Build meta data<a class="anchor" aria-label="anchor" href="#build-meta-data"></a>
+<h2 id="set-up">Set up<a class="anchor" aria-label="anchor" href="#set-up"></a>
 </h2>
-<p>The <code>Limer_GetMaster()</code> function returns the master template from LimeSurvey. The function returns all survey templates declared as <code>master_</code> in the limesurvey instance. Moreover, set the <code>template</code> argument to <code>TRUE</code> to get the survey templates. The latter comes from the meta to data list.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>In order to use the package, you must provide credentials and other parameter to get access to the LimeSurvey API (user name, LimeSurvey instance, etc.). The MetaMaster packages relies on the <code>conig</code> packages to get access to these parameters. All parameters that are necessary to retrieve data need to be available in the <code>config.yml</code> file of your working directory. The next console shows an example file.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">default</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.server</span><span class="kw">:</span><span class="at"> </span><span class="st">"Name"</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="at">  </span><span class="fu">api_url</span><span class="kw">:</span><span class="at"> </span><span class="st">"URL"</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.user</span><span class="kw">:</span><span class="at"> </span><span class="st">"user"</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.credential</span><span class="kw">:</span><span class="at"> </span><span class="st">"Password"</span></span></code></pre></div>
+<p>By default, the config package returns the default parameters. Suppose the config file has a <code>default</code> and a <code>test</code> section. To use paramters of the <code>test</code> section, you need to set the <code>R_CONFIG_ACTIVE</code> to <code>test</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_CONFIG_ACTIVE <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="get-master">Get Master<a class="anchor" aria-label="anchor" href="#get-master"></a>
+</h2>
+<p>Let us first retrieve the master templates from LimeSurvey. The <code><a href="reference/Limer_GetMasterTemplates.html">Limer_GetMasterTemplates()</a></code> function returns the survey ID (<code>sid</code>) and the name of the survey (<code>surveyls_title</code>) for all the master template from Lime Survey. The function picks survey templates which name start with the string <code>master_</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Let's get started</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MetaMaster</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_CONFIG_ACTIVE <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
@@ -97,8 +110,9 @@
 <span><span class="co"># 4 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_beru_ws_elt_00_2022_p1</span></span>
 <span><span class="co"># 5 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p2</span></span>
 <span><span class="co"># 6 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p4</span></span></code></pre></div>
-<p>Since we know the master template, we can retrieve survey question via the API. The function <code>get_MasterMeta()</code> returns the survey questions of a given master template. The function takes the survey ID (<code>sid</code>) and the name of the survey (<code>name</code>) as function argument.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p>As the last output highlighted, the function adds corresponding the survey templates if the <code>template</code> argument is set to <code>TRUE</code>.</p>
+<p>Now that we know the survey ID of a master template, we can retrieve survey questions and texts via the API. The function <code><a href="reference/Limer_GetMasterQuesions.html">Limer_GetMasterQuesions()</a></code> returns the plot, variable, and text for survey questions of a given master template. The function needs the survey ID (<code>sid</code>) and the name of the mastertemplate (<code>name</code>).</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/Limer_GetMasterQuesions.html">Limer_GetMasterQuesions</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">sid</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, name <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">surveyls_title</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># A tibble: 29 × 5</span></span>
@@ -117,13 +131,13 @@
 <span><span class="co"># ℹ 19 more rows</span></span>
 <span><span class="co"># ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>Moreover, the function <code><a href="reference/testrun.html">testrun()</a></code> takes the input of the list of survey templates and master templates and merges the results as a list.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/testrun.html">testrun</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>The latter is wrapper function around <code><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">purrr::map2()</a></code> and <code>joinMetaGisela()</code>, as the next console shows for the first five survey and master templates.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Join the meta data with the LimeSurvey API for all survey and master templates</span></span>
-<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">sid</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span>
-<span>            <span class="va">df</span><span class="op">$</span><span class="va">surveyls_title</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span>
+<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">sid</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>,</span>
+<span>            <span class="va">df</span><span class="op">$</span><span class="va">surveyls_title</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>,</span>
 <span>            <span class="va">Limer_GetMasterQuesions</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># [[1]]</span></span>
@@ -175,51 +189,31 @@
 <span><span class="co">#  9   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A633e     Mein Sohn/meine Tochter erfährt in der…</span></span>
 <span><span class="co"># 10   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A631      Mein Sohn/meine Tochter lernt in der S…</span></span>
 <span><span class="co"># # ℹ 19 more rows</span></span>
-<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># [[4]]</span></span>
-<span><span class="co"># # A tibble: 29 × 5</span></span>
-<span><span class="co">#    surveyID template                             plot  variable  text                                   </span></span>
-<span><span class="co">#       &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;                                  </span></span>
-<span><span class="co">#  1   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B131W124E An dieser Schule herrscht ein freundli…</span></span>
-<span><span class="co">#  2   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132a     Mein Sohn/meine Tochter fühlt sich an …</span></span>
-<span><span class="co">#  3   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132c     Die Räume der Schule bieten eine angen…</span></span>
-<span><span class="co">#  4   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B133b     Die Schule ist ein sicherer Ort.       </span></span>
-<span><span class="co">#  5   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125a An dieser Schule wird konsequent gegen…</span></span>
-<span><span class="co">#  6   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125b Wenn es Konflikte gibt, trägt die Schu…</span></span>
-<span><span class="co">#  7   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B333      Mein Sohn/meine Tochter lernt an diese…</span></span>
-<span><span class="co">#  8   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A632e     Mein Sohn/meine Tochter lernt in der S…</span></span>
-<span><span class="co">#  9   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A633e     Mein Sohn/meine Tochter erfährt in der…</span></span>
-<span><span class="co"># 10   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A631      Mein Sohn/meine Tochter lernt in der S…</span></span>
-<span><span class="co"># # ℹ 19 more rows</span></span>
-<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># [[5]]</span></span>
-<span><span class="co"># # A tibble: 38 × 5</span></span>
-<span><span class="co">#    surveyID template                             plot  variable  text                                   </span></span>
-<span><span class="co">#       &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;                                  </span></span>
-<span><span class="co">#  1   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E01   B131W124E An dieser Schule herrscht ein freundli…</span></span>
-<span><span class="co">#  2   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E01   B132a     Mein Sohn/meine Tochter fühlt sich an …</span></span>
-<span><span class="co">#  3   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E01   B132c     Die Räume der Schule bieten eine angen…</span></span>
-<span><span class="co">#  4   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E01   B133b     Die Schule ist ein sicherer Ort.       </span></span>
-<span><span class="co">#  5   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E02   B334W125a An dieser Schule wird konsequent gegen…</span></span>
-<span><span class="co">#  6   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E02   B334W125b Wenn es Konflikte gibt, trägt die Schu…</span></span>
-<span><span class="co">#  7   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E02   B333      Mein Sohn/meine Tochter lernt an diese…</span></span>
-<span><span class="co">#  8   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E03   A632e     Mein Sohn/meine Tochter lernt in der S…</span></span>
-<span><span class="co">#  9   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E03   A633e     Mein Sohn/meine Tochter erfährt in der…</span></span>
-<span><span class="co"># 10   943467 master_02_bfr_allg_gm_elt_01_2022_v4 E03   A631      Mein Sohn/meine Tochter lernt in der S…</span></span>
-<span><span class="co"># # ℹ 28 more rows</span></span>
 <span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>Share the results of the test run with the <code><a href="reference/send_testrun.html">send_testrun()</a></code> function. This function sends the results of the test run via email.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Send the test run</span></span>
 <span><span class="fu"><a href="reference/send_testrun.html">send_testrun</a></span><span class="op">(</span>sendto <span class="op">=</span> <span class="st">"john.doe@johndoe.com"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="send-and-delete">Send and Delete<a class="anchor" aria-label="anchor" href="#send-and-delete"></a>
+</h2>
+<p>The <code><a href="reference/Limer_sendSurvey.html">Limer_sendSurvey()</a></code> function sends a survey template to LimeSurvey. The function needs the path to the survey template and the name of the survey template. It expects the survey template to be in the LimeSurvey LSS format.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/Limer_sendSurvey.html">Limer_sendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"limesurveyMod.lss"</span>,</span>
+<span>                 name <span class="op">=</span> <span class="st">"mastertemplate"</span><span class="op">)</span></span></code></pre></div>
+<p>The function <code><a href="reference/Limer_sendSurveys.html">Limer_sendSurveys()</a></code> is a convenient wrapper around <code><a href="reference/Limer_sendSurvey.html">Limer_sendSurvey()</a></code>. It sends all survey templates in the working directory to LimeSurvey.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/Limer_sendSurveys.html">Limer_sendSurveys</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Finally, the <code><a href="reference/Limer_DeleteSurvey.html">Limer_DeleteSurvey()</a></code> function deletes a survey template from LimeSurvey. The function needs the survey ID of the survey template. Be careful, there is no way to restore a deleted survey template.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/Limer_DeleteSurvey.html">Limer_DeleteSurvey</a></span><span class="op">(</span>sid <span class="op">=</span> <span class="st">"123456"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="tbd">TBD<a class="anchor" aria-label="anchor" href="#tbd"></a>
 </h2>
 <p>Create a new file with the <code><a href="reference/update_allMastersLimeSurvey.html">update_allMastersLimeSurvey()</a></code> function. The latter runs <code>get_MasterTemplate()</code> which returns all masters templates and saves the result as an Excel file.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/Limer_GetMasterData.html">Limer_GetMasterData</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/buildMetaMaster.html">buildMetaMaster</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_11.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/send_testrun.html">send_testrun</a></span><span class="op">(</span>sendto <span class="op">=</span> <span class="st">"johndoe@doe.com"</span><span class="op">)</span></span></code></pre></div>

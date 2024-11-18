@@ -79,60 +79,10 @@ surveys based on a template.</p>
 <div class="section level2">
 <h2 id="preparation-steps">Preparation steps<a class="anchor" aria-label="anchor" href="#preparation-steps"></a>
 </h2>
-<p>In order to use the package, you may wish to adjust the parameters
-for the LimeSurvey API (user name, LimeSurvey instance, etc.). All
-parameters that are necessary to retrieve data from a test or production
-LimeSurvey instance are saved in the <code>config.yml</code> file. The
-next console shows the default parameters for the test instance.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">default</span><span class="kw">:</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.server</span><span class="kw">:</span><span class="at"> </span><span class="st">"Name"</span></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="at">  </span><span class="fu">api_url</span><span class="kw">:</span><span class="at"> </span><span class="st">"URL"</span></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.user</span><span class="kw">:</span><span class="at"> </span><span class="st">"user"</span></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.credential</span><span class="kw">:</span><span class="at"> </span><span class="st">"Password"</span></span></code></pre></div>
-<p>To use the production parameters (OES server), set the
-<code>R_CONFIG_ACTIVE</code> to <code>production</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_CONFIG_ACTIVE <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="meta-master-in-action">Meta Master in Action<a class="anchor" aria-label="anchor" href="#meta-master-in-action"></a>
 </h2>
-<p>The <code>Limer_GetMaster()</code> function returns the name of
-master template. If the parameter <code>template</code> is missing, the
-function returns the all master templates.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Load the package</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MetaMaster</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">#Get master template for all school types</span></span>
-<span><span class="co">#mastertemplatesdf &lt;- get_MasterTemplate()</span></span>
-<span><span class="va">mastertemplatesdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Limer_GetMasterTemplates.html">Limer_GetMasterTemplates</a></span><span class="op">(</span>template <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mastertemplatesdf</span><span class="op">)</span></span></code></pre></div>
-<p>The latter is used to retrieve the meta data for all master
-templates: The <code>get_MasterMeta()</code> function returns the
-metadata for a specific master template. As the next console underlines,
-it needs a <code>surveyID</code> and <code>name</code> of the survey.
-The function returns variable names and text from the LimeSurvey
-API.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Get metadata for a specific master template</span></span>
-<span><span class="fu"><a href="../reference/Limer_GetMasterQuesions.html">Limer_GetMasterQuesions</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"197865"</span>, name <span class="op">=</span> <span class="st">"master_01_bfr_allg_gm_elt_00_2022_v4"</span><span class="op">)</span></span></code></pre></div>
-<p>The <code>get_AllMasterMeta()</code> is a wrapper function for
-<code>get_MasterMeta</code> that returns the metadata for all master
-templates in LimeSurvey. With the parameter <code>export = TRUE</code>
-the function exports the data as an Excel file.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Get metadata for all master templates</span></span></code></pre></div>
-<p>This file is used to create the meta data for all master
-templates.</p>
-<p>If a report template contains variables names that cannot be matched
-with the manual meta data, the function only appends variables names
-from LimeSurvey that cannot be matched. Thus, the result from
-<code>create_metadata</code> shows templates without errors (all columns
-are filled) and templates with errors (only variables names and text are
-listed). For example, the last console showed that the template
-<code>rpt_elt_p1</code> contains errors. The file shows which variables
-cannot be matched.</p>
 </div>
 <div class="section level2">
 <h2 id="sent-via-api">Sent via API<a class="anchor" aria-label="anchor" href="#sent-via-api"></a>
@@ -140,7 +90,7 @@ cannot be matched.</p>
 <p>Finally, the package provides a function to create a new survey based
 on a master template. The <code>send_survey()</code> function needs the
 path to the master template and the name of the new survey.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Create a new survey</span></span>
 <span><span class="fu"><a href="../reference/Limer_sendSurvey.html">Limer_sendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"struktur_LimeSurvey.lss"</span>,</span>
 <span>                 name <span class="op">=</span> <span class="st">"SurveyName"</span><span class="op">)</span></span></code></pre></div>
