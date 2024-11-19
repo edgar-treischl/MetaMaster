@@ -1,4 +1,5 @@
-#' Extract Text from HTML
+#' Extract Text from HTML formated Survey Text
+#'
 #' @description Some text in LimeSurvey are stored in HTML format.
 #'  This helper function extracts it from the HTML code.
 #' @param input HTML code
@@ -14,57 +15,14 @@ extract_html <- function(input) {
 }
 
 
-#' Update all Masters LimeSurvey
-#' @description Some text in LimeSurvey are stored in HTML format.
-#'  This helper function extracts it from the HTML code.
-#' @export
-
-update_allMastersLimeSurvey <- function() {
-  allMasters <- get_MasterTemplate()
-  writexl::write_xlsx(allMasters, "data/allMastersLimeSurvey.xlsx")
-}
-
-#update_allMastersLimeSurvey()
-
-
-
-
-
-
-
-
-
-#' Add report template
-#' @description Bla bla
-
-
-add_report_template <- function() {
-
-  mastertmp <- DB_Table("master_to_template")
-
-
-  template <- mastertmp$template
-
-
-  report_template <- template |>
-    stringr::str_replace_all("tmpl_", "rpt_")
-
-
-  mastertmp$report_template <- report_template
-  mastertmp
-
-  #export to excel file
-
-  openxlsx::write.xlsx(mastertmp, here::here("data/master_to_template.xlsx"))
-
-}
-
-
-#add_report_template()
-
 #' Remove white spaces and combine text
-#' @description This function removes white spaces and combines text.
+#'
+#' @description Some master templates have white spaces in between words. This
+#'  function removes the white spaces and combines the text again.
 #' @param input_vector A character vector.
+#' @examples \dontrun{
+#  remove_and_combine(input_vector = "What   a difference  a day makes.")
+#' }
 #' @export
 
 remove_and_combine <- function(input_vector) {
@@ -77,17 +35,18 @@ remove_and_combine <- function(input_vector) {
   return(result)
 }
 
-#remove_and_combine(input_vector = "What   a difference a day makes.")
 
 
-#' Test if String is HTML
-#' @description This function tests if the input is HTML. It uses the
-#'  `xml2` package to parse the input as HTML.
+
+#' Test if a Character Vector is HTML Code
+#'
+#' @description Some, but not all texts in Lime Survey are formated as HTML.
+#'  This function uses the `xml2` package to parse the input as HTML.
 #' @param x A character string
+#' @examples \dontrun{
+#' extract_html(input = "Html code here")
+#' }
 #' @export
-
-
-# Function to check if a string is HTML
 is_html <- function(x) {
   tryCatch({
     # Try parsing the string as HTML
@@ -100,7 +59,12 @@ is_html <- function(x) {
 
 
 #' Create Test Schools
-#' @description This function creates test schools based on the master templates.
+#'
+#' @description This function creates a data frame to test all master templates.
+#'  It creates example surveys for each master template to upload in a test environment.
+#' @examples \dontrun{
+#' create_TestSchools()
+#' }
 #' @export
 
 create_TestSchools <- function() {
@@ -171,4 +135,4 @@ create_TestSchools <- function() {
 }
 
 
-#create_TestSchools()
+
