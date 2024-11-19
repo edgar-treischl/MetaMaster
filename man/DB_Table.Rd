@@ -16,3 +16,9 @@ A data frame with the table data or a list of all available tables in the databa
 This function fetches a table from the database and returns it as a data frame.
  If no table is specified, it returns a list of all available tables in the database.
 }
+\examples{
+\dontrun{
+#DB_Table()
+DB_Table(table = "master_to_template")
+}
+}

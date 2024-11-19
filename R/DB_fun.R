@@ -1,8 +1,12 @@
 #' Send a Table to the Database
-#' @description This function send a table to the database from a data frame.
+#'
+#' @description This function send a table to the database.
 #' @param table Data frame to be uploaded to the database
 #' @param name Name of the table in the database
 #' @return A message indicating if the table was successfully uploaded to the database
+#' @examples \dontrun{
+#' DB_send(table = readxl::read_excel("myfile.xlsx"), name = "master_to_template")
+#' }
 #' @export
 
 
@@ -50,18 +54,21 @@ DB_send <- function(table, name) {
 }
 
 
-# DB_send(table = readxl::read_excel("data/master_to_template.xlsx"),
-#         name = "master_to_template")
+
 
 
 
 
 #' Upload Metadata to the Database
+#'
 #' @description This function reads an Excel file with metadata and uploads
 #'  each sheet as a table in the database.
 #' @param path Path to the Excel file with metadata
 #' @return A message from the DB_send function indicating if the table was
 #'  successfully uploaded to the database
+#' @examples \dontrun{
+#' DB_MetaUpdate(path = "data/report_meta_dev.xlsx")
+#' }
 #' @export
 
 
@@ -102,15 +109,18 @@ DB_MetaUpdate <- function(path) {
 
 
 
-#DB_MetaUpdate(path = "data/report_meta_dev.xlsx")
-
 
 
 #' Get a Table from the Database
+#'
 #' @description This function fetches a table from the database and returns it as a data frame.
 #'  If no table is specified, it returns a list of all available tables in the database.
 #' @param table The name of the table to fetch from the database
 #' @return A data frame with the table data or a list of all available tables in the database
+#' @examples \dontrun{
+#' #DB_Table()
+#' DB_Table(table = "master_to_template")
+#' }
 #' @export
 
 
@@ -162,8 +172,7 @@ DB_Table <- function(table = NULL) {
 
 }
 
-#DB_Table()
-#DB_Table(table = "master_to_template")
+
 
 
 

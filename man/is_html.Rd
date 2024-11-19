@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{is_html}
 \alias{is_html}
-\title{Test if String is HTML}
+\title{Test if a Character Vector is HTML Code}
 \usage{
 is_html(x)
 }
@@ -10,6 +10,11 @@ is_html(x)
 \item{x}{A character string}
 }
 \description{
-This function tests if the input is HTML. It uses the
- `xml2` package to parse the input as HTML.
+Some, but not all texts in Lime Survey are formated as HTML.
+ This function uses the `xml2` package to parse the input as HTML.
+}
+\examples{
+\dontrun{
+extract_html(input = "Html code here")
+}
 }

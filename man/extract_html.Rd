@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{extract_html}
 \alias{extract_html}
-\title{Extract Text from HTML}
+\title{Extract Text from HTML formated Survey Text}
 \usage{
 extract_html(input)
 }

@@ -15,5 +15,10 @@ DB_send(table, name)
 A message indicating if the table was successfully uploaded to the database
 }
 \description{
-This function send a table to the database from a data frame.
+This function send a table to the database.
+}
+\examples{
+\dontrun{
+DB_send(table = readxl::read_excel("myfile.xlsx"), name = "master_to_template")
+}
 }

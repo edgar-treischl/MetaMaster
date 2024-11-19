@@ -1,8 +1,9 @@
-
-#' Send results of a test run via Mail
-#' @description This function sends the results of a test run via mail to a
-#'  specified email address. It expects a file named "TestRun_YYYY_MM_DD.xlsx".
-#' @param sendto The email address to send the test run to
+#' Send Test Results
+#' @description This function send the test results to the specified email address.
+#' @param sendto The recipient of the email
+#' @examples \dontrun{
+#' send_testrun(sendto = 'john.doe@johndoe.com')
+#' }
 #' @export
 
 send_testrun <- function(sendto) {
@@ -31,7 +32,6 @@ send_testrun <- function(sendto) {
     blastula::add_attachment(file = "MetaMasterMeta.xlsx")
 
   # Send the email with smtp_send
-  #Gisela.Goegelein@isb.bayern.de
   email |>
     blastula::smtp_send(
       to = sendto,
@@ -43,4 +43,3 @@ send_testrun <- function(sendto) {
 }
 
 
-#send_testrun()

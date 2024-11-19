@@ -2,14 +2,18 @@
 % Please edit documentation in R/MetaMasterReport.R
 \name{send_testrun}
 \alias{send_testrun}
-\title{Send results of a test run via Mail}
+\title{Send Test Results}
 \usage{
 send_testrun(sendto)
 }
 \arguments{
-\item{sendto}{The email address to send the test run to}
+\item{sendto}{The recipient of the email}
 }
 \description{
-This function sends the results of a test run via mail to a
- specified email address. It expects a file named "TestRun_YYYY_MM_DD.xlsx".
+This function send the test results to the specified email address.
+}
+\examples{
+\dontrun{
+send_testrun(sendto = 'john.doe@johndoe.com')
+}
 }

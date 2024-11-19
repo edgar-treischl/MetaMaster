@@ -15,7 +15,17 @@ workaround(sid, master_title)
 This helper function matches the manual meta data with master
  templates from LimeSurvey. This way, the function check which variables
  of the manual meta data can be merged. Furthermore, the function adds the
- plot name to the variable name. Once we get code, variable and names and
+ plot to the variable name. Once we get code, variable and names and
  plot via the API, this function will be depreciated. Thus, this is a helper
- function to create a running system without any manual steps.
+ function to create a running system without manual steps.
+}
+\examples{
+\dontrun{
+workaround(sid = LimeSurveytemplates$sid[1],
+           master_title = LimeSurveytemplates$surveyls_title[1])
+
+purrr::map2(LimeSurveytemplates$sid,
+            LimeSurveytemplates$surveyls_title,
+            workaround, .progress = TRUE)
+}
 }

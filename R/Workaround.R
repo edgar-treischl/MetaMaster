@@ -4,25 +4,25 @@
 # LimeSurveytemplates <- Limer_GetMasterTemplates()
 
 
-# library(readxl)
-# reports <- read_excel("~/bycsdrive/Personal/OES_MetaData/report_meta_devE.xlsx",
-#                                sheet = "reports")
-#
-# DB_send(reports, name = "reports")
-
-
 #' Workaround (Soft depreciated)
+#'
 #' @description This helper function matches the manual meta data with master
 #'  templates from LimeSurvey. This way, the function check which variables
 #'  of the manual meta data can be merged. Furthermore, the function adds the
-#'  plot name to the variable name. Once we get code, variable and names and
+#'  plot to the variable name. Once we get code, variable and names and
 #'  plot via the API, this function will be depreciated. Thus, this is a helper
-#'  function to create a running system without any manual steps.
+#'  function to create a running system without manual steps.
 #' @param sid The survey id
 #' @param master_title The title of the master template
+#' @examples \dontrun{
+#' workaround(sid = LimeSurveytemplates$sid[1],
+#'            master_title = LimeSurveytemplates$surveyls_title[1])
+#'
+#' purrr::map2(LimeSurveytemplates$sid,
+#'             LimeSurveytemplates$surveyls_title,
+#'             workaround, .progress = TRUE)
+#' }
 #' @export
-
-
 
 workaround <- function(sid, master_title) {
   #Get master meta data from LimeSurvey
@@ -118,17 +118,13 @@ workaround <- function(sid, master_title) {
 }
 
 
-# workaround(sid = LimeSurveytemplates$sid[1],
-#            master_title = LimeSurveytemplates$surveyls_title[1])
-#
-# purrr::map2(LimeSurveytemplates$sid,
-#             LimeSurveytemplates$surveyls_title,
-#             workaround, .progress = TRUE)
 
 
 
 
-#' Adjust the Titles of the LLS Limesurvey file
+
+#' Swap the Titles of the LimeSurvey Files (LLS)
+#'
 #' @description This helper function adjusts the titles of the LLS Limesurvey file.
 #'  It extracts the title from the LLS File, matches it with Meta Data and
 #'  exports the new LLS file. By doing so, this helper function automates the
@@ -136,10 +132,14 @@ workaround <- function(sid, master_title) {
 #'  until we get the code, variable and plot name via the API. Once we get the
 #'  code, variable and plot name via the API, this function will be depreciated.
 #' @param file The LLS file
+#' @examples \dontrun{
+#' lssfile <- list.files("automation_2024_11_18", pattern = ".lss", full.names = TRUE)
+#' SwapLimesurveyTitles(file = lssfile)
+#' }
 #' @export
 
 
-AdjustLLSTitles <- function(file) {
+SwapLimesurveyTitles <- function(file) {
 
   #Read file
   xml_file <- xml2::read_xml(file)
@@ -189,10 +189,7 @@ AdjustLLSTitles <- function(file) {
 }
 
 
-lssfile <- list.files("automation_2024_11_18", pattern = ".lss", full.names = TRUE)
 
-
-#AdjustLLSTitles(file = lssfile)
 
 
 

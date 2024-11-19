@@ -10,5 +10,10 @@ remove_and_combine(input_vector)
 \item{input_vector}{A character vector.}
 }
 \description{
-This function removes white spaces and combines text.
+Some master templates have white spaces in between words. This
+ function removes the white spaces and combines the text again.
+}
+\examples{
+\dontrun{
+}
 }
