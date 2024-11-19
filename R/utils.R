@@ -2,6 +2,9 @@
 #' @description Some text in LimeSurvey are stored in HTML format.
 #'  This helper function extracts it from the HTML code.
 #' @param input HTML code
+#' @examples \dontrun{
+#' extract_html(input = "Html code here")
+#' }
 #' @export
 extract_html <- function(input) {
   rvest::minimal_html(input) |>
@@ -96,5 +99,76 @@ is_html <- function(x) {
 }
 
 
+#' Create Test Schools
+#' @description This function creates test schools based on the master templates.
+#' @export
+
+create_TestSchools <- function() {
+
+  if (!Sys.getenv("R_CONFIG_ACTIVE") == "test") {
+    cli::cli_abort("Please set the environment variable R_CONFIG_ACTIVE to 'test'")
+  }
 
 
+  #Get masterlist
+  mastertemplates <- Limer_GetMasterTemplates(template = TRUE)
+
+  #Get unique values of surveyls_title
+  mastertemplates <- mastertemplates |>
+    dplyr::distinct(surveyls_title, .keep_all = TRUE)
+
+
+  #list all files with ending .lss
+  lssfiles <- list.files(path = "Master_Templates", pattern = ".lss$", full.names = TRUE)
+
+  #extract digits from lssfiles
+  lss_digits <- gsub("\\D", "", lssfiles)
+
+  #make a dataframe with the lssfiles and the extracted digits
+  lssfiles_df <- data.frame(file = lssfiles, sid = as.integer(lss_digits))
+  lssfiles_df
+
+  #Leftjoin mastertemplates with lssfiles_df by sid
+  test_data <- mastertemplates |> dplyr::left_join(lssfiles_df, by = "sid")
+  test_data
+
+
+  #Extract school from template
+  template <- test_data$template
+
+  #Split after each _ and make a dataframe out of it
+  template_df <- data.frame(do.call(rbind, strsplit(template, "_")))
+
+  #combine x3 and x4
+  schooltype <- paste0(template_df$X3, "_", template_df$X4)
+
+  #Remove "allg_" from strings
+  school <- gsub("allg_", "", schooltype)
+  test_data$school <- school
+
+
+  #Create a new name that we will replace with SNR according to the school
+  test_data$new_name <- gsub("tmpl_", "", template)
+
+  #Replace strings in test_data$school
+  test_data$snr <- gsub("gm", "8934", test_data$school)
+  test_data$snr <- gsub("gs", "1208", test_data$snr)
+  test_data$snr <- gsub("zspf_fz", "6009", test_data$snr)
+  test_data$snr <- gsub("beru_fb", "0850", test_data$snr)
+  test_data$snr <- gsub("gy", "0001", test_data$snr)
+  test_data$snr <- gsub("ms", "2101", test_data$snr)
+  test_data$snr <- gsub("rs", "0423", test_data$snr)
+  test_data$snr <- gsub("beru_bq", "5018", test_data$snr)
+  test_data$snr <- gsub("zspf_bq", "5165", test_data$snr)
+
+  #Create a new column with the new name for test schools
+  test_data$test_school <- paste0(test_data$snr, "_", "202425_", test_data$new_name)
+
+  #Reduce output to needed stuff
+  #test_data <- test_data |> dplyr::select(-school, -new_name, -snr)
+  return(test_data)
+
+}
+
+
+#create_TestSchools()

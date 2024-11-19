@@ -15,25 +15,159 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-library(MetaMaster)
-Sys.setenv(R_CONFIG_ACTIVE = "default")
 ```
 
-The goal of the MetaMaster package is to create meta data for LimeSurvey which are reproducible, tested, and in consequence error-free. The package provides functions to get the names of the master templates, the data of the master template, and to create new surveys based on a template.
+
+Before you start, make sure that the config file is available, corresponding credentials and parameters are set and that environment variable is set to "test".
 
 
 
-## Preparation steps
-
-
-
+```{r}
+library(MetaMaster)
+Sys.setenv(R_CONFIG_ACTIVE = "test")
+```
 
 
 ## Meta Master in Action
 
+Use the `Limer_GetMasterData()` function to create the raw meta data. The function gets all master templates from the LimeSurvey API and retrieves for each master the survey question, id, so on. The function returns a tibble or exports the data if the `export` parameter is set to `TRUE`.
+
+```{r, eval=FALSE}
+#Get the survey questions for the first three master templates
+Limer_GetMasterData(export = TRUE)
+# ✔ Master Data exported.  
+```
+
+As the next console shows, the functions exports the raw meta data in the current working directory and appends today's date to the file name.
+ 
+```{r, eval=FALSE}
+master_raw <- readxl::read_excel("MasterData_2024_11_19.xlsx")
+head(master_raw)
+```
+
+We will create the meta data based on this input, but before we can do so, we need to consider all tables of the meta data. Based on the raw data we build the two most important tables of the meta data. The templates table contains information about the master, survey and the report template that will be used for the report.
 
 
 
+```{r, eval=FALSE}
+templates <- DB_Table("templates")
+templates
+
+# # A tibble: 121 × 8
+#    stype   ganztag type  surveys                         rprtpckg                        ubb   report_tmpl   timestamp          
+#    <chr>   <chr>   <chr> <chr>                           <chr>                           <chr> <chr>         <dttm>             
+#  1 beru_bq FALSE   ubb   tmpl_ubb_beru_bq_eva_00_2022_p1 tmpl_ubb_beru_bq_eva_00_2022_p1 TRUE  rpt_ubb_p1    2024-11-06 20:35:07
+#  2 beru_bq FALSE   leh   tmpl_bfr_beru_bq_leh_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_leh_bq_p1 2024-11-06 20:35:07
+#  3 beru_bq FALSE   elt   tmpl_bfr_beru_bq_elt_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_elt_bq_p1 2024-11-06 20:35:07
+#  4 beru_bq FALSE   all   NA                              NA                              FALSE rpt_all_bq_p1 2024-11-06 20:35:07
+#  5 beru_bq FALSE   aus   tmpl_bfr_beru_bq_aus_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_aus_bq_p1 2024-11-06 20:35:07
+#  6 beru_bq FALSE   sus   tmpl_bfr_beru_bq_sus_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_sus_bq_p1 2024-11-06 20:35:07
+#  7 beru_fb FALSE   ubb   tmpl_ubb_beru_fb_eva_00_2022_p1 tmpl_ubb_beru_fb_eva_00_2022_p1 TRUE  rpt_ubb_fb_p1 2024-11-06 20:35:07
+#  8 beru_fb FALSE   leh   tmpl_bfr_beru_fb_leh_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_leh_fb_p1 2024-11-06 20:35:07
+#  9 beru_fb FALSE   elt   tmpl_bfr_beru_fb_elt_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_elt_p1    2024-11-06 20:35:07
+# 10 beru_fb FALSE   sus   tmpl_bfr_beru_fb_sus_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_sus_fb_p1 2024-11-06 20:35:07
+# # ℹ 111 more rows
+# # ℹ Use `print(n = ...)` to see more rows
+```
+
+And the report table contains information about the variable, plot, and the text label for each report template.
+
+
+```{r}
+reports <- DB_Table("reports")
+
+#  report        vars      plot  label                                                                        label_short sets  type  timestamp          
+#    <chr>         <chr>     <chr> <chr>                                                                        <chr>       <chr> <chr> <dttm>             
+#  1 rpt_ubb_gs_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35
+#  2 rpt_ubb_p1    A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35
+#  3 rpt_ubb_gm_p1 A11       A1    "<span style=\"font-size:16px;\"><strong>A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35
+#  4 rpt_ubb_ms_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35
+#  5 rpt_ubb_fz_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35
+#  6 rpt_ubb_fb_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35
+#  7 rpt_ubb_gm_p1 A112a     A1a    NA                                                                          A1.1.2a  L… set05 ubb   2024-11-15 13:35:35
+#  8 rpt_ubb_gs_p1 A11       A1    "<span style=\"font-size:16px;\"><strong>A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35
+#  9 rpt_ubb_ms_p1 A11       A1    "<span style=\"font-size:16px;\"><strong>A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35
+# 10 rpt_ubb_p1    A11       A1    "<span style=\"font-size:16px;\"><strong>A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35
+```
+
+
+
+
+In addition, the meta data contains information abouts sets, and colors, and further smaller tables which will not(!) automatically be generated . Let's revise the sequentially. The sets table contains information about the (color) sets, the labels, and so on.
+
+```{r}
+sets <- DB_Table("sets")
+sets
+# # A tibble: 54 × 7
+#    set   code  labels               sort  colors  text_color timestamp          
+#    <chr> <chr> <chr>                <chr> <chr>   <chr>      <dttm>             
+#  1 set01 1     stimmt gar nicht     1     #7b3294 white      2024-11-07 14:32:34
+#  2 set01 2     stimmt eher nicht    2     #c2a5cf black      2024-11-07 14:32:34
+#  3 set01 3     stimmt zum Teil      3     #f7f7f7 black      2024-11-07 14:32:34
+#  4 set01 4     stimmt eher          4     #a6dba0 black      2024-11-07 14:32:34
+#  5 set01 5     stimmt ganz genau    5     #008837 white      2024-11-07 14:32:34
+#  6 set01 6     weiß nicht           6     #d0cece black      2024-11-07 14:32:34
+#  7 set03 1     gar nicht zufrieden  1     #7b3294 white      2024-11-07 14:32:34
+#  8 set03 2     eher nicht zufrieden 2     #c2a5cf black      2024-11-07 14:32:34
+#  9 set03 3     eher zufrieden       3     #a6dba0 black      2024-11-07 14:32:34
+# 10 set03 4     sehr zufrieden       4     #008837 white      2024-11-07 14:32:34
+# # ℹ 44 more rows
+```
+
+The set_data table contains information about plot and the set name.
+
+
+
+```{r}
+set_data <- DB_Table("set_data")
+set_data
+# plot  set   timestamp          
+#    <chr> <chr> <dttm>             
+#  1 A1    set04 2024-11-07 14:32:34
+#  2 A11   set01 2024-11-07 14:32:34
+#  3 A12   set01 2024-11-07 14:32:34
+#  4 A13   set01 2024-11-07 14:32:34
+#  5 A1a   set05 2024-11-07 14:32:34
+#  6 A1b   set16 2024-11-07 14:32:34
+#  7 A1c   set16 2024-11-07 14:32:34
+#  8 A2    set04 2024-11-07 14:32:34
+#  9 A21   set01 2024-11-07 14:32:34
+# 10 A22   set01 2024-11-07 14:32:34
+# # ℹ 133 more rows
+# # ℹ Use `print(n = ...)` to see more rows
+```
+
+These tables are smaller and there is no need to create them automatically, but this not mean that errors in these tables will not affect the reporting. The MetaMaster comes with several `check_*` function for this case. The `check_manualmeta()` function checks the meta data before the manual meta before this tables can be updated on the data base.
+
+
+```{r, eval=FALSE}
+check_manualmeta()
+```
+
+In addition, the `buildMetaMaster()` function includes further checks that need to made regarding the templates and the reports table. Most of all, the function builds the meta master data based on the raw data. The function needs the path to the raw data and the `export` parameter to be set to `TRUE` if the meta data should be exported.
+
+```{r, eval=FALSE}
+buildMetaMaster(path = "MasterData_2024_11_19.xlsx", export = TRUE)
+#✔ MetaMaster exported.
+```
+
+
+The exported file contains all tables, each in a separate sheet. The following console shows the first rows of the templates table.
+
+```{r, eval=FALSE}
+MetaMasterMeta <- readxl::read_excel("MetaMasterMeta.xlsx", sheet = "templates")
+head(MetaMasterMeta)
+
+# # A tibble: 6 × 9
+#   surveyID master_template                      report        template                        ubb   stype   type  ganztag timestamp          
+#      <dbl> <chr>                                <chr>         <chr>                           <chr> <chr>   <chr> <chr>   <dttm>             
+# 1   533711 master_09_bfr_allg_gy_elt_00_2022_v4 rpt_elt_p1    tmpl_bfr_beru_fb_elt_00_2022_p1 FALSE beru_fb elt   FALSE   2024-11-19 09:07:54
+# 2   526454 master_22_bfr_beru_fb_leh_00_2022_v4 rpt_leh_p1    tmpl_bfr_beru_fb_leh_00_2022_p1 FALSE beru_fb leh   FALSE   2024-11-19 09:07:54
+# 3   867849 master_23_bfr_beru_fb_sus_00_2022_v4 rpt_sus_fb_p1 tmpl_bfr_beru_fb_sus_00_2022_p1 FALSE beru_fb sus   FALSE   2024-11-19 09:07:54
+# 4   674997 master_18_bfr_beru_bq_aus_00_2022_v4 rpt_aus_bq_p1 tmpl_bfr_beru_bq_aus_00_2022_p1 FALSE beru_bq aus   FALSE   2024-11-19 09:07:54
+# 5   957592 master_19_bfr_beru_bq_elt_00_2022_v4 rpt_elt_bq_p1 tmpl_bfr_beru_bq_elt_00_2022_p1 FALSE beru_bq elt   FALSE   2024-11-19 09:07:54
+# 6   423442 master_20_bfr_beru_bq_leh_00_2022_v4 rpt_leh_bq_p1 tmpl_bfr_beru_bq_leh_00_2022_p1 FALSE beru_bq leh   FALSE   2024-11-19 09:07:5
+```
 
 
 
@@ -63,4 +197,14 @@ Limer_sendSurvey(lss = "struktur_LimeSurvey.lss",
 
 ... 
 
+## TBD
+
+Create a new file with the `update_allMastersLimeSurvey()` function. The latter runs `get_MasterTemplate()` which returns all masters templates and saves the result as an Excel file. 
+
+
+```{r, eval=FALSE}
+Limer_GetMasterData(export = TRUE)
+buildMetaMaster(path = "MasterData_2024_11_11.xlsx", export = TRUE)
+send_testrun(sendto = "johndoe@doe.com")
+```
 

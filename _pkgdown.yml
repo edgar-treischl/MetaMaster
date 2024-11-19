@@ -1,4 +1,4 @@
-url: ~
+url: https://github.com/edgar-treischl/MetaMaster
 template:
   bootstrap: 5
   bslib:
@@ -11,6 +11,7 @@ navbar:
     - reference
     - articles
     - news
+    right: [github]
 news:
   file: NEWS.md
   title: "News"

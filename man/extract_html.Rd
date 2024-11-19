@@ -13,3 +13,8 @@ extract_html(input)
 Some text in LimeSurvey are stored in HTML format.
  This helper function extracts it from the HTML code.
 }
+\examples{
+\dontrun{
+extract_html(input = "Html code here")
+}
+}
