@@ -7,7 +7,6 @@
 <url><loc>https://github.com/edgar-treischl/MetaMaster/authors.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/index.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/news/index.html</loc></url>
-<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/AdjustLLSTitles.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/DB_MetaUpdate.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/DB_Table.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/DB_send.html</loc></url>
@@ -20,7 +19,7 @@
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/Limer_getQuestionsbyQID.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/Limer_sendSurvey.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/Limer_sendSurveys.html</loc></url>
-<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/add_report_template.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/SwapLimesurveyTitles.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/base64_to_df.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/buildMetaMaster.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/buildOverallReport.html</loc></url>
@@ -42,7 +41,6 @@
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/send_testrun.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/surveyConnectLs.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/testrun.html</loc></url>
-<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/update_allMastersLimeSurvey.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/workaround.html</loc></url>
 </urlset>
 
