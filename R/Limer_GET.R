@@ -3,13 +3,13 @@
 #
 # mastertemplatesList <- get_masters()
 
-#' Get master templates from LimeSurvey
+#' Get Master Templates from Lime Survey
 #'
 #' @description This function gets the master templates from Lime Survey.
-#' @param template Logical. If TRUE, the function will return the template name.
+#' @param template Logical. If TRUE, the function will return the template name as well.
 #' @return Results from the API.
 #' @examples \dontrun{
-#' get_MasterTemplate()
+#' Limer_GetMasterTemplates()
 #' }
 #' @export
 
@@ -68,12 +68,11 @@ Limer_GetMasterTemplates <- function(template = FALSE) {
 }
 
 
-#Limer_GetMasterTemplate(template = TRUE)
 
 
-#' Get the Master Date from LimeSurvey
+#' Get the Master Data from Lime Survey
 #'
-#' @description This function gets the meta data from LimeSurvey for all master templates.
+#' @description This function gets the meta data from Lime Survey for all master templates.
 #' @param export Export the data to an Excel file.
 #' @return Results from the API.
 #' @examples \dontrun{
@@ -107,20 +106,18 @@ Limer_GetMasterData <- function(export = FALSE) {
   }
 }
 
-#Limer_GetMasterData(export = FALSE)
 
 
-#' Upload Master Templates as Survey Templates to LimeSurvey
+
+#' Upload Master Templates as Survey Templates to Lime Survey
 #'
 #' @description This function uploads the master templates as survey templates
-#'  to LimeSurvey.
+#'  to Lime Survey.
 #' @return Results from the API.
 #' @examples \dontrun{
 #' Limer_UploadTemplates()
 #' }
 #' @export
-
-
 
 Limer_UploadTemplates <- function() {
   cli::cli_abort("This function is not ready yet. Adjust paths!")

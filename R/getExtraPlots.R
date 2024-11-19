@@ -1,8 +1,12 @@
 
-#' Get Extra Plots
+#' Get (extract) Extra Plots from the Manual Meta Data
 #'
 #' @description This helper function splits the report_meta_dev data
 #'  and returns the extra plots for a given report template.
+#' @param reporttemplate The report template
+#' @examples \dontrun{
+#' get_ExtraPlots(reporttemplate = "rpt_elt_p2")
+#' }
 #' @export
 
 get_ExtraPlots <- function(reporttemplate) {
@@ -24,14 +28,18 @@ get_ExtraPlots <- function(reporttemplate) {
 
 }
 
-#get_ExtraPlots(reporttemplate = "rpt_elt_p2")
+
 
 
 #' Get  Extra Plots for All Report Templates
+#'
 #' @description This is a wrapper function that returns all extra plots based
 #'  on the report_meta_dev data.
 #' @param export Logical. If TRUE, the function will export the result.
 #' @param filter Logical. If TRUE, the function returns the extra plots (W) only.
+#' @examples \dontrun{
+#' get_AllExtraPlots(export = FALSE, filter = TRUE)
+#' }
 #' @export
 
 
@@ -84,5 +92,3 @@ get_AllExtraPlots <- function(export = FALSE,
 }
 
 
-
-#get_AllExtraPlots(export = FALSE, filter = TRUE)

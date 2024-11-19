@@ -13,6 +13,7 @@
 # }
 
 #' Check the manual data
+#'
 #' @description This function reads an Excel file with metadata and uploads
 #'  each sheet as a table in the database.
 #' @return A message from the DB_send function indicating if the table was

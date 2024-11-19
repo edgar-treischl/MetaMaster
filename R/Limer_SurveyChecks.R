@@ -1,5 +1,6 @@
 
 #' Check if All Variables of the Meta Data are Distinct
+#'
 #' @description This function checks if all variables names of the meta data
 #'  are distinct. It counts if a variable name is used more than once and returns
 #'    a data frame with the results.
@@ -71,18 +72,18 @@ check_distinct <- function(ubb, export = FALSE) {
 
 }
 
-#check_distinct(ubb = FALSE)
 
 
 
-#' Get the templates
+#' Check Master Templates
+#'
 #' @description Some text in LimeSurvey are stored in HTML format.
 #'  This helper function extracts it from the HTML code.
 #'@examples
+#'\dontrun{
 #' check_MasterTemplates()
+#'}
 #' @export
-
-
 
 check_MasterTemplates <- function() {
   #allMasters <- get_MasterTemplate()
@@ -116,12 +117,16 @@ check_MasterTemplates <- function() {
   }
 }
 
-#check_MasterTemplates()
 
-# From Gisla To Master
-#' Get the templates
+
+#' Check Survey Templates
+#'
 #' @description Some text in LimeSurvey are stored in HTML format.
 #'  This helper function extracts it from the HTML code.
+#'@examples
+#'\dontrun{
+#' check_SurveyTemplates()
+#'}
 #' @export
 
 
@@ -154,6 +159,6 @@ check_SurveyTemplates <- function() {
   }
 }
 
-#check_SurveyTemplates()
+
 
 

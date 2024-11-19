@@ -3,6 +3,7 @@
 
 
 #' Build Meta Master Data
+#'
 #' @description This function builds the MetaMaster from a given Excel file.
 #' @param path The path to the Excel file.
 #' @param export If TRUE, the MetaMaster will be exported as an Excel file.

@@ -3,6 +3,9 @@
 #' @description This function deletes a survey from a Lime Survey instance.
 #' @param id The id of the survey to delete.
 #' @return Response from the API.
+#' @examples \dontrun{
+#' Limer_DeleteSurvey(id = "116647")
+#' }
 #' @export
 
 
@@ -28,4 +31,4 @@ Limer_DeleteSurvey <- function(id) {
   return(response)
 }
 
-#Limer_DeleteSurvey(id = "116647")
+
