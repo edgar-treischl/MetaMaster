@@ -20,7 +20,7 @@ Before you start, make sure that the config file is available, corresponding cre
 
 ```{r}
 library(MetaMaster)
-Sys.setenv(R_CONFIG_ACTIVE = "test")
+#Sys.setenv(R_CONFIG_ACTIVE = "test")
 ```
 
 
@@ -69,7 +69,7 @@ templates
 And the report table contains information about the variable, plot, and the text label for each report template.
 
 
-```{r}
+```{r, eval=FALSE}
 reports <- DB_Table("reports")
 
 #  report        vars      plot  label                                                                        label_short sets  type  timestamp          
@@ -91,7 +91,7 @@ reports <- DB_Table("reports")
 
 In addition, the meta data contains information abouts sets, and colors, and further smaller tables which will not(!) automatically be generated . Let's revise the sequentially. The sets table contains information about the (color) sets, the labels, and so on.
 
-```{r}
+```{r, eval=FALSE}
 sets <- DB_Table("sets")
 sets
 # # A tibble: 54 × 7
@@ -114,7 +114,7 @@ The set_data table contains information about plot and the set name.
 
 
 
-```{r}
+```{r, eval=FALSE}
 set_data <- DB_Table("set_data")
 set_data
 # plot  set   timestamp          
