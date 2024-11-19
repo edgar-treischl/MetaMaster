@@ -35,9 +35,9 @@ buildOverallReport <- function(packagename) {
 }
 
 
-master_to_template <- DB_Table("master_to_template")
-report_packages <- master_to_template |> dplyr::pull(pckg) |> unique()
-buildOverallReport(packagename = report_packages[1])
+# master_to_template <- DB_Table("master_to_template")
+# report_packages <- master_to_template |> dplyr::pull(pckg) |> unique()
+# buildOverallReport(packagename = report_packages[1])
 
 #purrr::map(report_packages[1:17], buildOverallReport)
 
