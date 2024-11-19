@@ -18,7 +18,7 @@ This function fetches a table from the database and returns it as a data frame.
 }
 \examples{
 \dontrun{
-#DB_Table()
-DB_Table(table = "master_to_template")
+  #DB_Table()
+  DB_Table(table = "master_to_template")
 }
 }

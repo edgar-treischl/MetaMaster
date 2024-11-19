@@ -19,6 +19,6 @@ This function reads an Excel file with metadata and uploads
 }
 \examples{
 \dontrun{
-DB_MetaUpdate(path = "data/report_meta_dev.xlsx")
+  DB_MetaUpdate(path = "data/report_meta_dev.xlsx")
 }
 }

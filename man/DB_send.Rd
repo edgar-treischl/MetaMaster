@@ -19,6 +19,6 @@ This function send a table to the database.
 }
 \examples{
 \dontrun{
-DB_send(table = readxl::read_excel("myfile.xlsx"), name = "master_to_template")
+  DB_send(table = readxl::read_excel("myfile.xlsx"), name = "master_to_template")
 }
 }
