@@ -41,16 +41,13 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/Introduction.html">Introduction</a></li>
+<li><a class="dropdown-item" href="../articles/web_only/helper.html">Others players</a></li>
+    <li><a class="dropdown-item" href="../articles/Introduction.html">Introduction</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<ul class="navbar-nav">
-<li class="nav-item"><form class="form-inline" role="search">
- <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
-</form></li>
-      </ul>
+<ul class="navbar-nav"></ul>
 </div>
 
 
@@ -71,18 +68,143 @@
 
     
     
-<p>The goal of the MetaMaster package is to create meta data for
-LimeSurvey which are reproducible, tested, and in consequence
-error-free. The package provides functions to get the names of the
-master templates, the data of the master template, and to create new
-surveys based on a template.</p>
-<div class="section level2">
-<h2 id="preparation-steps">Preparation steps<a class="anchor" aria-label="anchor" href="#preparation-steps"></a>
-</h2>
-</div>
+<p>Before you start, make sure that the config file is available,
+corresponding credentials and parameters are set and that environment
+variable is set to “test”.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MetaMaster</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_CONFIG_ACTIVE <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="meta-master-in-action">Meta Master in Action<a class="anchor" aria-label="anchor" href="#meta-master-in-action"></a>
 </h2>
+<p>Use the <code><a href="../reference/Limer_GetMasterData.html">Limer_GetMasterData()</a></code> function to create the raw
+meta data. The function gets all master templates from the LimeSurvey
+API and retrieves for each master the survey question, id, so on. The
+function returns a tibble or exports the data if the <code>export</code>
+parameter is set to <code>TRUE</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#Get the survey questions for the first three master templates</span></span>
+<span><span class="fu"><a href="../reference/Limer_GetMasterData.html">Limer_GetMasterData</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># ✔ Master Data exported.  </span></span></code></pre></div>
+<p>As the next console shows, the functions exports the raw meta data in
+the current working directory and appends today’s date to the file
+name.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">master_raw</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_excel</a></span><span class="op">(</span><span class="st">"MasterData_2024_11_19.xlsx"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">master_raw</span><span class="op">)</span></span></code></pre></div>
+<p>We will create the meta data based on this input, but before we can
+do so, we need to consider all tables of the meta data. Based on the raw
+data we build the two most important tables of the meta data. The
+templates table contains information about the master, survey and the
+report template that will be used for the report.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">templates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DB_Table.html">DB_Table</a></span><span class="op">(</span><span class="st">"templates"</span><span class="op">)</span></span>
+<span><span class="va">templates</span></span>
+<span></span>
+<span><span class="co"># # A tibble: 121 × 8</span></span>
+<span><span class="co">#    stype   ganztag type  surveys                         rprtpckg                        ubb   report_tmpl   timestamp          </span></span>
+<span><span class="co">#    &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;                           &lt;chr&gt;                           &lt;chr&gt; &lt;chr&gt;         &lt;dttm&gt;             </span></span>
+<span><span class="co">#  1 beru_bq FALSE   ubb   tmpl_ubb_beru_bq_eva_00_2022_p1 tmpl_ubb_beru_bq_eva_00_2022_p1 TRUE  rpt_ubb_p1    2024-11-06 20:35:07</span></span>
+<span><span class="co">#  2 beru_bq FALSE   leh   tmpl_bfr_beru_bq_leh_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_leh_bq_p1 2024-11-06 20:35:07</span></span>
+<span><span class="co">#  3 beru_bq FALSE   elt   tmpl_bfr_beru_bq_elt_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_elt_bq_p1 2024-11-06 20:35:07</span></span>
+<span><span class="co">#  4 beru_bq FALSE   all   NA                              NA                              FALSE rpt_all_bq_p1 2024-11-06 20:35:07</span></span>
+<span><span class="co">#  5 beru_bq FALSE   aus   tmpl_bfr_beru_bq_aus_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_aus_bq_p1 2024-11-06 20:35:07</span></span>
+<span><span class="co">#  6 beru_bq FALSE   sus   tmpl_bfr_beru_bq_sus_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_sus_bq_p1 2024-11-06 20:35:07</span></span>
+<span><span class="co">#  7 beru_fb FALSE   ubb   tmpl_ubb_beru_fb_eva_00_2022_p1 tmpl_ubb_beru_fb_eva_00_2022_p1 TRUE  rpt_ubb_fb_p1 2024-11-06 20:35:07</span></span>
+<span><span class="co">#  8 beru_fb FALSE   leh   tmpl_bfr_beru_fb_leh_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_leh_fb_p1 2024-11-06 20:35:07</span></span>
+<span><span class="co">#  9 beru_fb FALSE   elt   tmpl_bfr_beru_fb_elt_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_elt_p1    2024-11-06 20:35:07</span></span>
+<span><span class="co"># 10 beru_fb FALSE   sus   tmpl_bfr_beru_fb_sus_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_sus_fb_p1 2024-11-06 20:35:07</span></span>
+<span><span class="co"># # ℹ 111 more rows</span></span>
+<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
+<p>And the report table contains information about the variable, plot,
+and the text label for each report template.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">reports</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DB_Table.html">DB_Table</a></span><span class="op">(</span><span class="st">"reports"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#  report        vars      plot  label                                                                        label_short sets  type  timestamp          </span></span>
+<span><span class="co">#    &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;                                                                        &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; &lt;dttm&gt;             </span></span>
+<span><span class="co">#  1 rpt_ubb_gs_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35</span></span>
+<span><span class="co">#  2 rpt_ubb_p1    A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35</span></span>
+<span><span class="co">#  3 rpt_ubb_gm_p1 A11       A1    "&lt;span style=\"font-size:16px;\"&gt;&lt;strong&gt;A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35</span></span>
+<span><span class="co">#  4 rpt_ubb_ms_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35</span></span>
+<span><span class="co">#  5 rpt_ubb_fz_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35</span></span>
+<span><span class="co">#  6 rpt_ubb_fb_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35</span></span>
+<span><span class="co">#  7 rpt_ubb_gm_p1 A112a     A1a    NA                                                                          A1.1.2a  L… set05 ubb   2024-11-15 13:35:35</span></span>
+<span><span class="co">#  8 rpt_ubb_gs_p1 A11       A1    "&lt;span style=\"font-size:16px;\"&gt;&lt;strong&gt;A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35</span></span>
+<span><span class="co">#  9 rpt_ubb_ms_p1 A11       A1    "&lt;span style=\"font-size:16px;\"&gt;&lt;strong&gt;A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35</span></span>
+<span><span class="co"># 10 rpt_ubb_p1    A11       A1    "&lt;span style=\"font-size:16px;\"&gt;&lt;strong&gt;A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35</span></span></code></pre></div>
+<p>In addition, the meta data contains information abouts sets, and
+colors, and further smaller tables which will not(!) automatically be
+generated . Let’s revise the sequentially. The sets table contains
+information about the (color) sets, the labels, and so on.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DB_Table.html">DB_Table</a></span><span class="op">(</span><span class="st">"sets"</span><span class="op">)</span></span>
+<span><span class="va">sets</span></span>
+<span><span class="co"># # A tibble: 54 × 7</span></span>
+<span><span class="co">#    set   code  labels               sort  colors  text_color timestamp          </span></span>
+<span><span class="co">#    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;                &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dttm&gt;             </span></span>
+<span><span class="co">#  1 set01 1     stimmt gar nicht     1     #7b3294 white      2024-11-07 14:32:34</span></span>
+<span><span class="co">#  2 set01 2     stimmt eher nicht    2     #c2a5cf black      2024-11-07 14:32:34</span></span>
+<span><span class="co">#  3 set01 3     stimmt zum Teil      3     #f7f7f7 black      2024-11-07 14:32:34</span></span>
+<span><span class="co">#  4 set01 4     stimmt eher          4     #a6dba0 black      2024-11-07 14:32:34</span></span>
+<span><span class="co">#  5 set01 5     stimmt ganz genau    5     #008837 white      2024-11-07 14:32:34</span></span>
+<span><span class="co">#  6 set01 6     weiß nicht           6     #d0cece black      2024-11-07 14:32:34</span></span>
+<span><span class="co">#  7 set03 1     gar nicht zufrieden  1     #7b3294 white      2024-11-07 14:32:34</span></span>
+<span><span class="co">#  8 set03 2     eher nicht zufrieden 2     #c2a5cf black      2024-11-07 14:32:34</span></span>
+<span><span class="co">#  9 set03 3     eher zufrieden       3     #a6dba0 black      2024-11-07 14:32:34</span></span>
+<span><span class="co"># 10 set03 4     sehr zufrieden       4     #008837 white      2024-11-07 14:32:34</span></span>
+<span><span class="co"># # ℹ 44 more rows</span></span></code></pre></div>
+<p>The set_data table contains information about plot and the set
+name.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">set_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DB_Table.html">DB_Table</a></span><span class="op">(</span><span class="st">"set_data"</span><span class="op">)</span></span>
+<span><span class="va">set_data</span></span>
+<span><span class="co"># plot  set   timestamp          </span></span>
+<span><span class="co">#    &lt;chr&gt; &lt;chr&gt; &lt;dttm&gt;             </span></span>
+<span><span class="co">#  1 A1    set04 2024-11-07 14:32:34</span></span>
+<span><span class="co">#  2 A11   set01 2024-11-07 14:32:34</span></span>
+<span><span class="co">#  3 A12   set01 2024-11-07 14:32:34</span></span>
+<span><span class="co">#  4 A13   set01 2024-11-07 14:32:34</span></span>
+<span><span class="co">#  5 A1a   set05 2024-11-07 14:32:34</span></span>
+<span><span class="co">#  6 A1b   set16 2024-11-07 14:32:34</span></span>
+<span><span class="co">#  7 A1c   set16 2024-11-07 14:32:34</span></span>
+<span><span class="co">#  8 A2    set04 2024-11-07 14:32:34</span></span>
+<span><span class="co">#  9 A21   set01 2024-11-07 14:32:34</span></span>
+<span><span class="co"># 10 A22   set01 2024-11-07 14:32:34</span></span>
+<span><span class="co"># # ℹ 133 more rows</span></span>
+<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
+<p>These tables are smaller and there is no need to create them
+automatically, but this not mean that errors in these tables will not
+affect the reporting. The MetaMaster comes with several
+<code>check_*</code> function for this case. The
+<code><a href="../reference/check_manualmeta.html">check_manualmeta()</a></code> function checks the meta data before the
+manual meta before this tables can be updated on the data base.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/check_manualmeta.html">check_manualmeta</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>In addition, the <code><a href="../reference/buildMetaMaster.html">buildMetaMaster()</a></code> function includes
+further checks that need to made regarding the templates and the reports
+table. Most of all, the function builds the meta master data based on
+the raw data. The function needs the path to the raw data and the
+<code>export</code> parameter to be set to <code>TRUE</code> if the meta
+data should be exported.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/buildMetaMaster.html">buildMetaMaster</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_19.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#✔ MetaMaster exported.</span></span></code></pre></div>
+<p>The exported file contains all tables, each in a separate sheet. The
+following console shows the first rows of the templates table.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">MetaMasterMeta</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_excel</a></span><span class="op">(</span><span class="st">"MetaMasterMeta.xlsx"</span>, sheet <span class="op">=</span> <span class="st">"templates"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">MetaMasterMeta</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># # A tibble: 6 × 9</span></span>
+<span><span class="co">#   surveyID master_template                      report        template                        ubb   stype   type  ganztag timestamp          </span></span>
+<span><span class="co">#      &lt;dbl&gt; &lt;chr&gt;                                &lt;chr&gt;         &lt;chr&gt;                           &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;dttm&gt;             </span></span>
+<span><span class="co"># 1   533711 master_09_bfr_allg_gy_elt_00_2022_v4 rpt_elt_p1    tmpl_bfr_beru_fb_elt_00_2022_p1 FALSE beru_fb elt   FALSE   2024-11-19 09:07:54</span></span>
+<span><span class="co"># 2   526454 master_22_bfr_beru_fb_leh_00_2022_v4 rpt_leh_p1    tmpl_bfr_beru_fb_leh_00_2022_p1 FALSE beru_fb leh   FALSE   2024-11-19 09:07:54</span></span>
+<span><span class="co"># 3   867849 master_23_bfr_beru_fb_sus_00_2022_v4 rpt_sus_fb_p1 tmpl_bfr_beru_fb_sus_00_2022_p1 FALSE beru_fb sus   FALSE   2024-11-19 09:07:54</span></span>
+<span><span class="co"># 4   674997 master_18_bfr_beru_bq_aus_00_2022_v4 rpt_aus_bq_p1 tmpl_bfr_beru_bq_aus_00_2022_p1 FALSE beru_bq aus   FALSE   2024-11-19 09:07:54</span></span>
+<span><span class="co"># 5   957592 master_19_bfr_beru_bq_elt_00_2022_v4 rpt_elt_bq_p1 tmpl_bfr_beru_bq_elt_00_2022_p1 FALSE beru_bq elt   FALSE   2024-11-19 09:07:54</span></span>
+<span><span class="co"># 6   423442 master_20_bfr_beru_bq_leh_00_2022_v4 rpt_leh_bq_p1 tmpl_bfr_beru_bq_leh_00_2022_p1 FALSE beru_bq leh   FALSE   2024-11-19 09:07:5</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="sent-via-api">Sent via API<a class="anchor" aria-label="anchor" href="#sent-via-api"></a>
@@ -90,7 +212,7 @@ surveys based on a template.</p>
 <p>Finally, the package provides a function to create a new survey based
 on a master template. The <code>send_survey()</code> function needs the
 path to the master template and the name of the new survey.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Create a new survey</span></span>
 <span><span class="fu"><a href="../reference/Limer_sendSurvey.html">Limer_sendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"struktur_LimeSurvey.lss"</span>,</span>
 <span>                 name <span class="op">=</span> <span class="st">"SurveyName"</span><span class="op">)</span></span></code></pre></div>
@@ -99,6 +221,17 @@ path to the master template and the name of the new survey.</p>
 <h2 id="further-helpers">Further Helpers<a class="anchor" aria-label="anchor" href="#further-helpers"></a>
 </h2>
 <p>…</p>
+</div>
+<div class="section level2">
+<h2 id="tbd">TBD<a class="anchor" aria-label="anchor" href="#tbd"></a>
+</h2>
+<p>Create a new file with the <code><a href="../reference/update_allMastersLimeSurvey.html">update_allMastersLimeSurvey()</a></code>
+function. The latter runs <code>get_MasterTemplate()</code> which
+returns all masters templates and saves the result as an Excel file.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/Limer_GetMasterData.html">Limer_GetMasterData</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/buildMetaMaster.html">buildMetaMaster</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_11.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/send_testrun.html">send_testrun</a></span><span class="op">(</span>sendto <span class="op">=</span> <span class="st">"johndoe@doe.com"</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
