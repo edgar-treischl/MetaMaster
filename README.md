@@ -4,6 +4,7 @@
 # MetaMaster
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of the MetaMaster package is to create meta data for LimeSurvey
@@ -16,7 +17,7 @@ for example, to upload survey templates via the API.
 
 ## Installation
 
-You can install the development version of MetaMaster like so:
+You can install the development version of MetaMaster like:
 
 ``` r
 # install_local from installs the package and its dependencies

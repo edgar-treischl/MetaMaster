@@ -16,6 +16,8 @@ news:
   file: NEWS.md
   title: "News"
   one_page: true
+development:
+  mode: auto
 authors:
   Edgar Treischl:
     href: https://www.edgar-treischl.de/

@@ -1,8 +1,8 @@
 ---
-title: "Introduction"
+title: "MetaMaster"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction}
+  %\VignetteIndexEntry{MetaMaster}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,13 +10,9 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  fig.path = "./man/figures/",
-   eval = FALSE,
   comment = "#>"
 )
-
 ```
-
 
 Before you start, make sure that the config file is available, corresponding credentials and parameters are set and that environment variable is set to "test".
 
@@ -207,4 +203,5 @@ Limer_GetMasterData(export = TRUE)
 buildMetaMaster(path = "MasterData_2024_11_11.xlsx", export = TRUE)
 send_testrun(sendto = "johndoe@doe.com")
 ```
+
 
