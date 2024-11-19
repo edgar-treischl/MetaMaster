@@ -2,11 +2,19 @@
 % Please edit documentation in R/getExtraPlots.R
 \name{get_ExtraPlots}
 \alias{get_ExtraPlots}
-\title{Get Extra Plots}
+\title{Get (extract) Extra Plots from the Manual Meta Data}
 \usage{
 get_ExtraPlots(reporttemplate)
+}
+\arguments{
+\item{reporttemplate}{The report template}
 }
 \description{
 This helper function splits the report_meta_dev data
  and returns the extra plots for a given report template.
+}
+\examples{
+\dontrun{
+get_ExtraPlots(reporttemplate = "rpt_elt_p2")
+}
 }

@@ -15,3 +15,8 @@ get_AllExtraPlots(export = FALSE, filter = FALSE)
 This is a wrapper function that returns all extra plots based
  on the report_meta_dev data.
 }
+\examples{
+\dontrun{
+get_AllExtraPlots(export = FALSE, filter = TRUE)
+}
+}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Limer_SurveyChecks.R
 \name{check_MasterTemplates}
 \alias{check_MasterTemplates}
-\title{Get the templates}
+\title{Check Master Templates}
 \usage{
 check_MasterTemplates()
 }
@@ -11,5 +11,7 @@ Some text in LimeSurvey are stored in HTML format.
  This helper function extracts it from the HTML code.
 }
 \examples{
+\dontrun{
 check_MasterTemplates()
+}
 }

@@ -15,3 +15,8 @@ Response from the API.
 \description{
 This function deletes a survey from a Lime Survey instance.
 }
+\examples{
+\dontrun{
+Limer_DeleteSurvey(id = "116647")
+}
+}

@@ -2,11 +2,16 @@
 % Please edit documentation in R/Limer_SurveyChecks.R
 \name{check_SurveyTemplates}
 \alias{check_SurveyTemplates}
-\title{Get the templates}
+\title{Check Survey Templates}
 \usage{
 check_SurveyTemplates()
 }
 \description{
 Some text in LimeSurvey are stored in HTML format.
  This helper function extracts it from the HTML code.
+}
+\examples{
+\dontrun{
+check_SurveyTemplates()
+}
 }

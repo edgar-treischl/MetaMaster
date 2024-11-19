@@ -2,7 +2,7 @@
 % Please edit documentation in R/Limer_GET.R
 \name{Limer_GetMasterData}
 \alias{Limer_GetMasterData}
-\title{Get the Master Date from LimeSurvey}
+\title{Get the Master Data from Lime Survey}
 \usage{
 Limer_GetMasterData(export = FALSE)
 }
@@ -13,7 +13,7 @@ Limer_GetMasterData(export = FALSE)
 Results from the API.
 }
 \description{
-This function gets the meta data from LimeSurvey for all master templates.
+This function gets the meta data from Lime Survey for all master templates.
 }
 \examples{
 \dontrun{

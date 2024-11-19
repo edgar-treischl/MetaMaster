@@ -2,12 +2,12 @@
 % Please edit documentation in R/Limer_GET.R
 \name{Limer_GetMasterTemplates}
 \alias{Limer_GetMasterTemplates}
-\title{Get master templates from LimeSurvey}
+\title{Get Master Templates from Lime Survey}
 \usage{
 Limer_GetMasterTemplates(template = FALSE)
 }
 \arguments{
-\item{template}{Logical. If TRUE, the function will return the template name.}
+\item{template}{Logical. If TRUE, the function will return the template name as well.}
 }
 \value{
 Results from the API.
@@ -17,6 +17,6 @@ This function gets the master templates from Lime Survey.
 }
 \examples{
 \dontrun{
-get_MasterTemplate()
+Limer_GetMasterTemplates()
 }
 }

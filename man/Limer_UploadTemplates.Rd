@@ -2,7 +2,7 @@
 % Please edit documentation in R/Limer_GET.R
 \name{Limer_UploadTemplates}
 \alias{Limer_UploadTemplates}
-\title{Upload Master Templates as Survey Templates to LimeSurvey}
+\title{Upload Master Templates as Survey Templates to Lime Survey}
 \usage{
 Limer_UploadTemplates()
 }
@@ -11,7 +11,7 @@ Results from the API.
 }
 \description{
 This function uploads the master templates as survey templates
- to LimeSurvey.
+ to Lime Survey.
 }
 \examples{
 \dontrun{
