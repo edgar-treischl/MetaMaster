@@ -90,7 +90,7 @@ check_MasterTemplates <- function() {
   #Masters_LimeSurvey <- allMasters$surveyls_title
   #Masters_LimeSurvey
 
-  Masters_LimeSurvey <- Limer_GetMaster(template = FALSE)
+  Masters_LimeSurvey <- LS_GetMaster(template = FALSE)
   Masters_LimeSurvey <- Masters_LimeSurvey$surveyls_title
 
   df <- DB_Table("master_to_template")

@@ -70,7 +70,7 @@ Use one of the get function retrieve data from the API. The `Limer_GetMasterTemp
 #Let's get started
 library(MetaMaster)
 Sys.setenv(R_CONFIG_ACTIVE = "test")
-df <- Limer_GetMasterTemplates(template = TRUE)
+df <- LS_GetMasterTemplates(template = TRUE)
 head(df)
 
 # A tibble: 6 × 3
@@ -91,7 +91,7 @@ Next, we can retrieve survey questions and texts via the API. The function `Lime
 
 
 ```{r, eval=FALSE}
-Limer_GetMasterQuesions(id = df$sid[1], name = df$surveyls_title[1])
+LS_GetMasterQuestions(id = df$sid[1], name = df$surveyls_title[1])
 
 # A tibble: 29 × 5
 #    surveyID template                             plot  variable  text                   
@@ -116,7 +116,7 @@ Limer_GetMasterQuesions(id = df$sid[1], name = df$surveyls_title[1])
 The `Limer_sendSurvey()` function sends a survey template to LimeSurvey. The function needs the path to the survey template and the name of the survey template. It expects the survey template to be in the LimeSurvey LSS format.
 
 ```{r, eval=FALSE}
-Limer_sendSurvey(lss = "limesurveyMod.lss",
+LS_SendSurvey(lss = "limesurveyMod.lss",
                  name = "mastertemplate")
 ```
 
@@ -125,13 +125,13 @@ The function `Limer_sendSurveys()` is a convenient wrapper around `Limer_sendSur
 
 
 ```{r, eval=FALSE}
-Limer_sendSurveys()
+LS_SendSurveys()
 ```
 
 Finally, the `Limer_DeleteSurvey()` function deletes a survey template from LimeSurvey. The function needs the survey ID of the survey template. Be careful, there is no way to restore a deleted survey template.
 
 ```{r, eval=FALSE}
-Limer_DeleteSurvey(sid = "123456")
+LS_DeleteSurvey(sid = "123456")
 ```
 
 

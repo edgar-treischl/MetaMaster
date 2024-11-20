@@ -1,7 +1,7 @@
 test_that("Limer_GetQlist return question list", {
   Sys.setenv(R_CONFIG_ACTIVE = "test")
 
-  qlist <- Limer_GetQlist(id = "197865")
+  qlist <- LS_GetQlist(id = "197865")
   expect_type(qlist, "character")
   expect_error(Limer_GetQlist(id = "1"))
 })

@@ -71,7 +71,7 @@ set to `TRUE`.
 #Let's get started
 library(MetaMaster)
 Sys.setenv(R_CONFIG_ACTIVE = "test")
-df <- Limer_GetMasterTemplates(template = TRUE)
+df <- LS_GetMasterTemplates(template = TRUE)
 head(df)
 
 # A tibble: 6 × 3
@@ -91,7 +91,7 @@ text for survey questions of a given master template. The function needs
 the survey ID (`sid`) and the name of the master template (`name`).
 
 ``` r
-Limer_GetMasterQuesions(id = df$sid[1], name = df$surveyls_title[1])
+LS_GetMasterQuestions(id = df$sid[1], name = df$surveyls_title[1])
 
 # A tibble: 29 × 5
 #    surveyID template                             plot  variable  text                   
@@ -118,7 +118,7 @@ survey template. It expects the survey template to be in the LimeSurvey
 LSS format.
 
 ``` r
-Limer_sendSurvey(lss = "limesurveyMod.lss",
+LS_SendSurvey(lss = "limesurveyMod.lss",
                  name = "mastertemplate")
 ```
 
@@ -127,7 +127,7 @@ The function `Limer_sendSurveys()` is a convenient wrapper around
 directory to LimeSurvey.
 
 ``` r
-Limer_sendSurveys()
+LS_SendSurveys()
 ```
 
 Finally, the `Limer_DeleteSurvey()` function deletes a survey template
@@ -136,7 +136,7 @@ template. Be careful, there is no way to restore a deleted survey
 template.
 
 ``` r
-Limer_DeleteSurvey(sid = "123456")
+LS_DeleteSurvey(sid = "123456")
 ```
 
 Consider to read the vignette for more details how MetaMaster works.

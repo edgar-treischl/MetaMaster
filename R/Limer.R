@@ -7,11 +7,7 @@
 #' @return session id aus Limesurvey
 #' @export
 
-surveyConnectLs <- function(server,
-                            user,
-                            credential){
-
-
+LS_Connect <- function(server, user, credential) {
   #Check input if otherwise
   server_names <- c("hws", "semiotikon", "las.my-survey.host")
   if (server %in% server_names == FALSE) {
@@ -19,21 +15,21 @@ surveyConnectLs <- function(server,
   }
 
   #Connect semiotikon
-  if(server == "semiotikon"){
+  if (server == "semiotikon") {
     options(lime_api = config::get("api_url"))
     options(lime_username = user)
     options(lime_password = credential)
     tmp.session <- get_session_key()
   }
   #Connect hws
-  if(server == "hws"){
+  if (server == "hws") {
     options(lime_api = config::get("api_url"))
     options(lime_username = user)
     options(lime_password = credential)
     tmp.session <- get_session_key()
   }
 
-  if(server == "las.my-survey.host"){
+  if (server == "las.my-survey.host") {
     options(lime_api = config::get("api_url"))
     options(lime_username = user)
     options(lime_password = credential)
@@ -68,7 +64,7 @@ surveyConnectLs <- function(server,
 #' }
 #' @export
 
-call_limer <- function(method, params = list(), ...) {
+LS_Ask <- function(method, params = list(), ...) {
   if (!is.list(params)) {
     stop("params must be a list.")
   }
@@ -154,7 +150,7 @@ get_responses <- function(iSurveyID, sDocumentType = "csv", sLanguageCode = NULL
   if(length(dots) > 0) params <- append(params,dots)
   # print(params) # uncomment to debug the params
 
-  results <- call_limer(method = "export_responses", params = params)
+  results <- LS_Ask(method = "export_responses", params = params)
   return(base64_to_df(unlist(results)))
 }
 
@@ -186,8 +182,8 @@ base64_to_df <- function(x) {
 #' release_session_key()
 #' }
 
-release_session_key <- function() {
-  call_limer(method = "release_session_key")
+LS_Release <- function() {
+  LS_Ask(method = "release_session_key")
 }
 
 

@@ -20,7 +20,7 @@ Before you start, make sure that the config file is available, corresponding cre
 
 ```{r}
 library(MetaMaster)
-#Sys.setenv(R_CONFIG_ACTIVE = "test")
+Sys.setenv(R_CONFIG_ACTIVE = "test")
 ```
 
 
@@ -30,7 +30,7 @@ Use the `Limer_GetMasterData()` function to create the raw meta data. The functi
 
 ```{r, eval=FALSE}
 #Get the survey questions for the first three master templates
-Limer_GetMasterData(export = TRUE)
+LS_GetMasterData(export = TRUE)
 # ✔ Master Data exported.  
 ```
 
@@ -143,7 +143,7 @@ check_manualmeta()
 In addition, the `buildMetaMaster()` function includes further checks that need to made regarding the templates and the reports table. Most of all, the function builds the meta master data based on the raw data. The function needs the path to the raw data and the `export` parameter to be set to `TRUE` if the meta data should be exported.
 
 ```{r, eval=FALSE}
-buildMetaMaster(path = "MasterData_2024_11_19.xlsx", export = TRUE)
+buildMetaMaster(path = "MasterData_2024_11_20.xlsx", export = TRUE)
 #✔ MetaMaster exported.
 ```
 
@@ -185,7 +185,7 @@ Finally, the package provides a function to create a new survey based on a maste
 
 ```{r, eval=FALSE}
 #Create a new survey
-Limer_sendSurvey(lss = "struktur_LimeSurvey.lss",
+LS_SendSurvey(lss = "struktur_LimeSurvey.lss",
                  name = "SurveyName")
 ```
 
@@ -199,7 +199,7 @@ Create a new file with the `update_allMastersLimeSurvey()` function. The latter 
 
 
 ```{r, eval=FALSE}
-Limer_GetMasterData(export = TRUE)
+LS_GetMasterData(export = TRUE)
 buildMetaMaster(path = "MasterData_2024_11_11.xlsx", export = TRUE)
 send_testrun(sendto = "johndoe@doe.com")
 ```

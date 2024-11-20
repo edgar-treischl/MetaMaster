@@ -5,12 +5,12 @@
 #' @param name The optional name of the survey.
 #' @return Results from the API.
 #' @examples \dontrun{
-#' Limer_sendSurvey(lss = "struktur_LimeSurvey.lss",
+#' LS_SendSurvey(lss = "struktur_LimeSurvey.lss",
 #' name = "Edgar")
 #' }
 #' @export
 
-Limer_sendSurvey <- function(lss, name = NULL) {
+LS_SendSurvey <- function(lss, name = NULL) {
 
   #Get specs from config
   get <- config::get()
@@ -21,17 +21,17 @@ Limer_sendSurvey <- function(lss, name = NULL) {
   #Encode lss file
   test_64 <- base64enc::base64encode(lss)
 
-  tmp.session <- surveyConnectLs(user = tmp.user,
-                                 credential = tmp.credential,
-                                 server = tmp.server)
+  tmp.session <- LS_Connect(user = tmp.user,
+                            credential = tmp.credential,
+                            server = tmp.server)
 
   # Get the number of completed responses for a survey
-  response <- call_limer(method = "import_survey",
-                         params = list(sImportData = test_64,
-                                       ImportDataType = "lss",
-                                       NewSurveyName = name))
+  response <- LS_Ask(method = "import_survey",
+                     params = list(sImportData = test_64,
+                                   ImportDataType = "lss",
+                                   NewSurveyName = name))
 
-  release_session_key()
+  LS_Release()
   cli::cli_inform("Created survey:")
   return(response)
 }
@@ -44,7 +44,7 @@ Limer_sendSurvey <- function(lss, name = NULL) {
 #' @export
 
 
-Limer_sendSurveys <- function() {
+LS_SendSurveys <- function() {
   cli::cli_abort("This function is not ready yet. Adjust paths!")
 
   lssfiles <- list.files(here::here("data/MasterTemplates/Minke_Master_Backup"),
@@ -54,7 +54,7 @@ Limer_sendSurveys <- function() {
 
   Limer_sendSurvey(lss = lssfiles[1], name = "Edgar1")
 
-  response <- purrr::map2(lssfiles[1:2], namesE, Limer_sendSurvey, .progress = TRUE)
+  response <- purrr::map2(lssfiles[1:2], namesE, LS_SendSurvey, .progress = TRUE)
   cli::cli_inform("Surveys created:")
   return(response)
 

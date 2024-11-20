@@ -26,7 +26,7 @@
 
 workaround <- function(sid, master_title) {
   #Get master meta data from LimeSurvey
-  LimeSurveyMaster <- Limer_GetMasterQuesions(id = sid,
+  LimeSurveyMaster <- LS_GetMasterQuesions(id = sid,
                                      name = master_title)
 
   check <- length(LimeSurveyMaster$variable)

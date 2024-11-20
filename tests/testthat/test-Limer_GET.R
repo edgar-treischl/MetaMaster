@@ -3,7 +3,7 @@
 test_that("Limer_GetMasterTemplates returns data frame with 3 columns", {
   #skip_on_cran()
   Sys.setenv(R_CONFIG_ACTIVE = "test")
-  df <- Limer_GetMasterTemplates(template = TRUE)
+  df <- LS_GetMasterTemplates(template = TRUE)
   expect_s3_class(df, "data.frame")
 
   expect_equal(ncol(df), 3)
@@ -13,16 +13,16 @@ test_that("Limer_GetMasterTemplates returns data frame with 3 columns", {
 test_that("Limer_GetMasterQuesions returns data frame with 5 columns", {
   #skip_on_cran()
   Sys.setenv(R_CONFIG_ACTIVE = "test")
-  df <- Limer_GetMasterTemplates(template = TRUE)
+  df <- LS_GetMasterTemplates(template = TRUE)
 
-  expect_error(Limer_GetMasterQuesions(id = "1",
+  expect_error(LS_GetMasterQuestions(id = "1",
                                        name = "Name"))
 
-  master01 <- Limer_GetMasterQuesions(id = df$sid[1],
-                                      name = df$surveyls_title[1])
+  master01 <- LS_GetMasterQuestions(id = df$sid[1],
+                                   name = df$surveyls_title[1])
 
-  master30 <- Limer_GetMasterQuesions(id = df$sid[30],
-                                      name = df$surveyls_title[30])
+  master30 <- LS_GetMasterQuestions(id = df$sid[30],
+                                   name = df$surveyls_title[30])
 
 
   expect_s3_class(master01, "data.frame")

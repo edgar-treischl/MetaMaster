@@ -4,7 +4,7 @@
 #' @return A character vector of unique question IDs
 #' @export
 
-Limer_GetQlist <- function(id) {
+LS_GetQlist <- function(id) {
   # Get configuration parameters
   config_data <- config::get()
 
@@ -14,9 +14,9 @@ Limer_GetQlist <- function(id) {
   tmp.credential <- config_data$tmp.credential
 
   # Connect to the survey system
-  tmp.session <- surveyConnectLs(user = tmp.user,
-                                 credential = tmp.credential,
-                                 server = tmp.server)
+  tmp.session <- LS_Connect(user = tmp.user,
+                            credential = tmp.credential,
+                            server = tmp.server)
 
   # Check if the connection was successful
   if (is.null(tmp.session)) {
@@ -27,7 +27,7 @@ Limer_GetQlist <- function(id) {
   }
 
   # Retrieve the list of questions for the given survey ID
-  lslist <- call_limer(method = "list_questions", params = list(iSurveyID = id))
+  lslist <- LS_Ask(method = "list_questions", params = list(iSurveyID = id))
 
   # Check for error status in the response
   if (!is.null(lslist$status) && grepl("Error", lslist$status)) {
@@ -46,7 +46,7 @@ Limer_GetQlist <- function(id) {
   }
 
   # Release the session key
-  release_session_key()
+  LS_Release()
 
   # Filter the list for questions of type "T" and exclude "0"
   # lslist_filtered <- lslist |>
@@ -78,7 +78,7 @@ Limer_GetQlist <- function(id) {
 #' @return A tibble with columns 'title', 'plot', and 'question'
 #' @export
 
-Limer_getQuestionsbyQID <- function(qid) {
+LS_getQuestionsbyQID <- function(qid) {
   # Get configuration parameters
   config_data <- config::get()
 
@@ -88,9 +88,9 @@ Limer_getQuestionsbyQID <- function(qid) {
   tmp.credential <- config_data$tmp.credential
 
   # Connect to the survey system
-  tmp.session <- surveyConnectLs(user = tmp.user,
-                                 credential = tmp.credential,
-                                 server = tmp.server)
+  tmp.session <- LS_Connect(user = tmp.user,
+                            credential = tmp.credential,
+                            server = tmp.server)
 
   # Check if the connection is successful
   if (is.null(tmp.session)) {
@@ -101,7 +101,7 @@ Limer_getQuestionsbyQID <- function(qid) {
   }
 
   # Retrieve the question properties by question ID
-  lslist <- call_limer(method = "get_question_properties", params = list(iQuestionID = qid))
+  lslist <- LS_Ask(method = "get_question_properties", params = list(iQuestionID = qid))
 
   # Check for error in the response
   if (!is.null(lslist$status) && grepl("Error", lslist$status)) {
@@ -120,7 +120,7 @@ Limer_getQuestionsbyQID <- function(qid) {
   }
 
   # Release the session key
-  release_session_key()
+  LS_Release()
 
   # Create a tibble for available answers and their plot names
   ls_df <- tibble::tibble(

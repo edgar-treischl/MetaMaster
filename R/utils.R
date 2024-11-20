@@ -75,7 +75,7 @@ create_TestSchools <- function() {
 
 
   #Get masterlist
-  mastertemplates <- Limer_GetMasterTemplates(template = TRUE)
+  mastertemplates <- LS_GetMasterTemplates(template = TRUE)
 
   #Get unique values of surveyls_title
   mastertemplates <- mastertemplates |>
@@ -133,6 +133,52 @@ create_TestSchools <- function() {
   return(test_data)
 
 }
+
+
+#' Create a Config File
+#'
+#' @description This function creates a YAML config file with default values.
+#' @examples \dontrun{
+#' create_config()
+#' }
+#' @export
+
+create_config <- function(file = "config.yml") {
+  # Check if the YAML file already exists
+  if (file.exists(file)) {
+    # Ask the user if they want to overwrite the file
+    overwrite <- readline(prompt = paste("The file", file, "already exists. Do you want to overwrite it? (y/n): "))
+
+    # Proceed only if the user confirms 'y'
+    if (tolower(overwrite) != "y") {
+      message("The file was not overwritten.")
+      return(NULL)  # Exit the function if user does not want to overwrite
+    }
+  }
+
+  # Define the content of the YAML file as a list
+  content <- list(
+    default = list(
+      tmp.server = "server",
+      api_url = "url",
+      tmp.user = "user",
+      tmp.credential = "cred",
+      db = "dbname",
+      db_host = "host",
+      db_port = "port",
+      db_user = "db user",
+      db_password = "password",
+      db_mode = "require"
+    )
+  )
+
+  # Write the list to a YAML file
+  yaml::write_yaml(content, file)
+  message("YAML file created successfully: ", file)
+}
+
+
+
 
 
 
