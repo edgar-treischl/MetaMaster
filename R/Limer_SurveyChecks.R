@@ -84,7 +84,7 @@ check_MasterTemplates <- function() {
   #Masters_LimeSurvey <- allMasters$surveyls_title
   #Masters_LimeSurvey
 
-  Masters_LimeSurvey <- LS_GetMaster(template = FALSE)
+  Masters_LimeSurvey <- LS_GetMasterTemplates(template = FALSE)
   Masters_LimeSurvey <- Masters_LimeSurvey$surveyls_title
 
   df <- DB_Table("master_to_template")
@@ -135,7 +135,7 @@ check_SurveyTemplates <- function() {
   MastersTemplates <- df$template
 
 
-  MetaMasterMeta <- readxl::read_excel("MetaMasterMeta.xlsx") |>
+  MetaMasterMeta <- readxl::read_excel("metadata_raw.xlsx") |>
     dplyr::pull(template) |>
     unique()
 

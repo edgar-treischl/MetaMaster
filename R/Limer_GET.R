@@ -279,12 +279,11 @@ LS_GetMasterData <- function(export = FALSE) {
   #Bind them together
   allmasters <- allmasters |> dplyr::bind_rows()
 
+  #allmasters$build_date <- format(Sys.Date(), "%Y %m %d")
+
   #export to Excel
   if (export == TRUE) {
-    #get a string with todays date: 2024_11_11
-    today <- format(Sys.Date(), "%Y_%m_%d")
-    #export
-    writexl::write_xlsx(allmasters, paste0("MasterData_", today, ".xlsx"))
+    writexl::write_xlsx(allmasters, paste0("metadata_raw", ".xlsx"))
     cli::cli_alert_success("Master Data exported.")
   }else {
     return(allmasters)
