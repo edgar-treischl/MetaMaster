@@ -2,7 +2,7 @@
 % Please edit documentation in R/Limer_Post.R
 \name{LS_SendSurveys}
 \alias{LS_SendSurveys}
-\title{Send a list of survey templates to Lime Survey}
+\title{Send Several Survey Templates to Lime Survey}
 \usage{
 LS_SendSurveys()
 }
@@ -10,5 +10,6 @@ LS_SendSurveys()
 Results from the API.
 }
 \description{
-This function sends a survey template to the LimeSurvey API.
+This function is wrapper around LS_SendSurvey to send
+ several surveys on the fly.
 }

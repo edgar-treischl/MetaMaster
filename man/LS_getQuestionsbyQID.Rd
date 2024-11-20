@@ -2,9 +2,9 @@
 % Please edit documentation in R/Limer_Question_properties.R
 \name{LS_getQuestionsbyQID}
 \alias{LS_getQuestionsbyQID}
-\title{Get Question Title, Plot Name, and Question Text by Question ID}
+\title{Superseded: Get Question Title, Plot Name, and Question Text by Question ID}
 \usage{
-LS_getQuestionsbyQID(qid)
+#LS_getQuestionsbyQID(qid = "3307")
 }
 \arguments{
 \item{qid}{Question ID}

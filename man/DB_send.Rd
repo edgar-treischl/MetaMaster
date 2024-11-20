@@ -4,21 +4,16 @@
 \alias{DB_send}
 \title{Send a Table to the Database}
 \usage{
-DB_send(table, name)
+DB_send(table = readxl::read_excel("myfile.xlsx"), name = "myname")
 }
 \arguments{
-\item{table}{Data frame to be uploaded to the database}
+\item{table}{Data frame or table that will be uploaded.}
 
-\item{name}{Name of the table in the database}
+\item{name}{Name of the table.}
 }
 \value{
-A message indicating if the table was successfully uploaded to the database
+A message indicating if the table was successfully uploaded.
 }
 \description{
-This function send a table to the database.
-}
-\examples{
-\dontrun{
-  DB_send(table = readxl::read_excel("myfile.xlsx"), name = "master_to_template")
-}
+This function sends a table to the database.
 }

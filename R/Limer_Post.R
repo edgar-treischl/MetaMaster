@@ -1,13 +1,11 @@
-#' Send a survey template to Lime Survey
+#' Send a Survey Template to Lime Survey
 #'
-#' @description This function sends a survey template to the LimeSurvey.
-#' @param lss The survey template.
-#' @param name The optional name of the survey.
+#' @description This function sends a survey template to the Lime Survey.
+#' @param lss Path to the survey template.
+#' @param name The optional name of the survey. If not provided, the name of
+#'  the survey will be extracted from the template.
 #' @return Results from the API.
-#' @examples \dontrun{
-#' LS_SendSurvey(lss = "struktur_LimeSurvey.lss",
-#' name = "Edgar")
-#' }
+#' @usage LS_SendSurvey(lss = "limesurvey_XXX.lss", name = "MySurvey")
 #' @export
 
 LS_SendSurvey <- function(lss, name = NULL) {
@@ -21,26 +19,29 @@ LS_SendSurvey <- function(lss, name = NULL) {
   #Encode lss file
   test_64 <- base64enc::base64encode(lss)
 
+  # Connect
   tmp.session <- LS_Connect(user = tmp.user,
                             credential = tmp.credential,
                             server = tmp.server)
 
-  # Get the number of completed responses for a survey
+  #Ask to import survey
   response <- LS_Ask(method = "import_survey",
                      params = list(sImportData = test_64,
                                    ImportDataType = "lss",
                                    NewSurveyName = name))
-
+  #Release and inform
   LS_Release()
   cli::cli_inform("Created survey:")
   return(response)
 }
 
 
-#' Send a list of survey templates to Lime Survey
+#' Send Several Survey Templates to Lime Survey
 #'
-#' @description This function sends a survey template to the LimeSurvey API.
+#' @description This function is wrapper around LS_SendSurvey to send
+#'  several surveys on the fly.
 #' @return Results from the API.
+#' @usage LS_SendSurveys()
 #' @export
 
 

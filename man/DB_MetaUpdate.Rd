@@ -4,21 +4,15 @@
 \alias{DB_MetaUpdate}
 \title{Upload Metadata to the Database}
 \usage{
-DB_MetaUpdate(path)
+DB_MetaUpdate(path = "data/report_meta_dev.xlsx")
 }
 \arguments{
-\item{path}{Path to the Excel file with metadata}
+\item{path}{Path to the Excel sheet}
 }
 \value{
-A message from the DB_send function indicating if the table was
- successfully uploaded to the database
+A message if successful
 }
 \description{
-This function reads an Excel file with metadata and uploads
+This function reads the manual metadata and uploads
  each sheet as a table in the database.
-}
-\examples{
-\dontrun{
-  DB_MetaUpdate(path = "data/report_meta_dev.xlsx")
-}
 }

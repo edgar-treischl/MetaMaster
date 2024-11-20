@@ -2,9 +2,9 @@
 % Please edit documentation in R/Limer_Question_properties.R
 \name{LS_GetQlist}
 \alias{LS_GetQlist}
-\title{Get the list of questions for a given survey ID}
+\title{Superseded: Get the list of questions for a given survey ID}
 \usage{
-LS_GetQlist(id)
+LS_GetQlist(id = "197865")
 }
 \arguments{
 \item{id}{Survey ID}

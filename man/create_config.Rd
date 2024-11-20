@@ -4,13 +4,8 @@
 \alias{create_config}
 \title{Create a Config File}
 \usage{
-create_config(file = "config.yml")
+create_config()
 }
 \description{
 This function creates a YAML config file with default values.
-}
-\examples{
-\dontrun{
-create_config()
-}
 }

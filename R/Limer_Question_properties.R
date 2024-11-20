@@ -1,7 +1,8 @@
-#' Get the list of questions for a given survey ID
+#' Superseded: Get the list of questions for a given survey ID
 #' @description This function retrieves the list of questions for a given survey ID.
 #' @param id Survey ID
 #' @return A character vector of unique question IDs
+#' @usage LS_GetQlist(id = "197865")
 #' @export
 
 LS_GetQlist <- function(id) {
@@ -64,18 +65,12 @@ LS_GetQlist <- function(id) {
 
 
 
-#Limer_GetQlist(id = "197865")
-
-
-
-
-
-
-#' Get Question Title, Plot Name, and Question Text by Question ID
+#' Superseded: Get Question Title, Plot Name, and Question Text by Question ID
 #' @description This function retrieves the question title, plot name,
 #'  and question text for a given question ID.
 #' @param qid Question ID
 #' @return A tibble with columns 'title', 'plot', and 'question'
+#' @usage #LS_getQuestionsbyQID(qid = "3307")
 #' @export
 
 LS_getQuestionsbyQID <- function(qid) {
@@ -138,6 +133,6 @@ LS_getQuestionsbyQID <- function(qid) {
 }
 
 
-#Limer_getQuestionsbyQID(qid = "3307")
+
 
 

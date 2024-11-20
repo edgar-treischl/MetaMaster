@@ -4,7 +4,7 @@
 \alias{check_distinct}
 \title{Check if All Variables of the Meta Data are Distinct}
 \usage{
-check_distinct(ubb, export = FALSE)
+check_distinct(ubb = TRUE)
 }
 \arguments{
 \item{ubb}{Logical value indicating if UBB or survey will be checked.}
@@ -15,9 +15,4 @@ check_distinct(ubb, export = FALSE)
 This function checks if all variables names of the meta data
  are distinct. It counts if a variable name is used more than once and returns
    a data frame with the results.
-}
-\examples{
-\dontrun{
-check_distinct(ubb = TRUE)
-}
 }

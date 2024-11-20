@@ -4,21 +4,15 @@
 \alias{DB_Table}
 \title{Get a Table from the Database}
 \usage{
-DB_Table(table = NULL)
+DB_Table(table = "table_name")
 }
 \arguments{
-\item{table}{The name of the table to fetch from the database}
+\item{table}{The name of the table.}
 }
 \value{
-A data frame with the table data or a list of all available tables in the database
+A data frame with the table data or a list of available tables
 }
 \description{
 This function fetches a table from the database and returns it as a data frame.
- If no table is specified, it returns a list of all available tables in the database.
-}
-\examples{
-\dontrun{
-  #DB_Table()
-  DB_Table(table = "master_to_template")
-}
+ If no table is specified, it returns a list of all available tables.
 }

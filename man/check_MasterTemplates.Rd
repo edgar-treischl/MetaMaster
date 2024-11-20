@@ -10,8 +10,3 @@ check_MasterTemplates()
 Some text in LimeSurvey are stored in HTML format.
  This helper function extracts it from the HTML code.
 }
-\examples{
-\dontrun{
-check_MasterTemplates()
-}
-}

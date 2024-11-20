@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{remove_and_combine}
 \alias{remove_and_combine}
-\title{Remove white spaces and combine text}
+\title{Remove White Spaces and Combine Text}
 \usage{
 remove_and_combine(input_vector)
 }
@@ -10,10 +10,9 @@ remove_and_combine(input_vector)
 \item{input_vector}{A character vector.}
 }
 \description{
-Some master templates have white spaces in between words. This
+Some master templates have white spaces between words. This
  function removes the white spaces and combines the text again.
 }
 \examples{
-\dontrun{
-}
+remove_and_combine(input_vector = "What   a difference  a day makes.")
 }

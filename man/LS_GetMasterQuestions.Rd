@@ -2,9 +2,9 @@
 % Please edit documentation in R/Limer_GET.R
 \name{LS_GetMasterQuestions}
 \alias{LS_GetMasterQuestions}
-\title{Get the Quesion from the Master File}
+\title{Get Questions from a Master File}
 \usage{
-LS_GetMasterQuestions(id, name)
+LS_GetMasterQuestions()
 }
 \arguments{
 \item{id}{Survey ID.}
@@ -16,10 +16,5 @@ Results from the API.
 }
 \description{
 This function gets the questions (plot, variable, text)
- from the master file.
-}
-\examples{
-\dontrun{
-LS_GetMasterQuestions()
-}
+ from the master survey template.
 }

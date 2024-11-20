@@ -10,11 +10,6 @@ LS_UploadTemplates()
 Results from the API.
 }
 \description{
-This function uploads the master templates as survey templates
+This function uploads all master templates as survey templates
  to Lime Survey.
-}
-\examples{
-\dontrun{
-LS_UploadTemplates()
-}
 }

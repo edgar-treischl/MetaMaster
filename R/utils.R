@@ -1,12 +1,11 @@
 #' Extract Text from HTML formated Survey Text
 #'
-#' @description Some text in LimeSurvey are stored in HTML format.
+#' @description Some text in Lime Survey are saved as HTML.
 #'  This helper function extracts it from the HTML code.
 #' @param input HTML code
-#' @examples \dontrun{
-#' extract_html(input = "Html code here")
-#' }
+#' @usage extract_html(input = "Html code here")
 #' @export
+
 extract_html <- function(input) {
   rvest::minimal_html(input) |>
     rvest::html_elements("p") |>
@@ -15,14 +14,12 @@ extract_html <- function(input) {
 }
 
 
-#' Remove white spaces and combine text
+#' Remove White Spaces and Combine Text
 #'
-#' @description Some master templates have white spaces in between words. This
+#' @description Some master templates have white spaces between words. This
 #'  function removes the white spaces and combines the text again.
 #' @param input_vector A character vector.
-#' @examples \dontrun{
-#  remove_and_combine(input_vector = "What   a difference  a day makes.")
-#' }
+#' @examples remove_and_combine(input_vector = "What   a difference  a day makes.")
 #' @export
 
 remove_and_combine <- function(input_vector) {
@@ -38,15 +35,14 @@ remove_and_combine <- function(input_vector) {
 
 
 
-#' Test if a Character Vector is HTML Code
+#' Test if a Character Vector is actually HTML
 #'
-#' @description Some, but not all texts in Lime Survey are formated as HTML.
+#' @description Some, but not all texts in Lime Survey are formatted as HTML.
 #'  This function uses the `xml2` package to parse the input as HTML.
 #' @param x A character string
-#' @examples \dontrun{
-#' extract_html(input = "Html code here")
-#' }
+#' @examples extract_html(input = "Html code here")
 #' @export
+
 is_html <- function(x) {
   tryCatch({
     # Try parsing the string as HTML
@@ -62,9 +58,7 @@ is_html <- function(x) {
 #'
 #' @description This function creates a data frame to test all master templates.
 #'  It creates example surveys for each master template to upload in a test environment.
-#' @examples \dontrun{
-#' create_TestSchools()
-#' }
+#' @usage create_TestSchools()
 #' @export
 
 create_TestSchools <- function() {
@@ -138,9 +132,7 @@ create_TestSchools <- function() {
 #' Create a Config File
 #'
 #' @description This function creates a YAML config file with default values.
-#' @examples \dontrun{
-#' create_config()
-#' }
+#' @usage create_config()
 #' @export
 
 create_config <- function(file = "config.yml") {

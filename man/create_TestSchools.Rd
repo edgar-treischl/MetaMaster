@@ -10,8 +10,3 @@ create_TestSchools()
 This function creates a data frame to test all master templates.
  It creates example surveys for each master template to upload in a test environment.
 }
-\examples{
-\dontrun{
-create_TestSchools()
-}
-}

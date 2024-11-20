@@ -13,10 +13,5 @@ LS_GetMasterData(export = FALSE)
 Results from the API.
 }
 \description{
-This function gets the meta data from Lime Survey for all master templates.
-}
-\examples{
-\dontrun{
-LS_GetMasterData(export = FALSE)
-}
+This function gets the raw meta data from Lime Survey for all master templates.
 }

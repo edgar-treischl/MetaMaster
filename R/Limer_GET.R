@@ -6,11 +6,9 @@
 #' Get Master Templates from Lime Survey
 #'
 #' @description This function gets the master templates from Lime Survey.
-#' @param template Logical. If TRUE, the function will return the template name as well.
+#' @param template If TRUE, the function will return the template name as well.
 #' @return Results from the API.
-#' @examples \dontrun{
-#' LS_GetMasterTemplates()
-#' }
+#' @usage LS_GetMasterTemplates()
 #' @export
 
 
@@ -72,18 +70,17 @@ LS_GetMasterTemplates <- function(template = FALSE) {
 # Sys.setenv(R_CONFIG_ACTIVE = "test")
 # df <- Limer_GetMaster(template = FALSE)
 
-#' Get the Quesion from the Master File
+#' Get Questions from a Master File
 #' @description This function gets the questions (plot, variable, text)
-#'  from the master file.
+#'  from the master survey template.
 #' @param id Survey ID.
 #' @param name Survey name (surveyls_title).
 #' @return Results from the API.
-#' @examples \dontrun{
-#' LS_GetMasterQuestions()
-#' }
+#' @usage LS_GetMasterQuestions()
 #' @export
 
 LS_GetMasterQuestions <- function(id, name) {
+
   #Get specs from config
   get <- config::get()
   tmp.server <- get$tmp.server
@@ -94,44 +91,46 @@ LS_GetMasterQuestions <- function(id, name) {
                             credential = tmp.credential,
                             server = tmp.server)
 
-
+  #Get list of questions
   lslist <- LS_Ask(method = "list_questions",
                    params = list(iSurveyID = id))
-
+  #Disconnect
   LS_Release()
 
+  #Check for error status in the response
   if (rlang::is_empty(lslist$status) == FALSE) {
     problem <- paste0("Error in get_MasterMeta(): ", lslist$status)
     cli::cli_abort(problem)
   }
 
-
+  #Check which question types are in the survey
   questiontypes <- unique(lslist$type)
-
+  #These are tested question types
   allowed_types <- c("!", "L", "F", "X", "M", "S", "T")
 
   # Check if any value in questiontypes is not in the allowed set
   invalid_values <- questiontypes[!questiontypes %in% allowed_types]
 
-  # If there are any invalid values, abort with a custom message
+  #Abort with a custom message if there are invalid values
   if (length(invalid_values) > 0) { # nocov
     cli::cli_abort(paste("Invalid value(s) found in questiontypes:", # nocov
                          paste(invalid_values, collapse = ", "))) # nocov
   }
 
 
-  #drop boilerplate
+  #Drop boilerplate questions (placeholder)
   if ("X" %in% questiontypes) {
     lslist <- lslist |> dplyr::filter(type != "X")
   }
 
 
-  #Add filter
+  #Identify filter quesions via relevance
   gid_filter <- lslist |>
     dplyr::filter(relevance != "1") |>
     dplyr::pull(gid) |>
     unique()
 
+  #Grab titles of filter questions
   filter <- NULL
   if (!rlang::is_empty(gid_filter)) {
     filter <- lslist |>
@@ -141,24 +140,19 @@ LS_GetMasterQuestions <- function(id, name) {
   }
 
 
-
-
-
+  #Next we extract questions and titles, depending on the question type
   #TYPE F OR M
   templateArray <- NULL
-
 
 
   if (any(questiontypes %in% c("F", "M"))) {
     lslistArray <- lslist |> dplyr::filter(type %in% c("F", "M"))
 
-
-
     df <- lslistArray |>
       dplyr::select(parent_qid, title)
 
 
-    # Step 1: Extract plot titles (where parent_qid == 0)
+    # Step 1: Extract plot and var titles
 
     titles <- df |>
       dplyr::filter(parent_qid == 0) |>
@@ -180,19 +174,21 @@ LS_GetMasterQuestions <- function(id, name) {
     plot <- matched_variables$plot
     varname <- matched_variables$title
 
-
+    #Step2: Extract questions
     question <- lslistArray |>
       dplyr::filter(parent_qid != "0") |>
       dplyr::pull(question)
 
     questions <- stringr::str_trim(question)
 
+    #Create DF
     templateArray <- tibble::tibble(surveyID = id,
                                     template = name,
                                     plot = plot,
                                     variable = varname,
                                     text = questions)
 
+    #Add filter column
     templateArray <- templateArray |>
       dplyr::mutate(filter = ifelse(variable %in% filter, "TRUE", "FALSE"))
   }
@@ -200,25 +196,25 @@ LS_GetMasterQuestions <- function(id, name) {
   templateLRadio <- NULL
   if (any(questiontypes %in% c("!", "L", "S", "T"))) {
     #TYPE "!", "L", "S", "T"
-
     lslistLRadio <- lslist |> dplyr::filter(type %in% c("!", "L", "S", "T"))
 
     varname <- lslistLRadio$title
     plot <- substr(varname, 1, 3)
     varname <- substr(varname, 4, nchar(varname))
-
     questions <- lslistLRadio$question
 
 
-
+    #Some questions are HTML code, we need to extract the text
+    #Work in Progress: Talk with Gisela
     checkhtml <- is_html(questions[1])
 
-
-    q_rest <- purrr::map(questions, extract_html) |>
+    #Extract text
+    html_text <- purrr::map(questions, extract_html) |>
       purrr::flatten_chr()
 
-    questions <- stringr::str_trim(q_rest)
+    questions <- stringr::str_trim(html_text)
 
+    #And there are manual breaks so nquestions must not nplots
     nquestions <- length(questions)
     nplots <- length(plot)
 
@@ -226,13 +222,13 @@ LS_GetMasterQuestions <- function(id, name) {
       questions <- "Reformat HTML Code"
     }
 
-
+    #Create DF
     templateLRadio <- tibble::tibble(surveyID = id,
                                      template = name,
                                      plot = plot,
                                      variable = varname,
                                      text = questions)
-
+    #Add filter column
     templateLRadio <- templateLRadio |>
       dplyr::mutate(filter = ifelse(variable %in% filter, "TRUE", "FALSE"))
   }
@@ -242,9 +238,6 @@ LS_GetMasterQuestions <- function(id, name) {
   if (!is.null(templateArray) && !is.null(templateLRadio)) {
     df_return <- rbind(templateArray, templateLRadio)
   } else {
-    # Return the one that exists or "Upps" if neither exists
-    #df_return <- rlang::`%||%`(templateArray, templateLRadio)
-
     df_return <- rlang::`%||%`(templateArray, templateLRadio)
   }
 
@@ -264,16 +257,15 @@ LS_GetMasterQuestions <- function(id, name) {
 
 #' Get the Master Data from Lime Survey
 #'
-#' @description This function gets the meta data from Lime Survey for all master templates.
+#' @description This function gets the raw meta data from Lime Survey for all master templates.
 #' @param export Export the data to an Excel file.
 #' @return Results from the API.
-#' @examples \dontrun{
-#' LS_GetMasterData(export = FALSE)
-#' }
+#' @usage LS_GetMasterData(export = FALSE)
 #' @export
 
 
 LS_GetMasterData <- function(export = FALSE) {
+
   #Get all the masters ids and names from LimeSurvey
   limerdf <- LS_GetMasterTemplates(template = FALSE)
   sid <- limerdf$sid
@@ -284,13 +276,14 @@ LS_GetMasterData <- function(export = FALSE) {
                             surveyls_title,
                             LS_GetMasterQuestions, .progress = TRUE)
 
-  #Bind all the metadata
+  #Bind them together
   allmasters <- allmasters |> dplyr::bind_rows()
 
+  #export to Excel
   if (export == TRUE) {
     #get a string with todays date: 2024_11_11
     today <- format(Sys.Date(), "%Y_%m_%d")
-
+    #export
     writexl::write_xlsx(allmasters, paste0("MasterData_", today, ".xlsx"))
     cli::cli_alert_success("Master Data exported.")
   }else {
@@ -303,12 +296,10 @@ LS_GetMasterData <- function(export = FALSE) {
 
 #' Upload Master Templates as Survey Templates to Lime Survey
 #'
-#' @description This function uploads the master templates as survey templates
+#' @description This function uploads all master templates as survey templates
 #'  to Lime Survey.
 #' @return Results from the API.
-#' @examples \dontrun{
-#' LS_UploadTemplates()
-#' }
+#' @usage LS_UploadTemplates()
 #' @export
 
 LS_UploadTemplates <- function() {

@@ -4,19 +4,14 @@
 \alias{LS_GetMasterTemplates}
 \title{Get Master Templates from Lime Survey}
 \usage{
-LS_GetMasterTemplates(template = FALSE)
+LS_GetMasterTemplates()
 }
 \arguments{
-\item{template}{Logical. If TRUE, the function will return the template name as well.}
+\item{template}{If TRUE, the function will return the template name as well.}
 }
 \value{
 Results from the API.
 }
 \description{
 This function gets the master templates from Lime Survey.
-}
-\examples{
-\dontrun{
-LS_GetMasterTemplates()
-}
 }

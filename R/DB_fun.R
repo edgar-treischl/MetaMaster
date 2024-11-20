@@ -1,18 +1,16 @@
 #' Send a Table to the Database
 #'
-#' @description This function send a table to the database.
-#' @param table Data frame to be uploaded to the database
-#' @param name Name of the table in the database
-#' @return A message indicating if the table was successfully uploaded to the database
-#' @examples
-#' \dontrun{
-#'   DB_send(table = readxl::read_excel("myfile.xlsx"), name = "master_to_template")
-#' }
+#' @description This function sends a table to the database.
+#' @param table Data frame or table that will be uploaded.
+#' @param name Name of the table.
+#' @return A message indicating if the table was successfully uploaded.
+#' @usage DB_send(table = readxl::read_excel("myfile.xlsx"), name = "myname")
 #' @export
 
 
 DB_send <- function(table, name) {
 
+  #Get config
   get <- config::get(file = here::here("config.yml"))
   db <- get$db
   db_host <- get$db_host
@@ -21,6 +19,7 @@ DB_send <- function(table, name) {
   db_password <- get$db_password
   db_mode <- get$db_mode
 
+  # Connect to the database
   con <- DBI::dbConnect(RPostgres::Postgres(),
                         dbname = db,
                         host = db_host,
@@ -31,24 +30,26 @@ DB_send <- function(table, name) {
 
   # Check if connection is valid
   if (!DBI::dbIsValid(con)) {
-    cli::cli_abort("Failed to connect to the database. Please check your credentials and network connection.")
+    cli::cli_abort("Failed to connect to the database. Please check your credentials and network.")
   }
 
+  #Add timestamp
   table$timestamp <- Sys.time()
-
+  #Copy the table to the database
   dplyr::copy_to(con, table, overwrite = TRUE, temporary = FALSE, name = name)
 
 
-
+  # Check if the table was successfully uploaded
   tableslisted <- DBI::dbListTables(con)
 
+  #Give feedback
   if (name %in% tableslisted) {
     cli::cli_alert_success(glue::glue("The table '{name}' has been successfully uploaded to the database."))
   } else {
     cli::cli_alert_warning(glue::glue("Failed to upload the table '{name}' to the database."))
   }
 
-
+  # Disconnect from the database
   on.exit(DBI::dbDisconnect(con), add = TRUE)
 
 
@@ -62,15 +63,11 @@ DB_send <- function(table, name) {
 
 #' Upload Metadata to the Database
 #'
-#' @description This function reads an Excel file with metadata and uploads
+#' @description This function reads the manual metadata and uploads
 #'  each sheet as a table in the database.
-#' @param path Path to the Excel file with metadata
-#' @return A message from the DB_send function indicating if the table was
-#'  successfully uploaded to the database
-#' @examples
-#' \dontrun{
-#'   DB_MetaUpdate(path = "data/report_meta_dev.xlsx")
-#' }
+#' @param path Path to the Excel sheet
+#' @return A message if successful
+#' @usage DB_MetaUpdate(path = "data/report_meta_dev.xlsx")
 #' @export
 
 
@@ -81,6 +78,7 @@ DB_MetaUpdate <- function(path) {
     cli::cli_abort(glue::glue("The file '{path}' does not exist. Please check the path and try again."))
   }
 
+  #Make consistency checks and abort if necessary
   check_manualmeta()
 
   # Get sheet names from the Excel file
@@ -116,18 +114,16 @@ DB_MetaUpdate <- function(path) {
 #' Get a Table from the Database
 #'
 #' @description This function fetches a table from the database and returns it as a data frame.
-#'  If no table is specified, it returns a list of all available tables in the database.
-#' @param table The name of the table to fetch from the database
-#' @return A data frame with the table data or a list of all available tables in the database
-#' @examples
-#' \dontrun{
-#'   #DB_Table()
-#'   DB_Table(table = "master_to_template")
-#' }
+#'  If no table is specified, it returns a list of all available tables.
+#' @param table The name of the table.
+#' @return A data frame with the table data or a list of available tables
+#' @usage DB_Table(table = "table_name")
 #' @export
 
 
 DB_Table <- function(table = NULL) {
+
+  #Get config
   #config_path <- normalizePath(here::here("config.yml"))
   #get <- config::get(file = config_path)
   get <- config::get()
@@ -138,6 +134,7 @@ DB_Table <- function(table = NULL) {
   db_password <- get$db_password
   db_mode <- get$db_mode
 
+  # Connect to the database
   con <- DBI::dbConnect(RPostgres::Postgres(),
                         dbname = db,
                         host = db_host,
