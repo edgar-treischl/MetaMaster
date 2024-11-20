@@ -73,18 +73,18 @@ corresponding credentials and parameters are set and that environment
 variable is set to “test”.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MetaMaster</span><span class="op">)</span></span>
-<span><span class="co">#Sys.setenv(R_CONFIG_ACTIVE = "test")</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_CONFIG_ACTIVE <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="meta-master-in-action">Meta Master in Action<a class="anchor" aria-label="anchor" href="#meta-master-in-action"></a>
 </h2>
-<p>Use the <code><a href="../reference/Limer_GetMasterData.html">Limer_GetMasterData()</a></code> function to create the raw
+<p>Use the <code>Limer_GetMasterData()</code> function to create the raw
 meta data. The function gets all master templates from the LimeSurvey
 API and retrieves for each master the survey question, id, so on. The
 function returns a tibble or exports the data if the <code>export</code>
 parameter is set to <code>TRUE</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Get the survey questions for the first three master templates</span></span>
-<span><span class="fu"><a href="../reference/Limer_GetMasterData.html">Limer_GetMasterData</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/LS_GetMasterData.html">LS_GetMasterData</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># ✔ Master Data exported.  </span></span></code></pre></div>
 <p>As the next console shows, the functions exports the raw meta data in
 the current working directory and appends today’s date to the file
@@ -188,7 +188,7 @@ the raw data. The function needs the path to the raw data and the
 <code>export</code> parameter to be set to <code>TRUE</code> if the meta
 data should be exported.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/buildMetaMaster.html">buildMetaMaster</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_19.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/buildMetaMaster.html">buildMetaMaster</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_20.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#✔ MetaMaster exported.</span></span></code></pre></div>
 <p>The exported file contains all tables, each in a separate sheet. The
 following console shows the first rows of the templates table.</p>
@@ -214,7 +214,7 @@ on a master template. The <code>send_survey()</code> function needs the
 path to the master template and the name of the new survey.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Create a new survey</span></span>
-<span><span class="fu"><a href="../reference/Limer_sendSurvey.html">Limer_sendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"struktur_LimeSurvey.lss"</span>,</span>
+<span><span class="fu"><a href="../reference/LS_SendSurvey.html">LS_SendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"struktur_LimeSurvey.lss"</span>,</span>
 <span>                 name <span class="op">=</span> <span class="st">"SurveyName"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -229,7 +229,7 @@ path to the master template and the name of the new survey.</p>
 function. The latter runs <code>get_MasterTemplate()</code> which
 returns all masters templates and saves the result as an Excel file.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/Limer_GetMasterData.html">Limer_GetMasterData</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_GetMasterData.html">LS_GetMasterData</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/buildMetaMaster.html">buildMetaMaster</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_11.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/send_testrun.html">send_testrun</a></span><span class="op">(</span>sendto <span class="op">=</span> <span class="st">"johndoe@doe.com"</span><span class="op">)</span></span></code></pre></div>
 </div>

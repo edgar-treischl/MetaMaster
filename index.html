@@ -96,12 +96,12 @@
 <div class="section level2">
 <h2 id="get-functions">Get Functions<a class="anchor" aria-label="anchor" href="#get-functions"></a>
 </h2>
-<p>Use one of the get function retrieve data from the API. The <code><a href="reference/Limer_GetMasterTemplates.html">Limer_GetMasterTemplates()</a></code> function returns the survey ID (<code>sid</code>) and the name of the survey (<code>surveyls_title</code>) for all the master template from Lime Survey. The function picks survey templates which name start with the string <code>master_</code>. As the next output highlights, the function adds the corresponding the survey template if the <code>template</code> argument is set to <code>TRUE</code>.</p>
+<p>Use one of the get function retrieve data from the API. The <code>Limer_GetMasterTemplates()</code> function returns the survey ID (<code>sid</code>) and the name of the survey (<code>surveyls_title</code>) for all the master template from Lime Survey. The function picks survey templates which name start with the string <code>master_</code>. As the next output highlights, the function adds the corresponding the survey template if the <code>template</code> argument is set to <code>TRUE</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Let's get started</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MetaMaster</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_CONFIG_ACTIVE <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Limer_GetMasterTemplates.html">Limer_GetMasterTemplates</a></span><span class="op">(</span>template <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/LS_GetMasterTemplates.html">LS_GetMasterTemplates</a></span><span class="op">(</span>template <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># A tibble: 6 × 3</span></span>
@@ -113,9 +113,9 @@
 <span><span class="co"># 4 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_beru_ws_elt_00_2022_p1</span></span>
 <span><span class="co"># 5 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p2</span></span>
 <span><span class="co"># 6 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p4</span></span></code></pre></div>
-<p>Next, we can retrieve survey questions and texts via the API. The function <code><a href="reference/Limer_GetMasterQuesions.html">Limer_GetMasterQuesions()</a></code> returns the plot, variable, and text for survey questions of a given master template. The function needs the survey ID (<code>sid</code>) and the name of the master template (<code>name</code>).</p>
+<p>Next, we can retrieve survey questions and texts via the API. The function <code>Limer_GetMasterQuesions()</code> returns the plot, variable, and text for survey questions of a given master template. The function needs the survey ID (<code>sid</code>) and the name of the master template (<code>name</code>).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/Limer_GetMasterQuesions.html">Limer_GetMasterQuesions</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">sid</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, name <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">surveyls_title</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/LS_GetMasterQuestions.html">LS_GetMasterQuestions</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">sid</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, name <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">surveyls_title</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># A tibble: 29 × 5</span></span>
 <span><span class="co">#    surveyID template                             plot  variable  text                   </span></span>
@@ -136,16 +136,16 @@
 <div class="section level2">
 <h2 id="send-and-delete">Send and Delete<a class="anchor" aria-label="anchor" href="#send-and-delete"></a>
 </h2>
-<p>The <code><a href="reference/Limer_sendSurvey.html">Limer_sendSurvey()</a></code> function sends a survey template to LimeSurvey. The function needs the path to the survey template and the name of the survey template. It expects the survey template to be in the LimeSurvey LSS format.</p>
+<p>The <code>Limer_sendSurvey()</code> function sends a survey template to LimeSurvey. The function needs the path to the survey template and the name of the survey template. It expects the survey template to be in the LimeSurvey LSS format.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/Limer_sendSurvey.html">Limer_sendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"limesurveyMod.lss"</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/LS_SendSurvey.html">LS_SendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"limesurveyMod.lss"</span>,</span>
 <span>                 name <span class="op">=</span> <span class="st">"mastertemplate"</span><span class="op">)</span></span></code></pre></div>
-<p>The function <code><a href="reference/Limer_sendSurveys.html">Limer_sendSurveys()</a></code> is a convenient wrapper around <code><a href="reference/Limer_sendSurvey.html">Limer_sendSurvey()</a></code>. It sends all survey templates in the working directory to LimeSurvey.</p>
+<p>The function <code>Limer_sendSurveys()</code> is a convenient wrapper around <code>Limer_sendSurvey()</code>. It sends all survey templates in the working directory to LimeSurvey.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/Limer_sendSurveys.html">Limer_sendSurveys</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>Finally, the <code><a href="reference/Limer_DeleteSurvey.html">Limer_DeleteSurvey()</a></code> function deletes a survey template from LimeSurvey. The function needs the survey ID of the survey template. Be careful, there is no way to restore a deleted survey template.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/LS_SendSurveys.html">LS_SendSurveys</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Finally, the <code>Limer_DeleteSurvey()</code> function deletes a survey template from LimeSurvey. The function needs the survey ID of the survey template. Be careful, there is no way to restore a deleted survey template.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/Limer_DeleteSurvey.html">Limer_DeleteSurvey</a></span><span class="op">(</span>sid <span class="op">=</span> <span class="st">"123456"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/LS_DeleteSurvey.html">LS_DeleteSurvey</a></span><span class="op">(</span>sid <span class="op">=</span> <span class="st">"123456"</span><span class="op">)</span></span></code></pre></div>
 <p>Consider to read the vignette for more details how MetaMaster works.</p>
 </div>
 </div>
