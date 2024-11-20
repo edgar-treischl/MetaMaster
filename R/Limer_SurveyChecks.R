@@ -134,7 +134,6 @@ check_SurveyTemplates <- function() {
   df <- DB_Table("master_to_template")
   MastersTemplates <- df$template
 
-
   MetaMasterMeta <- readxl::read_excel(here::here("metadata_raw.xlsx")) |>
     dplyr::pull(template) |>
     unique()
