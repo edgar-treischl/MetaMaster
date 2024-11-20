@@ -4,47 +4,307 @@
 
 
 
-
-#' Get the templates
-#' @description Some text in LimeSurvey are stored in HTML format.
-#'  This helper function extracts it from the HTML code.
-#' @param export Export results to Excel
+#' Build the Meta Data
+#'
+#' @description This function create the metadata based on the raw meta
+#'    data fetched from Lime Survey.
+#' @param send_report A logical value indicating if the report should be sent.
+#' @return A message indicating the completion of the process.
+#' @usage build(send_report = TRUE)
 #' @export
 
-testrun <- function(export = FALSE) {
+build <- function(send_report = FALSE) {
 
-  #mastertemplatesList <- get_masters()
-  #exclude <- c(-17, -18, -19, -68, -69, -70, -71)
-
-  # metadf <- purrr::map2(mastertemplatesList$template,
-  #                       mastertemplatesList$master,
-  #                       joinMetaGisela, .progress = TRUE)
-
-
-  #metadf <- metadf |> dplyr::bind_rows()
-
-
-  # unique(metadf$template)
-  # unique(metadf$surveytemplate)
-  # mastertemplatesList$template[1:3]
-  # mastertemplatesList$master[1:3]
-
-
-  #get only year, month and day
-  if (export == TRUE) {
-    date <- format(Sys.time(), "%Y_%m_%d")
-    file <- paste0("TestRun_", date, ".xlsx")
-    metadf <- metadf |> dplyr::bind_rows()
-
-    writexl::write_xlsx(metadf, file)
-  }else {
-    return(metadf)
+  # Ensure that the environment variable R_CONFIG_ACTIVE is set to "test"
+  if (!Sys.getenv("R_CONFIG_ACTIVE") == "test") {
+    cli::cli_abort("Please set the environment variable R_CONFIG_ACTIVE to 'test'.")
   }
+
+  # Inform the user that the function is starting the process
+  cli::cli_alert_info("Starting the build process...")
+
+  # Fetch the master data
+  cli::cli_alert_info("Fetching raw meta data from Lime Survey")
+  LS_GetMasterData(export = TRUE)
+
+  # Build metadata for the master data
+  cli::cli_alert_info("Building metadata for the master data...")
+  prepare_RawMeta(path = "metadata_raw.xlsx", export = TRUE)
+
+  # Optionally send a report if the parameter send_report is TRUE
+  if (send_report) {
+    cli::cli_alert_info("Sending the report...")
+    send_Report()
+  } else {
+    cli::cli_alert_warning("Skipping the report send step. To send the report, set send_report = TRUE.")
+  }
+
+  # Final message indicating completion
+  cli::cli_alert_success("By the power of Grayskull: Building process completed.")
+}
+
+
+#build(send_report = TRUE)
+
+
+
+
+
+#' Prepare the Raw Meta Data
+#'
+#' @description This function builds the MetaMaster from a given Excel file.
+#' @param path The path to the Excel file.
+#' @param export If TRUE, the MetaMaster will be exported as an Excel file.
+#' @export
+
+
+prepare_RawMeta <- function(path, export = FALSE) {
+  df <- readxl::read_excel(path) |>
+    dplyr::rename(master_template = template)
+
+
+  mtt <- DB_Table("master_to_template")
+  mtt <- mtt |> dplyr::select(master_template = surveyls_title, template, report = rpt)
+
+  #masterlist <- Limer_GetMasterTemplates(template = TRUE)
+
+
+
+  df <- mtt |> dplyr::left_join(df, by = "master_template",
+                                relationship = "many-to-many")
+
+  sart <- V2 <- V5 <- V8 <- NULL
+
+  fromString <- as.data.frame(stringr::str_split_fixed(df$template,
+                                                       pattern = "_",
+                                                       n = 8))
+
+  #bring survey type back together
+  fromString$sart <- paste0(fromString$V3, "_", fromString$V4)
+  fromString$sart <- stringr::str_replace_all(fromString$sart,
+                                              pattern = "allg_",
+                                              replacement = "")
+
+  #Select the relevant columns
+  stringified <- fromString |>
+    dplyr::select(ubb = V2,
+                  stype = sart,
+                  type = V5,
+                  ganztag = V8)
+
+  #Replace the strings with the correct values
+  stringified$ganztag <- stringr::str_replace_all(stringified$ganztag, pattern = "p1",
+                                                  replacement = "FALSE")
+  stringified$ganztag <- stringr::str_replace_all(stringified$ganztag, pattern = "p2",
+                                                  replacement = "TRUE")
+
+
+  #Some for UBB
+  stringified$ubb <- stringr::str_replace_all(stringified$ubb, pattern = "bfr",
+                                              replacement = "FALSE")
+
+  stringified$ubb <- stringr::str_replace_all(stringified$ubb, pattern = "ubb",
+                                              replacement = "TRUE")
+
+  stringified$type <- stringr::str_replace_all(stringified$type, pattern = "eva",
+                                               replacement = "ubb")
+
+
+
+  stringified$template <- df$template
+
+
+
+
+  mastertemplate <- df |>
+    dplyr::left_join(stringified, by = "template",
+                     relationship = "many-to-many")
+
+
+
+
+  #01templates
+
+  templates <- NULL
+
+  varlist <- c("surveyID", "master_template", "report", "template", "ubb", "stype", "type", "ganztag")
+
+  templates <- mastertemplate |>
+    dplyr::select(dplyr::all_of(varlist)) |>
+    dplyr::distinct()
+
+  templates$timestamp <- Sys.time()
+
+
+  #02reports
+
+  reports <- NULL
+
+  varlist <- c("report", "plot", "variable", "text", "type")
+
+  reports <- mastertemplate |>
+    dplyr::select(dplyr::all_of(varlist)) |>
+    dplyr::group_by(report) |>
+    dplyr::distinct() |>
+    dplyr::ungroup()
+
+  reports$timestamp <- Sys.time()
+
+
+
+  #Give me some rules to shorten your strings#####################################
+  reports$text <- stringr::str_remove_all(reports$text, "\\s*\\([^\\)]*\\)")
+
+  reports$text <- stringr::str_replace_all(reports$text,
+                                           pattern = "Schülerinnen und Schüler",
+                                           replacement = "SuS")
+
+  reports$text <- stringr::str_replace_all(reports$text,
+                                           pattern = "Ausbilderinnen und Ausbilder",
+                                           replacement = "Ausbildungspartner")
+
+  reports$text <- stringr::str_replace_all(reports$text,
+                                           pattern = "Lehrinnen und Lehrer",
+                                           replacement = "Lehrkräfte")
+
+  reports$text <- stringr::str_replace_all(reports$text,
+                                           pattern = "Schulleitung",
+                                           replacement = "SL")
+
+  reports$text <- stringr::str_replace_all(reports$text,
+                                           pattern = "Schulpersonal",
+                                           replacement = "Personal")
+
+
+  reports$text <- stringr::str_replace_all(reports$text,
+                                           pattern = "Lehrerkonferenzen bzw. Teamkonferenzen",
+                                           replacement = "Lehrer-/Teamkonferenzen")
+
+
+
+  set_data <- sets <- plots_headers <- plots_headers_ubb <- extraplots <- NULL
+
+  #03set data
+  set_data <- DB_Table("set_data")
+  sets <- DB_Table("sets")
+
+  plots_headers <- DB_Table("plots_headers")
+  plots_headers_ubb <- DB_Table("plots_headers_ubb")
+  extraplots <- DB_Table(table = "extraplots")
+
+
+  mydfs <- list(
+    templates = templates,
+    reports = reports,
+    set_data = set_data,
+    sets = sets,
+    plots_headers = plots_headers,
+    headers_ubb = plots_headers_ubb,
+    extra_plots = extraplots
+  )
+
+
+  if (export == TRUE) {
+    cli::cli_alert_success("MetaMaster exported.")
+    writexl::write_xlsx(mydfs, path = "MetaMaster.xlsx")
+  }else {
+    return(mydfs)
+
+  }
+}
+
+
+#buildMetaMaster(path = "MasterData_2024_11_11.xlsx", export = TRUE)
+
+
+
+
+
+
+#' Build Overall Report based on Package Name
+#' @description This function will build an overall report based on the package name.
+#' @param packagename The path to the Excel file.
+#' @export
+
+
+prepare_OverallReport <- function(packagename) {
+  master_to_template <- DB_Table("master_to_template")
+
+  allreports <- master_to_template |>
+    dplyr::filter(pckg == packagename) |>
+    dplyr::arrange(rpt) |>
+    dplyr::pull(rpt) |>
+    unique()
+
+
+  reports <- DB_Table("reports")
+
+
+  overallreports <- reports |>
+    dplyr::filter(report %in% allreports)
+
+  check <- overallreports |>
+    dplyr::arrange(report) |>
+    dplyr::pull(report) |>
+    unique()
+
+  if (identical(allreports, check) == FALSE) {
+    cli::cli_abort("Reports are not the same. Check the data.")
+    return(as.list(allreports, check))
+
+  }else {
+    overallreports$report <- packagename
+    return(overallreports)
+  }
+}
+
+
+# master_to_template <- DB_Table("master_to_template")
+# report_packages <- master_to_template |> dplyr::pull(pckg) |> unique()
+# buildOverallReport(packagename = report_packages[1])
+# purrr::map(report_packages[1:17], buildOverallReport)
+
+#' Send Test Results
+#' @description This function send the test results to the specified email address.
+#' @examples \dontrun{
+#' send_testrun(sendto = 'john.doe@johndoe.com')
+#' }
+#' @export
+
+send_Report <- function() {
+
+  #Read "MetaMasterMeta.xlsx"
+  metadf <- readxl::read_excel("MetaMaster.xlsx")
+
+  #get date and time and add it to the subject
+  date <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+  mailsubject <- paste("MetaMaster Update", date)
+
+  #The mail template
+  file_path <- system.file("rmarkdown/templates/mail/skeleton/skeleton.Rmd", package = "MetaMaster")
+  file.copy(file_path, to = here::here("template_mail.Rmd"))
+
+  #Build the email with the template
+  email <- blastula::render_email("template_mail.Rmd")|>
+    blastula::add_attachment(file = "MetaMaster.xlsx")
+
+  #Get the mail recipient and sender from the config file
+  get <- config::get(file = "config.yml")
+  report_from <- get$report_from
+  report_to <- get$report_to
+
+  # Send the email with smtp_send
+  email |>
+    blastula::smtp_send(
+      to = report_to,
+      from = report_from,
+      subject = mailsubject,
+      credentials = blastula::creds_file("my_mail_creds")
+    )
 
 }
 
 
-#testrun(export = FALSE)
 
 
 
@@ -56,17 +316,18 @@ testrun <- function(export = FALSE) {
 
 
 
-#OVerall?############################
 
-# master_to_template <- readxl::read_excel("data/master_to_template.xlsx")
-#
-#
-# overall01 <- master_to_template |>
-#   dplyr::filter(template == templates01) |>
-#   dplyr::pull(surveyls_title)
-#
-#
-# master_universe |> dplyr::filter(template == overall01)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

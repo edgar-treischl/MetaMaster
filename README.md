@@ -145,4 +145,10 @@ template.
 LS_DeleteSurvey(sid = "123456")
 ```
 
+Build the MetaMaster.
+
+``` r
+MetaMaster::build(send_report = TRUE)
+```
+
 Consider to read the vignette for more details how MetaMaster works.

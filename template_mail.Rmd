@@ -26,13 +26,13 @@ Werden Variablennamen mehr als einmal verwendet?
 
 ```{r}
 #check_limeMeta returns distinct(!) variables from the LimeSurvey API if they appear more than once
-check_distinct(ubb = TRUE) |>  print(n = Inf)
+check_distinct(ubb = TRUE)
   
 ```
 
 ```{r}
 #And for the surveys
-check_distinct(ubb = FALSE) |> print(n = Inf)
+check_distinct(ubb = FALSE)
 ```
 
 Sind alle Mastertemplates im Master-To-Template File auch in LimeSurvey angelegt? Und sind alle in LimeSurvey vorhandenen Mastertemplates auch im Master-To-Template File?
