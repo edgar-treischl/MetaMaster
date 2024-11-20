@@ -126,6 +126,21 @@ LS_GetMasterQuestions <- function(id, name) {
   }
 
 
+  #Add filter
+  gid_filter <- lslist |>
+    dplyr::filter(relevance != "1") |>
+    dplyr::pull(gid) |>
+    unique()
+
+  filter <- NULL
+  if (!rlang::is_empty(gid_filter)) {
+    filter <- lslist |>
+      dplyr::filter(parent_qid != "0") |>
+      dplyr::filter(gid %in% gid_filter) |>
+      dplyr::pull(title)
+  }
+
+
 
 
 
@@ -177,6 +192,9 @@ LS_GetMasterQuestions <- function(id, name) {
                                     plot = plot,
                                     variable = varname,
                                     text = questions)
+
+    templateArray <- templateArray |>
+      dplyr::mutate(filter = ifelse(variable %in% filter, "TRUE", "FALSE"))
   }
 
   templateLRadio <- NULL
@@ -214,8 +232,10 @@ LS_GetMasterQuestions <- function(id, name) {
                                      plot = plot,
                                      variable = varname,
                                      text = questions)
-  }
 
+    templateLRadio <- templateLRadio |>
+      dplyr::mutate(filter = ifelse(variable %in% filter, "TRUE", "FALSE"))
+  }
 
 
   # Return the appropriate result, combining if both exist

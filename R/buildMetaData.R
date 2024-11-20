@@ -173,6 +173,52 @@ buildMetaMaster <- function(path, export = FALSE) {
 
 
 
+#' Build Overall Report based on Package Name
+#' @description This function will build an overall report based on the package name.
+#' @param packagename The path to the Excel file.
+#' @export
+
+
+buildOverallReport <- function(packagename) {
+  master_to_template <- DB_Table("master_to_template")
+
+  allreports <- master_to_template |>
+    dplyr::filter(pckg == packagename) |>
+    dplyr::arrange(rpt) |>
+    dplyr::pull(rpt) |>
+    unique()
+
+
+  reports <- DB_Table("reports")
+
+
+  overallreports <- reports |>
+    dplyr::filter(report %in% allreports)
+
+  check <- overallreports |>
+    dplyr::arrange(report) |>
+    dplyr::pull(report) |>
+    unique()
+
+  if (identical(allreports, check) == FALSE) {
+    cli::cli_abort("Reports are not the same. Check the data.")
+    return(as.list(allreports, check))
+
+  }else {
+    overallreports$report <- packagename
+    return(overallreports)
+  }
+}
+
+
+# master_to_template <- DB_Table("master_to_template")
+# report_packages <- master_to_template |> dplyr::pull(pckg) |> unique()
+# buildOverallReport(packagename = report_packages[1])
+# purrr::map(report_packages[1:17], buildOverallReport)
+
+
+
+
 
 
 

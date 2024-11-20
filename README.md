@@ -48,10 +48,16 @@ production:
   tmp.credential: "Password"
 ```
 
+In case there is no config file, use the `create_config()` function to
+create a new one. The function creates a new `config.yml` file in the
+working directory and adds the default parameters that need to be set
+for the MetaMaster.
+
 By default, the config package returns the default parameters. Suppose
 you want to retrieve data from a test or a production system. To use
 parameters to retrieve data from the `production`, set the environmental
-variable `R_CONFIG_ACTIVE` to `test` before running.
+variable `R_CONFIG_ACTIVE` to `test` before running and add the
+parameters in the config file correspondingly.
 
 ``` r
 Sys.setenv(R_CONFIG_ACTIVE = "test")
