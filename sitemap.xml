@@ -24,8 +24,7 @@
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/LS_getQuestionsbyQID.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/SwapLimesurveyTitles.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/base64_to_df.html</loc></url>
-<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/buildMetaMaster.html</loc></url>
-<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/buildOverallReport.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/build.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/check_MasterTemplates.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/check_SurveyTemplates.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/check_distinct.html</loc></url>
@@ -39,9 +38,10 @@
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/get_session_key.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/index.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/is_html.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/prepare_OverallReport.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/prepare_RawMeta.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/remove_and_combine.html</loc></url>
-<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/send_testrun.html</loc></url>
-<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/testrun.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/send_Report.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/workaround.html</loc></url>
 </urlset>
 

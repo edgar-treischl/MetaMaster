@@ -181,14 +181,14 @@ affect the reporting. The MetaMaster comes with several
 manual meta before this tables can be updated on the data base.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_manualmeta.html">check_manualmeta</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>In addition, the <code><a href="../reference/buildMetaMaster.html">buildMetaMaster()</a></code> function includes
+<p>In addition, the <code>buildMetaMaster()</code> function includes
 further checks that need to made regarding the templates and the reports
 table. Most of all, the function builds the meta master data based on
 the raw data. The function needs the path to the raw data and the
 <code>export</code> parameter to be set to <code>TRUE</code> if the meta
 data should be exported.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/buildMetaMaster.html">buildMetaMaster</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_20.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">buildMetaMaster</span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_20.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#✔ MetaMaster exported.</span></span></code></pre></div>
 <p>The exported file contains all tables, each in a separate sheet. The
 following console shows the first rows of the templates table.</p>
@@ -230,8 +230,8 @@ function. The latter runs <code>get_MasterTemplate()</code> which
 returns all masters templates and saves the result as an Excel file.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_GetMasterData.html">LS_GetMasterData</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/buildMetaMaster.html">buildMetaMaster</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_11.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/send_testrun.html">send_testrun</a></span><span class="op">(</span>sendto <span class="op">=</span> <span class="st">"johndoe@doe.com"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">buildMetaMaster</span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_11.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">send_testrun</span><span class="op">(</span>sendto <span class="op">=</span> <span class="st">"johndoe@doe.com"</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
