@@ -62,76 +62,166 @@
 
     
     
-<p>Before you start, make sure that the config file is available,
-corresponding credentials and parameters are set and that environment
-variable is set to “test”.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<p>The goal of the MetaMaster package is to create meta data for
+LimeSurvey which are reproducible, tested, and, in consequence,
+error-free. The package provides functions to retrieve data via the Lime
+Survey API (starting with: <code>LS_*</code>); functions to work with a
+PostgreSQL (starting with: <code>DB_*</code>) database <span class="citation">(Wickham, Ooms, and Müller 2024)</span>; and functions
+to build the <em>Master Meta Data</em>. Furthermore, the package
+implements functions to perform consistency checks and further helpers,
+for example, to upload survey templates via the API.</p>
+<p>In order to use the package, you must provide credentials and other
+parameters that are needed to get access to the Lime Survey API (e.g.,
+user name). The MetaMaster packages relies on the <code>conig</code>
+packages to get access to these parameters <span class="citation">(Allaire 2023)</span>. All parameters that are
+necessary to retrieve data need to be available in the
+<code>config.yml</code> file within the working directory. The next
+console shows an example.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">default</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.server</span><span class="kw">:</span><span class="at"> </span><span class="st">"Name"</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="at">  </span><span class="fu">api_url</span><span class="kw">:</span><span class="at"> </span><span class="st">"URL"</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.user</span><span class="kw">:</span><span class="at"> </span><span class="st">"user"</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.credential</span><span class="kw">:</span><span class="at"> </span><span class="st">"Password"</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="at">  </span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">test</span><span class="kw">:</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.server</span><span class="kw">:</span><span class="at"> </span><span class="st">"Name"</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="at">  </span><span class="fu">api_url</span><span class="kw">:</span><span class="at"> </span><span class="st">"URL"</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.user</span><span class="kw">:</span><span class="at"> </span><span class="st">"user"</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.credential</span><span class="kw">:</span><span class="at"> </span><span class="st">"Password"</span></span></code></pre></div>
+<p>In case there is no config file yet, run the
+<code><a href="../reference/create_config.html">create_config()</a></code> function to create a new one. The function
+creates a new <code>config.yml</code> file in the working directory and
+adds the default parameters that need to be set for the MetaMaster.
+Furthermore, the config package picks the default parameters by default.
+To use the configuration for the <code>test</code> environment, set the
+environmental variable <code>R_CONFIG_ACTIVE</code> to
+<code>test</code>. The master templates for the OES live in the test
+environment.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MetaMaster</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_CONFIG_ACTIVE <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="meta-master-in-action">Meta Master in Action<a class="anchor" aria-label="anchor" href="#meta-master-in-action"></a>
+<h2 id="metamaster-in-action">MetaMaster in Action<a class="anchor" aria-label="anchor" href="#metamaster-in-action"></a>
 </h2>
-<p>Use the <code>Limer_GetMasterData()</code> function to create the raw
-meta data. The function gets all master templates from the LimeSurvey
-API and retrieves for each master the survey question, id, so on. The
-function returns a tibble or exports the data if the <code>export</code>
+<p>In order to build the meta data, the following steps are necessary.
+(1) We need to download the raw meta data via the Lime Survey API. (2)
+We need to build the Master Meta Data based on the raw meta data input.
+(3) We need to run consistency checks and may inspect the results in an
+email report. (4) We need to upload all tables of the Master Meta data
+to the database. The <code><a href="../reference/build.html">build()</a></code> function runs the first three
+these steps in sequence:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/build.html">build</a></span><span class="op">(</span>send_report <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ℹ Starting the build process...</span></span>
+<span><span class="co"># ℹ Fetching raw meta data from Lime Survey</span></span>
+<span><span class="co"># ✔ Master Data exported.                            </span></span>
+<span><span class="co"># ℹ Building metadata for the master data...</span></span>
+<span><span class="co"># ✔ MetaMaster exported.                                                                # ℹ Sending the report...</span></span>
+<span><span class="co">#   The email message was sent successfully.                            </span></span>
+<span><span class="co"># ✔ By the power of Grayskull: Building process completed.</span></span></code></pre></div>
+<p>If the Meta Master was built and all checks were passed, the last
+step is to update the database. The <code><a href="../reference/DB_MetaUpdate.html">DB_MetaUpdate()</a></code> splits
+all sheets of the Master Meta data and replaces the database with he new
+tables.</p>
+<p>The following console shows the steps of the <code><a href="../reference/build.html">build()</a></code>
+function in action and the next section outlines what happens under the
+hood.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#Build the Meta Master Data</span></span>
+<span><span class="va">build</span></span>
+<span><span class="co">#&gt; function (send_report = FALSE) </span></span>
+<span><span class="co">#&gt; {</span></span>
+<span><span class="co">#&gt;     if (!Sys.getenv("R_CONFIG_ACTIVE") == "test") {</span></span>
+<span><span class="co">#&gt;         cli::cli_abort("Please set the environment variable R_CONFIG_ACTIVE to 'test'.")</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     cli::cli_alert_info("Starting the build process...")</span></span>
+<span><span class="co">#&gt;     cli::cli_alert_info("Fetching raw meta data from Lime Survey")</span></span>
+<span><span class="co">#&gt;     LS_GetMasterData(export = TRUE)</span></span>
+<span><span class="co">#&gt;     cli::cli_alert_info("Building metadata for the master data...")</span></span>
+<span><span class="co">#&gt;     prepare_RawMeta(path = "metadata_raw.xlsx", export = TRUE)</span></span>
+<span><span class="co">#&gt;     if (send_report) {</span></span>
+<span><span class="co">#&gt;         cli::cli_alert_info("Sending the report...")</span></span>
+<span><span class="co">#&gt;         send_Report()</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     else {</span></span>
+<span><span class="co">#&gt;         cli::cli_alert_warning("Skipping the report send step. To send the report, set send_report = TRUE.")</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     cli::cli_alert_success("By the power of Grayskull: Building process completed.")</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x561fa99611d0&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: namespace:MetaMaster&gt;</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="metamaster-under-the-hood">MetaMaster Under the Hood<a class="anchor" aria-label="anchor" href="#metamaster-under-the-hood"></a>
+</h2>
+<p>The <code><a href="../reference/LS_GetMasterData.html">LS_GetMasterData()</a></code> function creates the raw meta
+data. The function gets all master templates from the LimeSurvey API and
+retrieves for each master the survey question, id, so on. The function
+returns a tibble or exports the data if the <code>export</code>
 parameter is set to <code>TRUE</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Get the survey questions for the first three master templates</span></span>
 <span><span class="fu"><a href="../reference/LS_GetMasterData.html">LS_GetMasterData</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># ✔ Master Data exported.  </span></span></code></pre></div>
-<p>As the next console shows, the functions exports the raw meta data in
-the current working directory and appends today’s date to the file
-name.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">master_raw</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_excel</a></span><span class="op">(</span><span class="st">"MasterData_2024_11_19.xlsx"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">master_raw</span><span class="op">)</span></span></code></pre></div>
-<p>We will create the meta data based on this input, but before we can
-do so, we need to consider all tables of the meta data. Based on the raw
-data we build the two most important tables of the meta data. The
-templates table contains information about the master, survey and the
-report template that will be used for the report.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">templates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DB_Table.html">DB_Table</a></span><span class="op">(</span><span class="st">"templates"</span><span class="op">)</span></span>
-<span><span class="va">templates</span></span>
-<span></span>
-<span><span class="co"># # A tibble: 121 × 8</span></span>
-<span><span class="co">#    stype   ganztag type  surveys                         rprtpckg                        ubb   report_tmpl   timestamp          </span></span>
-<span><span class="co">#    &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;                           &lt;chr&gt;                           &lt;chr&gt; &lt;chr&gt;         &lt;dttm&gt;             </span></span>
-<span><span class="co">#  1 beru_bq FALSE   ubb   tmpl_ubb_beru_bq_eva_00_2022_p1 tmpl_ubb_beru_bq_eva_00_2022_p1 TRUE  rpt_ubb_p1    2024-11-06 20:35:07</span></span>
-<span><span class="co">#  2 beru_bq FALSE   leh   tmpl_bfr_beru_bq_leh_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_leh_bq_p1 2024-11-06 20:35:07</span></span>
-<span><span class="co">#  3 beru_bq FALSE   elt   tmpl_bfr_beru_bq_elt_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_elt_bq_p1 2024-11-06 20:35:07</span></span>
-<span><span class="co">#  4 beru_bq FALSE   all   NA                              NA                              FALSE rpt_all_bq_p1 2024-11-06 20:35:07</span></span>
-<span><span class="co">#  5 beru_bq FALSE   aus   tmpl_bfr_beru_bq_aus_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_aus_bq_p1 2024-11-06 20:35:07</span></span>
-<span><span class="co">#  6 beru_bq FALSE   sus   tmpl_bfr_beru_bq_sus_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_sus_bq_p1 2024-11-06 20:35:07</span></span>
-<span><span class="co">#  7 beru_fb FALSE   ubb   tmpl_ubb_beru_fb_eva_00_2022_p1 tmpl_ubb_beru_fb_eva_00_2022_p1 TRUE  rpt_ubb_fb_p1 2024-11-06 20:35:07</span></span>
-<span><span class="co">#  8 beru_fb FALSE   leh   tmpl_bfr_beru_fb_leh_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_leh_fb_p1 2024-11-06 20:35:07</span></span>
-<span><span class="co">#  9 beru_fb FALSE   elt   tmpl_bfr_beru_fb_elt_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_elt_p1    2024-11-06 20:35:07</span></span>
-<span><span class="co"># 10 beru_fb FALSE   sus   tmpl_bfr_beru_fb_sus_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_sus_fb_p1 2024-11-06 20:35:07</span></span>
-<span><span class="co"># # ℹ 111 more rows</span></span>
-<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
-<p>And the report table contains information about the variable, plot,
-and the text label for each report template.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">reports</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DB_Table.html">DB_Table</a></span><span class="op">(</span><span class="st">"reports"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">#  report        vars      plot  label                                                                        label_short sets  type  timestamp          </span></span>
-<span><span class="co">#    &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;                                                                        &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; &lt;dttm&gt;             </span></span>
-<span><span class="co">#  1 rpt_ubb_gs_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35</span></span>
-<span><span class="co">#  2 rpt_ubb_p1    A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35</span></span>
-<span><span class="co">#  3 rpt_ubb_gm_p1 A11       A1    "&lt;span style=\"font-size:16px;\"&gt;&lt;strong&gt;A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35</span></span>
-<span><span class="co">#  4 rpt_ubb_ms_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35</span></span>
-<span><span class="co">#  5 rpt_ubb_fz_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35</span></span>
-<span><span class="co">#  6 rpt_ubb_fb_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35</span></span>
-<span><span class="co">#  7 rpt_ubb_gm_p1 A112a     A1a    NA                                                                          A1.1.2a  L… set05 ubb   2024-11-15 13:35:35</span></span>
-<span><span class="co">#  8 rpt_ubb_gs_p1 A11       A1    "&lt;span style=\"font-size:16px;\"&gt;&lt;strong&gt;A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35</span></span>
-<span><span class="co">#  9 rpt_ubb_ms_p1 A11       A1    "&lt;span style=\"font-size:16px;\"&gt;&lt;strong&gt;A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35</span></span>
-<span><span class="co"># 10 rpt_ubb_p1    A11       A1    "&lt;span style=\"font-size:16px;\"&gt;&lt;strong&gt;A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35</span></span></code></pre></div>
-<p>In addition, the meta data contains information abouts sets, and
-colors, and further smaller tables which will not(!) automatically be
-generated . Let’s revise the sequentially. The sets table contains
-information about the (color) sets, the labels, and so on.</p>
+<p>The <code><a href="../reference/LS_GetMasterData.html">LS_GetMasterData()</a></code> is a wrapper function that
+combines the <code><a href="../reference/LS_GetMasterTemplates.html">LS_GetMasterTemplates()</a></code> and the
+<code><a href="../reference/LS_GetMasterQuestions.html">LS_GetMasterQuestions()</a></code> function. Under the hood, the
+<code><a href="../reference/LS_GetMasterTemplates.html">LS_GetMasterTemplates()</a></code> function gets all master templates
+from the Lime Survey API first. The function returns a tibble with the
+survey id, the survey title, and the template name.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_GetMasterTemplates.html">LS_GetMasterTemplates</a></span><span class="op">(</span>template <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># # A tibble: 95 × 3</span></span>
+<span><span class="co">#    sid    surveyls_title                       template                       </span></span>
+<span><span class="co">#    &lt;chr&gt;  &lt;chr&gt;                                &lt;chr&gt;                          </span></span>
+<span><span class="co">#  1 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_gm_elt_00_2022_p1</span></span>
+<span><span class="co">#  2 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_gm_elt_00_2022_p3</span></span>
+<span><span class="co">#  3 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_rs_elt_00_2022_p1</span></span>
+<span><span class="co">#  4 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_beru_ws_elt_00_2022_p1</span></span>
+<span><span class="co">#  5 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p2</span></span>
+<span><span class="co">#  6 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p4</span></span>
+<span><span class="co">#  7 866667 master_03_bfr_allg_gm_leh_00_2022_v4 tmpl_bfr_allg_gm_leh_00_2022_p1</span></span>
+<span><span class="co">#  8 866667 master_03_bfr_allg_gm_leh_00_2022_v4 tmpl_bfr_allg_gm_leh_00_2022_p2</span></span>
+<span><span class="co">#  9 866667 master_03_bfr_allg_gm_leh_00_2022_v4 tmpl_bfr_allg_gm_leh_00_2022_p3</span></span>
+<span><span class="co"># 10 866667 master_03_bfr_allg_gm_leh_00_2022_v4 tmpl_bfr_allg_gm_leh_00_2022_p4</span></span>
+<span><span class="co"># # ℹ 85 more rows</span></span>
+<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
+<p>Next, the <code><a href="../reference/LS_GetMasterQuestions.html">LS_GetMasterQuestions()</a></code> function gets the
+survey questions for a specific master template. The function needs the
+survey id and the template name as input. The function returns a tibble
+with the survey id, the template name, the plot, the variable, the text,
+and the filter indicator.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_GetMasterQuestions.html">LS_GetMasterQuestions</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"197865"</span>, name <span class="op">=</span> <span class="st">"master_01_bfr_allg_gm_elt_00_2022_v4"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># # A tibble: 29 × 6</span></span>
+<span><span class="co">#    surveyID template                             plot  variable      text              filter</span></span>
+<span><span class="co">#    &lt;chr&gt;    &lt;chr&gt;                                &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt;             &lt;chr&gt; </span></span>
+<span><span class="co">#  1 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E01   B131W124EB13a An dieser Schule… FALSE </span></span>
+<span><span class="co">#  2 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132aB13a     Mein Sohn/meine … FALSE </span></span>
+<span><span class="co">#  3 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132cB13a     Die Räume der Sc… FALSE </span></span>
+<span><span class="co">#  4 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E01   B133bB13a     Die Schule ist e… FALSE </span></span>
+<span><span class="co">#  5 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125aB33a An dieser Schule… FALSE </span></span>
+<span><span class="co">#  6 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125bB33a Wenn es Konflikt… FALSE </span></span>
+<span><span class="co">#  7 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E02   B333B33a      Mein Sohn/meine … FALSE </span></span>
+<span><span class="co">#  8 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E03   A632eA063     Mein Sohn/meine … FALSE </span></span>
+<span><span class="co">#  9 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E03   A633eA063     Mein Sohn/meine … FALSE </span></span>
+<span><span class="co"># 10 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E03   A631A063      Mein Sohn/meine … FALSE </span></span>
+<span><span class="co"># # ℹ 19 more rows</span></span>
+<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
+<p>The <code><a href="../reference/prepare_RawMeta.html">prepare_RawMeta()</a></code> function convert the raw data into
+the Master Meta data. Based on the raw data we build the two most
+important tables of the meta data. The templates table contains
+information about the master, survey, and the report template that will
+be used for the report. And the report table contains information about
+the variable, plot, and the text label for each report template.</p>
+<p>In addition, the meta data contains information abouts sets, colors,
+and further smaller tables which will not(!) be generated automatically.
+Let’s revise them with the <code><a href="../reference/DB_Table.html">DB_Table()</a></code> function. The sets
+table contains information about the (color) sets, the labels, and so
+on.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DB_Table.html">DB_Table</a></span><span class="op">(</span><span class="st">"sets"</span><span class="op">)</span></span>
 <span><span class="va">sets</span></span>
 <span><span class="co"># # A tibble: 54 × 7</span></span>
@@ -150,7 +240,7 @@ information about the (color) sets, the labels, and so on.</p>
 <span><span class="co"># # ℹ 44 more rows</span></span></code></pre></div>
 <p>The set_data table contains information about plot and the set
 name.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">set_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DB_Table.html">DB_Table</a></span><span class="op">(</span><span class="st">"set_data"</span><span class="op">)</span></span>
 <span><span class="va">set_data</span></span>
 <span><span class="co"># plot  set   timestamp          </span></span>
@@ -171,61 +261,101 @@ name.</p>
 automatically, but this not mean that errors in these tables will not
 affect the reporting. The MetaMaster comes with several
 <code>check_*</code> function for this case. The
-<code><a href="../reference/check_manualmeta.html">check_manualmeta()</a></code> function checks the meta data before the
-manual meta before this tables can be updated on the data base.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/check_manualmeta.html">check_manualmeta</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>In addition, the <code>buildMetaMaster()</code> function includes
-further checks that need to made regarding the templates and the reports
-table. Most of all, the function builds the meta master data based on
-the raw data. The function needs the path to the raw data and the
-<code>export</code> parameter to be set to <code>TRUE</code> if the meta
-data should be exported.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">buildMetaMaster</span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_20.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#✔ MetaMaster exported.</span></span></code></pre></div>
-<p>The exported file contains all tables, each in a separate sheet. The
-following console shows the first rows of the templates table.</p>
+<code><a href="../reference/check_manualmeta.html">check_manualmeta()</a></code> function checks this data before these
+tables can be updated on the data base.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">MetaMasterMeta</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_excel</a></span><span class="op">(</span><span class="st">"MetaMasterMeta.xlsx"</span>, sheet <span class="op">=</span> <span class="st">"templates"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">MetaMasterMeta</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># # A tibble: 6 × 9</span></span>
-<span><span class="co">#   surveyID master_template                      report        template                        ubb   stype   type  ganztag timestamp          </span></span>
-<span><span class="co">#      &lt;dbl&gt; &lt;chr&gt;                                &lt;chr&gt;         &lt;chr&gt;                           &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;dttm&gt;             </span></span>
-<span><span class="co"># 1   533711 master_09_bfr_allg_gy_elt_00_2022_v4 rpt_elt_p1    tmpl_bfr_beru_fb_elt_00_2022_p1 FALSE beru_fb elt   FALSE   2024-11-19 09:07:54</span></span>
-<span><span class="co"># 2   526454 master_22_bfr_beru_fb_leh_00_2022_v4 rpt_leh_p1    tmpl_bfr_beru_fb_leh_00_2022_p1 FALSE beru_fb leh   FALSE   2024-11-19 09:07:54</span></span>
-<span><span class="co"># 3   867849 master_23_bfr_beru_fb_sus_00_2022_v4 rpt_sus_fb_p1 tmpl_bfr_beru_fb_sus_00_2022_p1 FALSE beru_fb sus   FALSE   2024-11-19 09:07:54</span></span>
-<span><span class="co"># 4   674997 master_18_bfr_beru_bq_aus_00_2022_v4 rpt_aus_bq_p1 tmpl_bfr_beru_bq_aus_00_2022_p1 FALSE beru_bq aus   FALSE   2024-11-19 09:07:54</span></span>
-<span><span class="co"># 5   957592 master_19_bfr_beru_bq_elt_00_2022_v4 rpt_elt_bq_p1 tmpl_bfr_beru_bq_elt_00_2022_p1 FALSE beru_bq elt   FALSE   2024-11-19 09:07:54</span></span>
-<span><span class="co"># 6   423442 master_20_bfr_beru_bq_leh_00_2022_v4 rpt_leh_bq_p1 tmpl_bfr_beru_bq_leh_00_2022_p1 FALSE beru_bq leh   FALSE   2024-11-19 09:07:5</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="sent-via-api">Sent via API<a class="anchor" aria-label="anchor" href="#sent-via-api"></a>
-</h2>
-<p>Finally, the package provides a function to create a new survey based
-on a master template. The <code>send_survey()</code> function needs the
-path to the master template and the name of the new survey.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Create a new survey</span></span>
-<span><span class="fu"><a href="../reference/LS_SendSurvey.html">LS_SendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"struktur_LimeSurvey.lss"</span>,</span>
-<span>                 name <span class="op">=</span> <span class="st">"SurveyName"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/check_manualmeta.html">check_manualmeta</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>And in a similar sense, we can also run consistency check for the
+Meta Master data. For this purpose the <code><a href="../reference/build.html">build()</a></code> function
+runs the <code>LS_survey_checks*</code> functions. More precisely, the
+functions are included in the email template and run automatically if
+you set the <code>send_report</code> parameter to <code>TRUE</code>. The
+next image shows a preview of the email.</p>
+<p><img src="preview_mail.png" style="width:95.0%"></p>
+<p>Under the hood, the blastula package is used to create the email
+<span class="citation">(Iannone and Cheng 2024)</span>. The email shows
+the results of the consistency checks and includes the MetaMaster data
+as an attachment. The email is sent to the email address that is set in
+the <code>config.yml</code> file if you provide the mail crendentials in
+the working.</p>
+<p>Don’t forget that the last step is to update the database, which is
+included in the <code><a href="../reference/build.html">build()</a></code> function by purpose since it will
+replace all tables of the master data. The <code><a href="../reference/DB_MetaUpdate.html">DB_MetaUpdate()</a></code>
+splits all sheets of the Master Meta data and replaces the database with
+he new tables.</p>
 </div>
 <div class="section level2">
 <h2 id="further-helpers">Further Helpers<a class="anchor" aria-label="anchor" href="#further-helpers"></a>
 </h2>
-<p>…</p>
-</div>
-<div class="section level2">
-<h2 id="tbd">TBD<a class="anchor" aria-label="anchor" href="#tbd"></a>
-</h2>
-<p>Create a new file with the <code>update_allMastersLimeSurvey()</code>
-function. The latter runs <code>get_MasterTemplate()</code> which
-returns all masters templates and saves the result as an Excel file.</p>
+<p>The MetaMaster contains further helper functions to work with the
+LimeSurvey API.</p>
+<div class="section level3">
+<h3 id="sent">Sent<a class="anchor" aria-label="anchor" href="#sent"></a>
+</h3>
+<p>The <code><a href="../reference/LS_SendSurvey.html">LS_SendSurvey()</a></code> function sends a survey template to
+Lime Survey. The function needs the path to the survey template and the
+name of the survey template. It expects the survey template to be in the
+LimeSurvey LSS format.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_SendSurvey.html">LS_SendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"limesurveyMod.lss"</span>, </span>
+<span>              name <span class="op">=</span> <span class="st">"mastertemplate"</span><span class="op">)</span></span></code></pre></div>
+<p>The <code><a href="../reference/LS_SendSurveys.html">LS_SendSurveys()</a></code> function is a wrapper around
+<code><a href="../reference/LS_SendSurvey.html">LS_SendSurvey()</a></code>. It sends all survey templates in the
+working directory to Lime Survey.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_GetMasterData.html">LS_GetMasterData</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu">buildMetaMaster</span><span class="op">(</span>path <span class="op">=</span> <span class="st">"MasterData_2024_11_11.xlsx"</span>, export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu">send_testrun</span><span class="op">(</span>sendto <span class="op">=</span> <span class="st">"johndoe@doe.com"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_SendSurveys.html">LS_SendSurveys</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="delete">Delete<a class="anchor" aria-label="anchor" href="#delete"></a>
+</h3>
+<p>The <code><a href="../reference/LS_DeleteSurvey.html">LS_DeleteSurvey()</a></code> function deletes a survey from
+LimeSurvey. The function needs the survey ID of the survey template. Be
+careful, there is no way to restore a deleted survey.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_DeleteSurvey.html">LS_DeleteSurvey</a></span><span class="op">(</span>sid <span class="op">=</span> <span class="st">"123456"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="create-test-scenarios">Create Test Scenarios<a class="anchor" aria-label="anchor" href="#create-test-scenarios"></a>
+</h3>
+<p>The <code><a href="../reference/create_TestSchools.html">create_TestSchools()</a></code> function creates test scenarios
+for the MetaMaster. The function creates for each master template a test
+school. The function returns a tibble with the survey id, the survey
+title, the template name, the school, the new name, the snr, and the
+test school.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/create_TestSchools.html">create_TestSchools</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># # A tibble: 38 × 8</span></span>
+<span><span class="co">#       sid surveyls_title                   template file  school new_name snr   test_school</span></span>
+<span><span class="co">#     &lt;int&gt; &lt;chr&gt;                            &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;      </span></span>
+<span><span class="co">#  1 197865 master_01_bfr_allg_gm_elt_00_20… tmpl_bf… NA    gm     bfr_all… 8934  8934_20242…</span></span>
+<span><span class="co">#  2 943467 master_02_bfr_allg_gm_elt_01_20… tmpl_bf… NA    gm     bfr_all… 8934  8934_20242…</span></span>
+<span><span class="co">#  3 866667 master_03_bfr_allg_gm_leh_00_20… tmpl_bf… NA    gm     bfr_all… 8934  8934_20242…</span></span>
+<span><span class="co">#  4 383484 master_04_bfr_allg_gs_elt_00_20… tmpl_bf… NA    gs     bfr_all… 1208  1208_20242…</span></span>
+<span><span class="co">#  5 687118 master_05_bfr_allg_gs_elt_01_20… tmpl_bf… NA    gs     bfr_all… 1208  1208_20242…</span></span>
+<span><span class="co">#  6 661758 master_06_bfr_allg_gs_leh_00_20… tmpl_bf… NA    gs     bfr_all… 1208  1208_20242…</span></span>
+<span><span class="co">#  7 386673 master_07_bfr_allg_gs_sus_00_20… tmpl_bf… NA    zspf_… bfr_zsp… 6009  6009_20242…</span></span>
+<span><span class="co">#  8 956526 master_08_bfr_allg_gs_sus_02_20… tmpl_bf… NA    zspf_… bfr_zsp… 6009  6009_20242…</span></span>
+<span><span class="co">#  9 533711 master_09_bfr_allg_gy_elt_00_20… tmpl_bf… NA    beru_… bfr_ber… 0850  0850_20242…</span></span>
+<span><span class="co"># 10 197211 master_10_bfr_allg_gy_elt_01_20… tmpl_bf… NA    gy     bfr_all… 0001  0001_20242…</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2 unnumbered">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-config" class="csl-entry">
+Allaire, JJ. 2023. <span>“Config: Manage Environment Specific
+Configuration Values.”</span> <a href="https://CRAN.R-project.org/package=config" class="external-link">https://CRAN.R-project.org/package=config</a>.
+</div>
+<div id="ref-blastula" class="csl-entry">
+Iannone, Richard, and Joe Cheng. 2024. <span>“Blastula: Easily Send HTML
+Email Messages.”</span> <a href="https://CRAN.R-project.org/package=blastula" class="external-link">https://CRAN.R-project.org/package=blastula</a>.
+</div>
+<div id="ref-RPostgres" class="csl-entry">
+Wickham, Hadley, Jeroen Ooms, and Kirill Müller. 2024. <span>“RPostgres:
+C++ Interface to PostgreSQL.”</span> <a href="https://CRAN.R-project.org/package=RPostgres" class="external-link">https://CRAN.R-project.org/package=RPostgres</a>.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

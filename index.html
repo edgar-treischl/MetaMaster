@@ -58,7 +58,7 @@
 </div>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>The goal of the MetaMaster package is to create meta data for LimeSurvey which are reproducible, tested, and, in consequence, error-free. The package provides functions to retrieve data via the LimeSurvey API: Get template names, survey questions, and text. Furthermore, the packages implements functions to perform consistency checks, which also increase the reliability of the meta data and it includes further HTML methods, for example, to upload survey templates via the API.</p>
+<p>The goal of the MetaMaster package is to create meta data for LimeSurvey which are reproducible, tested, and, in consequence, error-free. The package provides functions to retrieve data via the Lime Survey API (<code>LS_*</code>); functions to work with a PostgreSQL (<code>DB_*</code>) database; and functions to build the <em>Master Meta Data</em>. Furthermore, the package implements functions to perform consistency checks and further helpers, for example, to upload survey templates via the API.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -69,82 +69,20 @@
 <span>                       dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="set-up">Set up<a class="anchor" aria-label="anchor" href="#set-up"></a>
+<h2 id="meta-master-in-a-nutshell">Meta Master in a Nutshell<a class="anchor" aria-label="anchor" href="#meta-master-in-a-nutshell"></a>
 </h2>
-<p>In order to use the package, you must provide credentials and other parameters which are needed to get access to the LimeSurvey API (user name, LimeSurvey instance, etc.). The MetaMaster packages relies on the <code>conig</code> packages to get access to these parameters. All parameters that are necessary to retrieve data need to be available in the <code>config.yml</code> file of your working directory. The next console shows an example file.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">default</span><span class="kw">:</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.server</span><span class="kw">:</span><span class="at"> </span><span class="st">"Name"</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="at">  </span><span class="fu">api_url</span><span class="kw">:</span><span class="at"> </span><span class="st">"URL"</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.user</span><span class="kw">:</span><span class="at"> </span><span class="st">"user"</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.credential</span><span class="kw">:</span><span class="at"> </span><span class="st">"Password"</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="at">  </span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="fu">production</span><span class="kw">:</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.server</span><span class="kw">:</span><span class="at"> </span><span class="st">"Name"</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="at">  </span><span class="fu">api_url</span><span class="kw">:</span><span class="at"> </span><span class="st">"URL"</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.user</span><span class="kw">:</span><span class="at"> </span><span class="st">"user"</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.credential</span><span class="kw">:</span><span class="at"> </span><span class="st">"Password"</span></span></code></pre></div>
-<p>In case there is no config file, use the <code><a href="reference/create_config.html">create_config()</a></code> function to create a new one. The function creates a new <code>config.yml</code> file in the working directory and adds the default parameters that need to be set for the MetaMaster.</p>
-<p>By default, the config package returns the default parameters. Suppose you want to retrieve data from a test or a production system. To use parameters to retrieve data from the <code>production</code>, set the environmental variable <code>R_CONFIG_ACTIVE</code> to <code>test</code> before running and add the parameters in the config file correspondingly.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_CONFIG_ACTIVE <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="get-functions">Get Functions<a class="anchor" aria-label="anchor" href="#get-functions"></a>
-</h2>
-<p>Use one of the get function retrieve data from the API. The <code>Limer_GetMasterTemplates()</code> function returns the survey ID (<code>sid</code>) and the name of the survey (<code>surveyls_title</code>) for all the master template from Lime Survey. The function picks survey templates which name start with the string <code>master_</code>. As the next output highlights, the function adds the corresponding the survey template if the <code>template</code> argument is set to <code>TRUE</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Let's get started</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MetaMaster</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_CONFIG_ACTIVE <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/LS_GetMasterTemplates.html">LS_GetMasterTemplates</a></span><span class="op">(</span>template <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<p>Build the MetaMaster:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">MetaMaster</span><span class="fu">::</span><span class="fu"><a href="reference/build.html">build</a></span><span class="op">(</span>send_report <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># A tibble: 6 × 3</span></span>
-<span><span class="co">#      sid surveyls_title                       template                       </span></span>
-<span><span class="co">#    &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                          </span></span>
-<span><span class="co"># 1 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_gm_elt_00_2022_p1</span></span>
-<span><span class="co"># 2 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_gm_elt_00_2022_p3</span></span>
-<span><span class="co"># 3 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_rs_elt_00_2022_p1</span></span>
-<span><span class="co"># 4 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_beru_ws_elt_00_2022_p1</span></span>
-<span><span class="co"># 5 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p2</span></span>
-<span><span class="co"># 6 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p4</span></span></code></pre></div>
-<p>Next, we can retrieve survey questions and texts via the API. The function <code>Limer_GetMasterQuesions()</code> returns the plot, variable, and text for survey questions of a given master template. The function needs the survey ID (<code>sid</code>) and the name of the master template (<code>name</code>).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/LS_GetMasterQuestions.html">LS_GetMasterQuestions</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">sid</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, name <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">surveyls_title</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># A tibble: 29 × 5</span></span>
-<span><span class="co">#    surveyID template                             plot  variable  text                   </span></span>
-<span><span class="co">#       &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;                  </span></span>
-<span><span class="co">#  1   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B131W124E An dieser Schule herrs…</span></span>
-<span><span class="co">#  2   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132a     Mein Sohn/meine Tochte…</span></span>
-<span><span class="co">#  3   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132c     Die Räume der Schule b…</span></span>
-<span><span class="co">#  4   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E01   B133b     Die Schule ist ein sic…</span></span>
-<span><span class="co">#  5   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125a An dieser Schule wird …</span></span>
-<span><span class="co">#  6   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125b Wenn es Konflikte gibt…</span></span>
-<span><span class="co">#  7   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E02   B333      Mein Sohn/meine Tochte…</span></span>
-<span><span class="co">#  8   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A632e     Mein Sohn/meine Tochte…</span></span>
-<span><span class="co">#  9   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A633e     Mein Sohn/meine Tochte…</span></span>
-<span><span class="co"># 10   197865 master_01_bfr_allg_gm_elt_00_2022_v4 E03   A631      Mein Sohn/meine Tochte…</span></span>
-<span><span class="co"># ℹ 19 more rows</span></span>
-<span><span class="co"># ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="send-and-delete">Send and Delete<a class="anchor" aria-label="anchor" href="#send-and-delete"></a>
-</h2>
-<p>The <code>Limer_sendSurvey()</code> function sends a survey template to LimeSurvey. The function needs the path to the survey template and the name of the survey template. It expects the survey template to be in the LimeSurvey LSS format.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/LS_SendSurvey.html">LS_SendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"limesurveyMod.lss"</span>,</span>
-<span>                 name <span class="op">=</span> <span class="st">"mastertemplate"</span><span class="op">)</span></span></code></pre></div>
-<p>The function <code>Limer_sendSurveys()</code> is a convenient wrapper around <code>Limer_sendSurvey()</code>. It sends all survey templates in the working directory to LimeSurvey.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/LS_SendSurveys.html">LS_SendSurveys</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>Finally, the <code>Limer_DeleteSurvey()</code> function deletes a survey template from LimeSurvey. The function needs the survey ID of the survey template. Be careful, there is no way to restore a deleted survey template.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/LS_DeleteSurvey.html">LS_DeleteSurvey</a></span><span class="op">(</span>sid <span class="op">=</span> <span class="st">"123456"</span><span class="op">)</span></span></code></pre></div>
-<p>Build the MetaMaster.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">MetaMaster</span><span class="fu">::</span><span class="fu"><a href="reference/build.html">build</a></span><span class="op">(</span>send_report <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Consider to read the vignette for more details how MetaMaster works.</p>
+<span><span class="co"># ℹ Starting the build process...</span></span>
+<span><span class="co"># ℹ Fetching raw meta data from Lime Survey</span></span>
+<span><span class="co"># ✔ Master Data exported.                            </span></span>
+<span><span class="co"># ℹ Building metadata for the master data...</span></span>
+<span><span class="co"># ✔ MetaMaster exported.                                                                # ℹ Sending the report...</span></span>
+<span><span class="co">#   The email message was sent successfully.                            </span></span>
+<span><span class="co"># ✔ By the power of Grayskull: Building process completed.</span></span></code></pre></div>
+<p>Read the <em>Get Started</em> vignette for more details how MetaMaster works.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
