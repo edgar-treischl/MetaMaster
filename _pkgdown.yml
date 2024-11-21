@@ -12,10 +12,8 @@ navbar:
     - articles
     - news
     right: [github]
-news:
-  file: NEWS.md
-  title: "News"
-  one_page: true
+
+
 development:
   mode: auto
 authors:

@@ -132,12 +132,15 @@ create_TestSchools <- function() {
 #' Create a Config File
 #'
 #' @description This function creates a YAML config file with default values.
+#' @param file The name of the YAML file to create. Default is "config.yml".
+#' @param export If TRUE, the function writes the YAML file. Otherwise, it returns the YAML.
 #' @usage create_config()
 #' @export
 
-create_config <- function(file = "config.yml") {
+create_config <- function(file = "config.yml",
+                          export = "TRUE") {
   # Check if the YAML file already exists
-  if (file.exists(file)) {
+  if (file.exists(file) & export == "TRUE") {
     # Ask the user if they want to overwrite the file
     overwrite <- readline(prompt = paste("The file", file, "already exists. Do you want to overwrite it? (y/n): "))
 
@@ -164,11 +167,17 @@ create_config <- function(file = "config.yml") {
     )
   )
 
-  # Write the list to a YAML file
-  yaml::write_yaml(content, file)
-  message("YAML file created successfully: ", file)
-}
+  if (export) {
+    # Write the list to a YAML file
+    yaml::write_yaml(content, file)
+    message("YAML file created successfully: ", file)
+  }else {
+    myyaml <- yaml::as.yaml(content)
+    return(myyaml)
+  }
 
+
+}
 
 
 

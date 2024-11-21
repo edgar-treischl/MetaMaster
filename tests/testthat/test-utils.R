@@ -8,7 +8,6 @@ test_that("Extract Text from HTML", {
   expect_type(txt, "character")
 })
 
-
 test_that("Extract Whitespaces from LimeSurvey Txts", {
   uglytxt <- "Meine KL    merkt, was in meiner Klasse alles passiert (7-10)."
   txt <- remove_and_combine(uglytxt)
@@ -17,9 +16,19 @@ test_that("Extract Whitespaces from LimeSurvey Txts", {
 
 
 
+test_that("create_TestSchools returns df", {
+
+  Sys.setenv(R_CONFIG_ACTIVE = "test")
+  testdf <- create_TestSchools()
+  expect_s3_class(testdf, "data.frame")
+})
 
 
+test_that("create_config returns characters", {
 
+  yaml <- create_config(export = FALSE)
+  expect_type(yaml, "character")
+})
 
 
 
