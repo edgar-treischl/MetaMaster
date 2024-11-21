@@ -5,6 +5,7 @@ vignette: >
   %\VignetteIndexEntry{MetaMaster}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
 ---
 
 ```{r, include = FALSE}
@@ -14,19 +15,63 @@ knitr::opts_chunk$set(
 )
 ```
 
-Before you start, make sure that the config file is available, corresponding credentials and parameters are set and that environment variable is set to "test".
+The goal of the MetaMaster package is to create meta data for LimeSurvey which are reproducible, tested, and, in consequence, error-free. The package provides functions to retrieve data via the Lime Survey API (starting with: `LS_*`); functions to work with a PostgreSQL (starting with: `DB_*`) database [@RPostgres]; and functions to build the *Master Meta Data*. Furthermore, the package implements functions to perform consistency checks and further helpers, for example, to upload survey templates via the API.
 
+In order to use the package, you must provide credentials and other parameters that are needed to get access to the Lime Survey API (e.g., user name). The MetaMaster packages relies on the `conig` packages to get access to these parameters [@config]. All parameters that are necessary to retrieve data need to be available in the `config.yml` file within the working directory. The next console shows an example.
 
+``` yaml
+default:
+  tmp.server: "Name"
+  api_url: "URL"
+  tmp.user: "user"
+  tmp.credential: "Password"
+  
+test:
+  tmp.server: "Name"
+  api_url: "URL"
+  tmp.user: "user"
+  tmp.credential: "Password"
+```
+
+In case there is no config file yet, run the `create_config()` function to create a new one. The function creates a new `config.yml` file in the working directory and adds the default parameters that need to be set for the MetaMaster. Furthermore, the config package picks the default parameters by default. To use the configuration for the `test` environment, set the environmental variable `R_CONFIG_ACTIVE` to `test`. The master templates for the OES live in the test environment.
 
 ```{r}
 library(MetaMaster)
 Sys.setenv(R_CONFIG_ACTIVE = "test")
 ```
 
+ 
 
-## Meta Master in Action
+## MetaMaster in Action
 
-Use the `Limer_GetMasterData()` function to create the raw meta data. The function gets all master templates from the LimeSurvey API and retrieves for each master the survey question, id, so on. The function returns a tibble or exports the data if the `export` parameter is set to `TRUE`.
+In order to build the meta data, the following steps are necessary. (1) We need to download the raw meta data via the Lime Survey API. (2) We need to build the Master Meta Data based on the raw meta data input. (3) We need to run consistency checks and may inspect the results in an email report. (4) We need to upload all tables of the Master Meta data to the database. The `build()` function runs the first three these steps in sequence:
+
+```{r, eval=FALSE}
+build(send_report = TRUE)
+
+# ℹ Starting the build process...
+# ℹ Fetching raw meta data from Lime Survey
+# ✔ Master Data exported.                            
+# ℹ Building metadata for the master data...
+# ✔ MetaMaster exported.                                                                # ℹ Sending the report...
+#   The email message was sent successfully.                            
+# ✔ By the power of Grayskull: Building process completed.
+```
+
+If the Meta Master was built and all checks were passed, the last step is to update the database. The `DB_MetaUpdate()` splits all sheets of the Master Meta data and replaces the database with he new tables. 
+
+The following console shows the steps of the `build()` function in action and the next section outlines what happens under the hood.
+
+```{r}
+#Build the Meta Master Data
+build
+```
+
+
+
+## MetaMaster Under the Hood
+
+The `LS_GetMasterData()` function creates the raw meta data. The function gets all master templates from the LimeSurvey API and retrieves for each master the survey question, id, so on. The function returns a tibble or exports the data if the `export` parameter is set to `TRUE`.
 
 ```{r, eval=FALSE}
 #Get the survey questions for the first three master templates
@@ -34,62 +79,56 @@ LS_GetMasterData(export = TRUE)
 # ✔ Master Data exported.  
 ```
 
-As the next console shows, the functions exports the raw meta data in the current working directory and appends today's date to the file name.
- 
-```{r, eval=FALSE}
-master_raw <- readxl::read_excel("MasterData_2024_11_19.xlsx")
-head(master_raw)
-```
-
-We will create the meta data based on this input, but before we can do so, we need to consider all tables of the meta data. Based on the raw data we build the two most important tables of the meta data. The templates table contains information about the master, survey and the report template that will be used for the report.
-
-
+The `LS_GetMasterData()` is a wrapper function that combines the `LS_GetMasterTemplates()` and the `LS_GetMasterQuestions()` function. Under the hood, the `LS_GetMasterTemplates()` function gets all master templates from the Lime Survey API first. The function returns a tibble with the survey id, the survey title, and the template name.
 
 ```{r, eval=FALSE}
-templates <- DB_Table("templates")
-templates
-
-# # A tibble: 121 × 8
-#    stype   ganztag type  surveys                         rprtpckg                        ubb   report_tmpl   timestamp          
-#    <chr>   <chr>   <chr> <chr>                           <chr>                           <chr> <chr>         <dttm>             
-#  1 beru_bq FALSE   ubb   tmpl_ubb_beru_bq_eva_00_2022_p1 tmpl_ubb_beru_bq_eva_00_2022_p1 TRUE  rpt_ubb_p1    2024-11-06 20:35:07
-#  2 beru_bq FALSE   leh   tmpl_bfr_beru_bq_leh_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_leh_bq_p1 2024-11-06 20:35:07
-#  3 beru_bq FALSE   elt   tmpl_bfr_beru_bq_elt_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_elt_bq_p1 2024-11-06 20:35:07
-#  4 beru_bq FALSE   all   NA                              NA                              FALSE rpt_all_bq_p1 2024-11-06 20:35:07
-#  5 beru_bq FALSE   aus   tmpl_bfr_beru_bq_aus_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_aus_bq_p1 2024-11-06 20:35:07
-#  6 beru_bq FALSE   sus   tmpl_bfr_beru_bq_sus_00_2022_p1 tmpl_bfr_beru_bq_00_2022_p1     FALSE rpt_sus_bq_p1 2024-11-06 20:35:07
-#  7 beru_fb FALSE   ubb   tmpl_ubb_beru_fb_eva_00_2022_p1 tmpl_ubb_beru_fb_eva_00_2022_p1 TRUE  rpt_ubb_fb_p1 2024-11-06 20:35:07
-#  8 beru_fb FALSE   leh   tmpl_bfr_beru_fb_leh_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_leh_fb_p1 2024-11-06 20:35:07
-#  9 beru_fb FALSE   elt   tmpl_bfr_beru_fb_elt_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_elt_p1    2024-11-06 20:35:07
-# 10 beru_fb FALSE   sus   tmpl_bfr_beru_fb_sus_00_2022_p1 tmpl_bfr_beru_fb_00_2022_p1     FALSE rpt_sus_fb_p1 2024-11-06 20:35:07
-# # ℹ 111 more rows
+LS_GetMasterTemplates(template = TRUE)
+# # A tibble: 95 × 3
+#    sid    surveyls_title                       template                       
+#    <chr>  <chr>                                <chr>                          
+#  1 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_gm_elt_00_2022_p1
+#  2 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_gm_elt_00_2022_p3
+#  3 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_allg_rs_elt_00_2022_p1
+#  4 197865 master_01_bfr_allg_gm_elt_00_2022_v4 tmpl_bfr_beru_ws_elt_00_2022_p1
+#  5 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p2
+#  6 943467 master_02_bfr_allg_gm_elt_01_2022_v4 tmpl_bfr_allg_gm_elt_01_2022_p4
+#  7 866667 master_03_bfr_allg_gm_leh_00_2022_v4 tmpl_bfr_allg_gm_leh_00_2022_p1
+#  8 866667 master_03_bfr_allg_gm_leh_00_2022_v4 tmpl_bfr_allg_gm_leh_00_2022_p2
+#  9 866667 master_03_bfr_allg_gm_leh_00_2022_v4 tmpl_bfr_allg_gm_leh_00_2022_p3
+# 10 866667 master_03_bfr_allg_gm_leh_00_2022_v4 tmpl_bfr_allg_gm_leh_00_2022_p4
+# # ℹ 85 more rows
 # # ℹ Use `print(n = ...)` to see more rows
 ```
 
-And the report table contains information about the variable, plot, and the text label for each report template.
-
+Next, the `LS_GetMasterQuestions()` function gets the survey questions for a specific master template. The function needs the survey id and the template name as input. The function returns a tibble with the survey id, the template name, the plot, the variable, the text, and the filter indicator.
 
 ```{r, eval=FALSE}
-reports <- DB_Table("reports")
+LS_GetMasterQuestions(id = "197865", name = "master_01_bfr_allg_gm_elt_00_2022_v4")
 
-#  report        vars      plot  label                                                                        label_short sets  type  timestamp          
-#    <chr>         <chr>     <chr> <chr>                                                                        <chr>       <chr> <chr> <dttm>             
-#  1 rpt_ubb_gs_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35
-#  2 rpt_ubb_p1    A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35
-#  3 rpt_ubb_gm_p1 A11       A1    "<span style=\"font-size:16px;\"><strong>A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35
-#  4 rpt_ubb_ms_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35
-#  5 rpt_ubb_fz_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35
-#  6 rpt_ubb_fb_p1 A131W121b A1c    NA                                                                          A1.3.1_W1.… set16 ubb   2024-11-15 13:35:35
-#  7 rpt_ubb_gm_p1 A112a     A1a    NA                                                                          A1.1.2a  L… set05 ubb   2024-11-15 13:35:35
-#  8 rpt_ubb_gs_p1 A11       A1    "<span style=\"font-size:16px;\"><strong>A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35
-#  9 rpt_ubb_ms_p1 A11       A1    "<span style=\"font-size:16px;\"><strong>A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35
-# 10 rpt_ubb_p1    A11       A1    "<span style=\"font-size:16px;\"><strong>A1.1 Der Unterricht wird durch Stö… A1.1 Der U… set04 ubb   2024-11-15 13:35:35
+# # A tibble: 29 × 6
+#    surveyID template                             plot  variable      text              filter
+#    <chr>    <chr>                                <chr> <chr>         <chr>             <chr> 
+#  1 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E01   B131W124EB13a An dieser Schule… FALSE 
+#  2 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132aB13a     Mein Sohn/meine … FALSE 
+#  3 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E01   B132cB13a     Die Räume der Sc… FALSE 
+#  4 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E01   B133bB13a     Die Schule ist e… FALSE 
+#  5 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125aB33a An dieser Schule… FALSE 
+#  6 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E02   B334W125bB33a Wenn es Konflikt… FALSE 
+#  7 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E02   B333B33a      Mein Sohn/meine … FALSE 
+#  8 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E03   A632eA063     Mein Sohn/meine … FALSE 
+#  9 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E03   A633eA063     Mein Sohn/meine … FALSE 
+# 10 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E03   A631A063      Mein Sohn/meine … FALSE 
+# # ℹ 19 more rows
+# # ℹ Use `print(n = ...)` to see more rows
 ```
 
 
 
 
-In addition, the meta data contains information abouts sets, and colors, and further smaller tables which will not(!) automatically be generated . Let's revise the sequentially. The sets table contains information about the (color) sets, the labels, and so on.
+The `prepare_RawMeta()` function convert the raw data into the Master Meta data. Based on the raw data we build the two most important tables of the meta data. The templates table contains information about the master, survey, and the report template that will be used for the report. And the report table contains information about the variable, plot, and the text label for each report template.
+
+
+In addition, the meta data contains information abouts sets, colors, and further smaller tables which will not(!) be generated automatically. Let's revise them with the `DB_Table()` function. The sets table contains information about the (color) sets, the labels, and so on.
 
 ```{r, eval=FALSE}
 sets <- DB_Table("sets")
@@ -112,8 +151,6 @@ sets
 
 The set_data table contains information about plot and the set name.
 
-
-
 ```{r, eval=FALSE}
 set_data <- DB_Table("set_data")
 set_data
@@ -133,75 +170,72 @@ set_data
 # # ℹ Use `print(n = ...)` to see more rows
 ```
 
-These tables are smaller and there is no need to create them automatically, but this not mean that errors in these tables will not affect the reporting. The MetaMaster comes with several `check_*` function for this case. The `check_manualmeta()` function checks the meta data before the manual meta before this tables can be updated on the data base.
-
+These tables are smaller and there is no need to create them automatically, but this not mean that errors in these tables will not affect the reporting. The MetaMaster comes with several `check_*` function for this case. The `check_manualmeta()` function checks this data before these tables can be updated on the data base.
 
 ```{r, eval=FALSE}
 check_manualmeta()
 ```
 
-In addition, the `buildMetaMaster()` function includes further checks that need to made regarding the templates and the reports table. Most of all, the function builds the meta master data based on the raw data. The function needs the path to the raw data and the `export` parameter to be set to `TRUE` if the meta data should be exported.
+And in a similar sense, we can also run consistency check for the Meta Master data. For this purpose the `build()` function runs the `LS_survey_checks*` functions. More precisely, the functions are included in the email template and run automatically if you set the `send_report` parameter to `TRUE`. The next image shows a preview of the email.
 
-```{r, eval=FALSE}
-buildMetaMaster(path = "MasterData_2024_11_20.xlsx", export = TRUE)
-#✔ MetaMaster exported.
-```
+![](preview_mail.png){width="95%"}
 
-
-The exported file contains all tables, each in a separate sheet. The following console shows the first rows of the templates table.
-
-```{r, eval=FALSE}
-MetaMasterMeta <- readxl::read_excel("MetaMasterMeta.xlsx", sheet = "templates")
-head(MetaMasterMeta)
-
-# # A tibble: 6 × 9
-#   surveyID master_template                      report        template                        ubb   stype   type  ganztag timestamp          
-#      <dbl> <chr>                                <chr>         <chr>                           <chr> <chr>   <chr> <chr>   <dttm>             
-# 1   533711 master_09_bfr_allg_gy_elt_00_2022_v4 rpt_elt_p1    tmpl_bfr_beru_fb_elt_00_2022_p1 FALSE beru_fb elt   FALSE   2024-11-19 09:07:54
-# 2   526454 master_22_bfr_beru_fb_leh_00_2022_v4 rpt_leh_p1    tmpl_bfr_beru_fb_leh_00_2022_p1 FALSE beru_fb leh   FALSE   2024-11-19 09:07:54
-# 3   867849 master_23_bfr_beru_fb_sus_00_2022_v4 rpt_sus_fb_p1 tmpl_bfr_beru_fb_sus_00_2022_p1 FALSE beru_fb sus   FALSE   2024-11-19 09:07:54
-# 4   674997 master_18_bfr_beru_bq_aus_00_2022_v4 rpt_aus_bq_p1 tmpl_bfr_beru_bq_aus_00_2022_p1 FALSE beru_bq aus   FALSE   2024-11-19 09:07:54
-# 5   957592 master_19_bfr_beru_bq_elt_00_2022_v4 rpt_elt_bq_p1 tmpl_bfr_beru_bq_elt_00_2022_p1 FALSE beru_bq elt   FALSE   2024-11-19 09:07:54
-# 6   423442 master_20_bfr_beru_bq_leh_00_2022_v4 rpt_leh_bq_p1 tmpl_bfr_beru_bq_leh_00_2022_p1 FALSE beru_bq leh   FALSE   2024-11-19 09:07:5
-```
+Under the hood, the blastula package is used to create the email [@blastula]. The email shows the results of the consistency checks and includes the MetaMaster data as an attachment. The email is sent to the email address that is set in the `config.yml` file if you provide the mail crendentials in the working.
 
 
+Don't forget that the last step is to update the database, which is included in the `build()` function by purpose since it will replace all tables of the master data. The `DB_MetaUpdate()` splits all sheets of the Master Meta data and replaces the database with he new tables. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-## Sent via API
-
-Finally, the package provides a function to create a new survey based on a master template. The `send_survey()` function needs the path to the master template and the name of the new survey.
-
-```{r, eval=FALSE}
-#Create a new survey
-LS_SendSurvey(lss = "struktur_LimeSurvey.lss",
-                 name = "SurveyName")
-```
 
 ## Further Helpers
 
-... 
+The MetaMaster contains further helper functions to work with the LimeSurvey API.
 
-## TBD
+### Sent
 
-Create a new file with the `update_allMastersLimeSurvey()` function. The latter runs `get_MasterTemplate()` which returns all masters templates and saves the result as an Excel file. 
-
+The `LS_SendSurvey()` function sends a survey template to Lime Survey. The function needs the path to the survey template and the name of the survey template. It expects the survey template to be in the LimeSurvey LSS format.
 
 ```{r, eval=FALSE}
-LS_GetMasterData(export = TRUE)
-buildMetaMaster(path = "MasterData_2024_11_11.xlsx", export = TRUE)
-send_testrun(sendto = "johndoe@doe.com")
+LS_SendSurvey(lss = "limesurveyMod.lss", 
+              name = "mastertemplate")
+```
+
+The `LS_SendSurveys()` function is a wrapper around `LS_SendSurvey()`. It sends all survey templates in the working directory to Lime Survey.
+
+```{r, eval=FALSE}
+LS_SendSurveys()
+```
+
+### Delete
+
+The `LS_DeleteSurvey()` function deletes a survey from LimeSurvey. The function needs the survey ID of the survey template. Be careful, there is no way to restore a deleted survey.
+
+```{r, eval=FALSE}
+LS_DeleteSurvey(sid = "123456")
+```
+
+### Create Test Scenarios
+
+The `create_TestSchools()` function creates test scenarios for the MetaMaster. The function creates for each master template a test school. The function returns a tibble with the survey id, the survey title, the template name, the school, the new name, the snr, and the test school.
+
+```{r, eval=FALSE}
+create_TestSchools()
+# # A tibble: 38 × 8
+#       sid surveyls_title                   template file  school new_name snr   test_school
+#     <int> <chr>                            <chr>    <chr> <chr>  <chr>    <chr> <chr>      
+#  1 197865 master_01_bfr_allg_gm_elt_00_20… tmpl_bf… NA    gm     bfr_all… 8934  8934_20242…
+#  2 943467 master_02_bfr_allg_gm_elt_01_20… tmpl_bf… NA    gm     bfr_all… 8934  8934_20242…
+#  3 866667 master_03_bfr_allg_gm_leh_00_20… tmpl_bf… NA    gm     bfr_all… 8934  8934_20242…
+#  4 383484 master_04_bfr_allg_gs_elt_00_20… tmpl_bf… NA    gs     bfr_all… 1208  1208_20242…
+#  5 687118 master_05_bfr_allg_gs_elt_01_20… tmpl_bf… NA    gs     bfr_all… 1208  1208_20242…
+#  6 661758 master_06_bfr_allg_gs_leh_00_20… tmpl_bf… NA    gs     bfr_all… 1208  1208_20242…
+#  7 386673 master_07_bfr_allg_gs_sus_00_20… tmpl_bf… NA    zspf_… bfr_zsp… 6009  6009_20242…
+#  8 956526 master_08_bfr_allg_gs_sus_02_20… tmpl_bf… NA    zspf_… bfr_zsp… 6009  6009_20242…
+#  9 533711 master_09_bfr_allg_gy_elt_00_20… tmpl_bf… NA    beru_… bfr_ber… 0850  0850_20242…
+# 10 197211 master_10_bfr_allg_gy_elt_01_20… tmpl_bf… NA    gy     bfr_all… 0001  0001_20242…
 ```
 
 
+
+
+
+## References
