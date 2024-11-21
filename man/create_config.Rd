@@ -6,6 +6,11 @@
 \usage{
 create_config()
 }
+\arguments{
+\item{file}{The name of the YAML file to create. Default is "config.yml".}
+
+\item{export}{If TRUE, the function writes the YAML file. Otherwise, it returns the YAML.}
+}
 \description{
 This function creates a YAML config file with default values.
 }

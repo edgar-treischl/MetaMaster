@@ -1,7 +1,16 @@
 # library(MetaMaster)
-# Sys.setenv(R_CONFIG_ACTIVE = "default")
+# Sys.setenv(R_CONFIG_ACTIVE = "test")
 # #Get master template for all school types
-# LimeSurveytemplates <- Limer_GetMasterTemplates()
+# LimeSurveytemplates <- LS_GetMasterTemplates()
+
+
+# library(readxl)
+# report <- read_excel("~/bycsdrive/Personal/OES_MetaData/report_meta_devE.xlsx",
+#                                sheet = "reports")
+#
+# MetaMaster::DB_send(report, "reports")
+#
+# MetaMaster::DB_Table()
 
 
 #' Workaround (Soft depreciated)
@@ -26,7 +35,7 @@
 
 workaround <- function(sid, master_title) {
   #Get master meta data from LimeSurvey
-  LimeSurveyMaster <- LS_GetMasterQuesions(id = sid,
+  LimeSurveyMaster <- LS_GetMasterQuestions(id = sid,
                                      name = master_title)
 
   check <- length(LimeSurveyMaster$variable)
@@ -119,7 +128,12 @@ workaround <- function(sid, master_title) {
 
 
 
-
+# workaround(sid = LimeSurveytemplates$sid[26],
+#            master_title = LimeSurveytemplates$surveyls_title[26])
+#
+# purrr::map2(LimeSurveytemplates$sid,
+#             LimeSurveytemplates$surveyls_title,
+#             workaround, .progress = TRUE)
 
 
 

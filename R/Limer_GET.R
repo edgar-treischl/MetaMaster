@@ -284,7 +284,7 @@ LS_GetMasterData <- function(export = FALSE) {
   #export to Excel
   if (export == TRUE) {
     writexl::write_xlsx(allmasters, paste0("metadata_raw", ".xlsx"))
-    cli::cli_alert_success("Master Data exported.")
+    cli::cli_alert_success("Raw meta data exported.")
   }else {
     return(allmasters)
   }
