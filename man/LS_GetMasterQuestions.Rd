@@ -4,7 +4,7 @@
 \alias{LS_GetMasterQuestions}
 \title{Get Questions from a Master File}
 \usage{
-LS_GetMasterQuestions(id = '1', name = 'master')
+LS_GetMasterQuestions(id, name)
 }
 \arguments{
 \item{id}{Survey ID.}
@@ -17,4 +17,9 @@ Results from the API.
 \description{
 This function gets the questions (plot, variable, text)
  from the master survey template.
+}
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+LS_GetMasterQuestions(id = '1', name = 'master')
+\dontshow{\}) # examplesIf}
 }

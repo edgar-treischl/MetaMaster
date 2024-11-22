@@ -15,3 +15,8 @@ Results from the API.
 \description{
 This function gets the raw meta data from Lime Survey for all master templates.
 }
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+LS_GetMasterData(export = FALSE)
+\dontshow{\}) # examplesIf}
+}

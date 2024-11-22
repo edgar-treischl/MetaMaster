@@ -13,3 +13,8 @@ Results from the API.
 This function uploads all master templates as survey templates
  to Lime Survey.
 }
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+LS_UploadTemplates()
+\dontshow{\}) # examplesIf}
+}

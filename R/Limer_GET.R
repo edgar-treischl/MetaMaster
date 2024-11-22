@@ -8,7 +8,8 @@
 #' @description This function gets the master templates from Lime Survey.
 #' @param template If TRUE, the function will return the template name as well.
 #' @return Results from the API.
-#' @usage LS_GetMasterTemplates(template = FALSE)
+#' @examplesIf interactive()
+#' LS_GetMasterTemplates(template = FALSE)
 #' @export
 
 
@@ -76,7 +77,8 @@ LS_GetMasterTemplates <- function(template = FALSE) {
 #' @param id Survey ID.
 #' @param name Survey name (surveyls_title).
 #' @return Results from the API.
-#' @usage LS_GetMasterQuestions(id = '1', name = 'master')
+#' @examplesIf interactive()
+#' LS_GetMasterQuestions(id = '1', name = 'master')
 #' @export
 
 LS_GetMasterQuestions <- function(id, name) {
@@ -260,7 +262,8 @@ LS_GetMasterQuestions <- function(id, name) {
 #' @description This function gets the raw meta data from Lime Survey for all master templates.
 #' @param export Export the data to an Excel file.
 #' @return Results from the API.
-#' @usage LS_GetMasterData(export = FALSE)
+#' @examplesIf interactive()
+#' LS_GetMasterData(export = FALSE)
 #' @export
 
 
@@ -298,7 +301,8 @@ LS_GetMasterData <- function(export = FALSE) {
 #' @description This function uploads all master templates as survey templates
 #'  to Lime Survey.
 #' @return Results from the API.
-#' @usage LS_UploadTemplates()
+#' @examplesIf interactive()
+#' LS_UploadTemplates()
 #' @export
 
 LS_UploadTemplates <- function() {
@@ -329,4 +333,6 @@ LS_UploadTemplates <- function() {
 }
 
 
+utils::globalVariables(c("type", "relevance", "gid", "title", "row_number",
+                         "variable", "master", "sid"))
 

@@ -15,3 +15,8 @@ Results from the API.
 \description{
 This function gets the master templates from Lime Survey.
 }
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+LS_GetMasterTemplates(template = FALSE)
+\dontshow{\}) # examplesIf}
+}
