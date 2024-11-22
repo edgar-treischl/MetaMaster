@@ -16,3 +16,8 @@ A message if successful
 This function reads the manual metadata and uploads
  each sheet as a table in the database.
 }
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+DB_MetaUpdate(path)
+\dontshow{\}) # examplesIf}
+}

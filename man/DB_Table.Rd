@@ -4,7 +4,7 @@
 \alias{DB_Table}
 \title{Get a Table from the Database}
 \usage{
-DB_Table()
+DB_Table(table = NULL)
 }
 \arguments{
 \item{table}{The name of the table.}
@@ -15,4 +15,9 @@ A data frame with the table data or a list of available tables
 \description{
 This function fetches a table from the database and returns it as a data frame.
  If no table is specified, it returns a list of all available tables.
+}
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+DB_Table()
+\dontshow{\}) # examplesIf}
 }

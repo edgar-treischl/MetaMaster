@@ -16,3 +16,8 @@ A message indicating if the .lss files were successfully uploaded.
 This function insert all .lss files in the
  lss_surveys table in the PostgreSQL database.
 }
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+DB_UploadLSS(dir)
+\dontshow{\}) # examplesIf}
+}

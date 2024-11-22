@@ -13,3 +13,9 @@ Return the connection object.
 This function connects to the database using the credentials
  provided in the config file.
 }
+\examples{
+\dontrun{
+connect_DB()
+}
+
+}

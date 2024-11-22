@@ -17,3 +17,8 @@ A message indicating if the table was successfully uploaded.
 \description{
 This function sends a table to the database.
 }
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+DB_send(table, name)
+\dontshow{\}) # examplesIf}
+}

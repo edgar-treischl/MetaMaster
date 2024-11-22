@@ -15,3 +15,8 @@ A message indicating if the table was successfully deleted.
 \description{
 This function deletes all observations from a table in a PostgreSQL database.
 }
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+DB_DeleteFrom(table)
+\dontshow{\}) # examplesIf}
+}
