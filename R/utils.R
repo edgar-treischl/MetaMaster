@@ -134,7 +134,7 @@ create_TestSchools <- function() {
 #' @description This function creates a YAML config file with default values.
 #' @param file The name of the YAML file to create. Default is "config.yml".
 #' @param export If TRUE, the function writes the YAML file. Otherwise, it returns the YAML.
-#' @usage create_config()
+#' @usage create_config(file = "config.yml", export = "TRUE")
 #' @export
 
 create_config <- function(file = "config.yml",

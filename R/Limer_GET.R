@@ -8,7 +8,7 @@
 #' @description This function gets the master templates from Lime Survey.
 #' @param template If TRUE, the function will return the template name as well.
 #' @return Results from the API.
-#' @usage LS_GetMasterTemplates()
+#' @usage LS_GetMasterTemplates(template = FALSE)
 #' @export
 
 
@@ -76,7 +76,7 @@ LS_GetMasterTemplates <- function(template = FALSE) {
 #' @param id Survey ID.
 #' @param name Survey name (surveyls_title).
 #' @return Results from the API.
-#' @usage LS_GetMasterQuestions()
+#' @usage LS_GetMasterQuestions(id = '1', name = 'master')
 #' @export
 
 LS_GetMasterQuestions <- function(id, name) {

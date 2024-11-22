@@ -4,7 +4,7 @@
 \alias{DB_Table}
 \title{Get a Table from the Database}
 \usage{
-DB_Table(table = "table_name")
+DB_Table()
 }
 \arguments{
 \item{table}{The name of the table.}

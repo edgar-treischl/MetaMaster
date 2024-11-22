@@ -4,7 +4,7 @@
 \alias{LS_GetMasterQuestions}
 \title{Get Questions from a Master File}
 \usage{
-LS_GetMasterQuestions()
+LS_GetMasterQuestions(id = '1', name = 'master')
 }
 \arguments{
 \item{id}{Survey ID.}

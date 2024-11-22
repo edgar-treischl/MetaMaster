@@ -6,3 +6,6 @@
 ^pkgdown$
 ^\.github$
 ^\.dockerignore$
+^LICENSE\.md$
+^my_mail_creds$
+^config\.yml$

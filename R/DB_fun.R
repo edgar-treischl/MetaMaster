@@ -2,8 +2,8 @@
 #'
 #' @description This function connects to the database using the credentials
 #'  provided in the config file.
-#' @return A message indicating if the table was successfully uploaded.
-#' @usage DB_send(table = readxl::read_excel("myfile.xlsx"), name = "myname")
+#' @return Return the connection object.
+#' @usage connect_DB()
 #' @export
 
 connect_DB <- function() {
@@ -41,7 +41,7 @@ connect_DB <- function() {
 #' @param table Data frame or table that will be uploaded.
 #' @param name Name of the table.
 #' @return A message indicating if the table was successfully uploaded.
-#' @usage DB_send(table = readxl::read_excel("myfile.xlsx"), name = "myname")
+#' @usage DB_send(table, name)
 #' @export
 
 
@@ -106,7 +106,7 @@ DB_send <- function(table, name) {
 #'  each sheet as a table in the database.
 #' @param path Path to the Excel sheet
 #' @return A message if successful
-#' @usage DB_MetaUpdate(path = "data/report_meta_dev.xlsx")
+#' @usage DB_MetaUpdate(path)
 #' @export
 
 
@@ -156,7 +156,7 @@ DB_MetaUpdate <- function(path) {
 #'  If no table is specified, it returns a list of all available tables.
 #' @param table The name of the table.
 #' @return A data frame with the table data or a list of available tables
-#' @usage DB_Table(table = "table_name")
+#' @usage DB_Table()
 #' @export
 
 
@@ -197,7 +197,7 @@ DB_Table <- function(table = NULL) {
 #' @description This function deletes all observations from a table in a PostgreSQL database.
 #' @param table Data frame or table that will be emptied
 #' @return A message indicating if the table was successfully deleted.
-#' @usage DB_DeleteFrom(table = "test")
+#' @usage DB_DeleteFrom(table)
 #' @export
 
 
@@ -235,7 +235,7 @@ DB_DeleteFrom <- function(table) {
 #'  lss_surveys table in the PostgreSQL database.
 #' @param dir Directory where the .lss files are stored.
 #' @return A message indicating if the .lss files were successfully uploaded.
-#' @usage DB_UploadLSS(dir = here::here("Master_2024_18_11"))
+#' @usage DB_UploadLSS(dir)
 #' @export
 
 

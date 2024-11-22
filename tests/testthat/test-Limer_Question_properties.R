@@ -1,3 +1,8 @@
+if (Sys.getenv("NO_TESTS") == "TRUE") {
+  testthat::skip("Skipping tests due to NO_TESTS environment variable")
+}
+
+
 test_that("Limer_GetQlist return question list", {
   Sys.setenv(R_CONFIG_ACTIVE = "test")
 

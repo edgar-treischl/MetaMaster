@@ -4,7 +4,7 @@
 \alias{DB_MetaUpdate}
 \title{Upload Metadata to the Database}
 \usage{
-DB_MetaUpdate(path = "data/report_meta_dev.xlsx")
+DB_MetaUpdate(path)
 }
 \arguments{
 \item{path}{Path to the Excel sheet}

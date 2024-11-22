@@ -4,7 +4,7 @@
 \alias{DB_send}
 \title{Send a Table to the Database}
 \usage{
-DB_send(table = readxl::read_excel("myfile.xlsx"), name = "myname")
+DB_send(table, name)
 }
 \arguments{
 \item{table}{Data frame or table that will be uploaded.}

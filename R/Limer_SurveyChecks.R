@@ -6,7 +6,6 @@
 #'    a data frame with the results.
 #' @param ubb Logical value indicating if UBB or survey will be checked.
 #' @param export Export results to an Excel file (default is FALSE).
-#' @usage check_distinct(ubb = TRUE)
 #' @export
 
 check_distinct <- function(ubb, export = FALSE) {
@@ -76,7 +75,6 @@ check_distinct <- function(ubb, export = FALSE) {
 #'
 #' @description Some text in LimeSurvey are stored in HTML format.
 #'  This helper function extracts it from the HTML code.
-#' @usage check_MasterTemplates()
 #' @export
 
 check_MasterTemplates <- function() {
@@ -117,7 +115,6 @@ check_MasterTemplates <- function() {
 #'
 #' @description Some text in LimeSurvey are stored in HTML format.
 #'  This helper function extracts it from the HTML code.
-#' @usage check_SurveyTemplates()
 #' @export
 
 check_SurveyTemplates <- function() {

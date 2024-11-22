@@ -4,10 +4,10 @@
 \alias{connect_DB}
 \title{Connect to the Database}
 \usage{
-DB_send(table = readxl::read_excel("myfile.xlsx"), name = "myname")
+connect_DB()
 }
 \value{
-A message indicating if the table was successfully uploaded.
+Return the connection object.
 }
 \description{
 This function connects to the database using the credentials

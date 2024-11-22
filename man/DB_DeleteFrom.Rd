@@ -4,7 +4,7 @@
 \alias{DB_DeleteFrom}
 \title{Delete Observations From a Table}
 \usage{
-DB_DeleteFrom(table = "test")
+DB_DeleteFrom(table)
 }
 \arguments{
 \item{table}{Data frame or table that will be emptied}

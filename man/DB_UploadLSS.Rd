@@ -4,7 +4,7 @@
 \alias{DB_UploadLSS}
 \title{Upload LSS Survey Files to the Database}
 \usage{
-DB_UploadLSS(dir = here::here("Master_2024_18_11"))
+DB_UploadLSS(dir)
 }
 \arguments{
 \item{dir}{Directory where the .lss files are stored.}

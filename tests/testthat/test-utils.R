@@ -1,3 +1,8 @@
+if (Sys.getenv("NO_TESTS") == "TRUE") {
+  testthat::skip("Skipping tests due to NO_TESTS environment variable")
+}
+
+
 test_that("Extract Text from HTML", {
   txt_html <- '<p><span style="font-size:28px;"><b><span style="line-height:115%;"><span style="font-family:Calibri, sans-serif;">Meine Klassenlehrerin (...) was in meiner Klasse alles passiert (7-10).</span></span></b> </span></p>'
   txt <- 'Not HTML Code'

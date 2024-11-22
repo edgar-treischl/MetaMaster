@@ -4,7 +4,7 @@
 \alias{check_distinct}
 \title{Check if All Variables of the Meta Data are Distinct}
 \usage{
-check_distinct(ubb = TRUE)
+check_distinct(ubb, export = FALSE)
 }
 \arguments{
 \item{ubb}{Logical value indicating if UBB or survey will be checked.}

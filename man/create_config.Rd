@@ -4,7 +4,7 @@
 \alias{create_config}
 \title{Create a Config File}
 \usage{
-create_config()
+create_config(file = "config.yml", export = "TRUE")
 }
 \arguments{
 \item{file}{The name of the YAML file to create. Default is "config.yml".}

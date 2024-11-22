@@ -1,3 +1,8 @@
+if (Sys.getenv("NO_TESTS") == "TRUE") {
+  testthat::skip("Skipping tests due to NO_TESTS environment variable")
+}
+
+
 #if (TRUE) skip("Some Important Requirement is not available")
 
 test_that("Limer_GetMasterTemplates returns data frame with 3 columns", {

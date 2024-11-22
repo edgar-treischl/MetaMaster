@@ -4,7 +4,7 @@
 \alias{LS_GetMasterTemplates}
 \title{Get Master Templates from Lime Survey}
 \usage{
-LS_GetMasterTemplates()
+LS_GetMasterTemplates(template = FALSE)
 }
 \arguments{
 \item{template}{If TRUE, the function will return the template name as well.}

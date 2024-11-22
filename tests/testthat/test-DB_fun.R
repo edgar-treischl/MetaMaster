@@ -1,4 +1,8 @@
 #if (TRUE) skip("Some Important Requirement is not available")
+if (Sys.getenv("NO_TESTS") == "TRUE") {
+  testthat::skip("Skipping tests due to NO_TESTS environment variable")
+}
+
 
 
 test_that("DB_Table returns table names", {
