@@ -94,3 +94,6 @@ get_AllExtraPlots <- function(export = FALSE,
 }
 
 
+utils::globalVariables(c("report", "vars", "wplots", "n"))
+
+

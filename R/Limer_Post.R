@@ -59,7 +59,7 @@ LS_SendSurveys <- function() {
 
   namesE <- c("Edgar", "Edga1")
 
-  Limer_sendSurvey(lss = lssfiles[1], name = "Edgar1")
+  LS_SendSurvey(lss = lssfiles[1], name = "Edgar1")
 
   response <- purrr::map2(lssfiles[1:2], namesE, LS_SendSurvey, .progress = TRUE)
   cli::cli_inform("Surveys created:")
@@ -68,6 +68,45 @@ LS_SendSurveys <- function() {
 }
 
 
+#' Upload Master Templates as Survey Templates to Lime Survey
+#'
+#' @description This function uploads all master templates as survey templates
+#'  to Lime Survey.
+#' @return Results from the API.
+#' @examples
+#' \dontrun{
+#' LS_UploadTemplates()
+#' }
+#'
+#' @export
+
+LS_UploadTemplates <- function() {
+  cli::cli_abort("This function is not ready yet. Adjust paths!")
+  masters <- LS_GetMasterTemplates(template = TRUE)
+
+  #List all files with ending lss here: data/MasterTemplates/Minke_Master_Backup/
+  lssfiles <- list.files(here::here("data/MasterTemplates/Minke_Master_Backup/"),
+                         pattern = ".lss$")
+  lsspaths <- list.files(here::here("data/MasterTemplates/Minke_Master_Backup/"),
+                         pattern = ".lss$", full.names = TRUE)
+
+  lssnumbers <- stringr::str_extract(lssfiles, "\\d+")
+
+  lssdf <- tibble::tibble(sid = as.integer(lssnumbers),
+                          lss = lssfiles,
+                          here = lsspaths)
+
+  masterssenddf <- masters |> dplyr::left_join(lssdf, by = "sid")
+
+  df <- masterssenddf |> dplyr::filter(template == "tmpl_bfr_allg_gm_elt_00_2022_p1")
+
+
+  # Limer_sendSurvey(lss = df$here[1],
+  #                  name = df$template[1])
+
+  purrr::map2(df$here, df$template, LS_SendSurvey, progress = TRUE)
+}
 
 
 
+utils::globalVariables(c("template"))

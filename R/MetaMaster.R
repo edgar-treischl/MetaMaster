@@ -60,7 +60,6 @@ build <- function(send_report = FALSE) {
 #' @param export If TRUE, the MetaMaster will be exported as an Excel file.
 #' @export
 
-
 prepare_RawMeta <- function(path, export = FALSE) {
   df <- readxl::read_excel(path) |>
     dplyr::rename(master_template = template)
@@ -159,7 +158,7 @@ prepare_RawMeta <- function(path, export = FALSE) {
   reports$text <- stringr::str_remove_all(reports$text, "\\s*\\([^\\)]*\\)")
 
   reports$text <- stringr::str_replace_all(reports$text,
-                                           pattern = "Schülerinnen und Schüler",
+                                           pattern = "Sch\u00FChlerinnen und Sch\u00F6ler",
                                            replacement = "SuS")
 
   reports$text <- stringr::str_replace_all(reports$text,
@@ -168,7 +167,7 @@ prepare_RawMeta <- function(path, export = FALSE) {
 
   reports$text <- stringr::str_replace_all(reports$text,
                                            pattern = "Lehrinnen und Lehrer",
-                                           replacement = "Lehrkräfte")
+                                           replacement = "LK")
 
   reports$text <- stringr::str_replace_all(reports$text,
                                            pattern = "Schulleitung",
@@ -311,6 +310,7 @@ send_Report <- function() {
 
 
 
+utils::globalVariables(c("pckg", "rpt", "report", "template"))
 
 
 

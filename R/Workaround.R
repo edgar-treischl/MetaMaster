@@ -116,7 +116,8 @@ workaround <- function(sid, master_title) {
   folder <- paste0("automation_", date)
   folder <- here::here(folder)
 
-  fs::dir_create(folder)
+  #fs::dir_create(folder)
+  dir.create(folder, recursive = TRUE)
 
   filename <- here::here(folder, paste0(master_title, ".xlsx"))
 
@@ -187,7 +188,7 @@ SwapLimesurveyTitles <- function(file) {
   oldvar <- c(codes, master$variable)
 
   #Create a mapping
-  title_mapping <- setNames(masterplots, oldvar)
+  title_mapping <- stats::setNames(masterplots, oldvar)
 
   #Replace the title with the title from the master template
   xml2::xml_text(title) <- purrr::map_chr(xml2::xml_text(title), ~ title_mapping[.])
@@ -204,6 +205,7 @@ SwapLimesurveyTitles <- function(file) {
 
 
 
+utils::globalVariables(c("plot_meta"))
 
 
 

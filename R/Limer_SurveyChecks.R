@@ -147,4 +147,5 @@ check_SurveyTemplates <- function() {
 
 
 
+utils::globalVariables(c("survey", "text", "n", "template"))
 
