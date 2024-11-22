@@ -27,6 +27,25 @@ test_that("DB_Table returns data frame", {
 })
 
 
+test_that("DB_send updates table, DB_DeleteFrom cleans it", {
+  #skip_on_cran()
+  # Create a table
+  DB_send(table = tibble::tibble(test = TRUE),
+          name = "test")
+  testtable <- DB_Table("test")
+
+  expect_true(testtable$test[1])
+
+  # Delete the table
+  DB_DeleteFrom("test")
+
+  testtable <- DB_Table("test")
+  expect_equal(nrow(testtable), 0)
+
+})
+
+
+
 
 
 

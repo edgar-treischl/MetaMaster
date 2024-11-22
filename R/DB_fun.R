@@ -1,16 +1,12 @@
-#' Send a Table to the Database
+#' Connect to the Database
 #'
-#' @description This function sends a table to the database.
-#' @param table Data frame or table that will be uploaded.
-#' @param name Name of the table.
+#' @description This function connects to the database using the credentials
+#'  provided in the config file.
 #' @return A message indicating if the table was successfully uploaded.
 #' @usage DB_send(table = readxl::read_excel("myfile.xlsx"), name = "myname")
 #' @export
 
-
-DB_send <- function(table, name) {
-
-  #Get config
+connect_DB <- function() {
   get <- config::get(file = here::here("config.yml"))
   db <- get$db
   db_host <- get$db_host
@@ -32,6 +28,49 @@ DB_send <- function(table, name) {
   if (!DBI::dbIsValid(con)) {
     cli::cli_abort("Failed to connect to the database. Please check your credentials and network.")
   }
+
+  return(con)
+}
+
+
+
+
+#' Send a Table to the Database
+#'
+#' @description This function sends a table to the database.
+#' @param table Data frame or table that will be uploaded.
+#' @param name Name of the table.
+#' @return A message indicating if the table was successfully uploaded.
+#' @usage DB_send(table = readxl::read_excel("myfile.xlsx"), name = "myname")
+#' @export
+
+
+DB_send <- function(table, name) {
+
+  # #Get config
+  # get <- config::get(file = here::here("config.yml"))
+  # db <- get$db
+  # db_host <- get$db_host
+  # db_port <- get$db_port
+  # db_user <- get$db_user
+  # db_password <- get$db_password
+  # db_mode <- get$db_mode
+  #
+  # # Connect to the database
+  # con <- DBI::dbConnect(RPostgres::Postgres(),
+  #                       dbname = db,
+  #                       host = db_host,
+  #                       port = db_port,
+  #                       user = db_user,
+  #                       sslmode = db_mode,
+  #                       password = db_password)
+  #
+  # # Check if connection is valid
+  # if (!DBI::dbIsValid(con)) {
+  #   cli::cli_abort("Failed to connect to the database. Please check your credentials and network.")
+  # }
+
+  con <- connect_DB()
 
   #Add timestamp
   table$timestamp <- Sys.time()
@@ -123,30 +162,8 @@ DB_MetaUpdate <- function(path) {
 
 DB_Table <- function(table = NULL) {
 
-  #Get config
-  #config_path <- normalizePath(here::here("config.yml"))
-  #get <- config::get(file = config_path)
-  get <- config::get()
-  db <- get$db
-  db_host <- get$db_host
-  db_port <- get$db_port
-  db_user <- get$db_user
-  db_password <- get$db_password
-  db_mode <- get$db_mode
-
-  # Connect to the database
-  con <- DBI::dbConnect(RPostgres::Postgres(),
-                        dbname = db,
-                        host = db_host,
-                        port = db_port,
-                        user = db_user,
-                        sslmode = db_mode,
-                        password = db_password)
-
-  # Check if connection is valid
-  if (!DBI::dbIsValid(con)) {
-    cli::cli_abort("Failed to connect to the DB. Please check credentials and network.")
-  }
+  # Connect to the PostgreSQL database
+  con <- connect_DB()
 
   # If table argument is missing, return all available tables
   if (is.null(table)) {
@@ -171,6 +188,104 @@ DB_Table <- function(table = NULL) {
   return(df)
 
 }
+
+
+
+
+#' Delete Observations From a Table
+#'
+#' @description This function deletes all observations from a table in a PostgreSQL database.
+#' @param table Data frame or table that will be emptied
+#' @return A message indicating if the table was successfully deleted.
+#' @usage DB_DeleteFrom(table = "test")
+#' @export
+
+
+DB_DeleteFrom <- function(table) {
+
+  # Connect to the PostgreSQL database
+  con <- connect_DB()
+
+  # Delete all records from the table
+  sql_code <- "DELETE FROM "
+  sql_code <- paste0(sql_code, table, ";")
+  DBI::dbExecute(con, sql_code)
+
+  # Check if the table is empty by counting the rows
+  count_query <- paste0("SELECT COUNT(*) FROM ", table)
+  row_count <- DBI::dbGetQuery(con, count_query)
+
+  # Verify if the table is empty
+  if (row_count[1, 1] == 0) {
+    cli::cli_alert_success("The table is now empty.")
+  } else {
+    cli::cli_alert_warning("Upps..something went wrong.")
+  }
+
+  on.exit(DBI::dbDisconnect(con), add = TRUE)
+}
+
+
+
+
+
+#' Upload LSS Survey Files to the Database
+#'
+#' @description This function insert all .lss files in the
+#'  lss_surveys table in the PostgreSQL database.
+#' @param dir Directory where the .lss files are stored.
+#' @return A message indicating if the .lss files were successfully uploaded.
+#' @usage DB_UploadLSS(dir = here::here("Master_2024_18_11"))
+#' @export
+
+
+DB_UploadLSS <- function(dir) {
+
+  # Set the directory where the .lss files are stored
+  lss_dir <- dir
+
+  # List all .lss files in the directory
+  lss_files <- list.files(lss_dir, pattern = ".lss$", full.names = TRUE)
+
+  # Check if there are any .lss files in the directory
+  if (rlang::is_empty(lss_files)) {
+    cli::cli_abort("Sorry buddy, no .lss files found in the directory.")
+  }
+
+  # Connect to the PostgreSQL database
+  con <- connect_DB()
+
+  # Define the function to process each file
+  process_lss_file <- function(lss_file) {
+    # Extract the ID from the filename (assuming the ID is the file name without the extension)
+    file_id <- tools::file_path_sans_ext(basename(lss_file))
+    file_id <- stringr::str_extract(file_id, "\\d+")
+
+    # Read the XML content of the .lss file
+    xml_data <- xml2::read_xml(lss_file)
+
+    # Extract the survey title (for example, from the <title> element in the XML file)
+    master <- xml2::xml_text(xml2::xml_find_first(xml_data, "//surveyls_title"))
+
+    # Convert the XML data to a string
+    xml_string <- as.character(xml_data)
+
+    # Insert the data into the PostgreSQL table
+    DBI::dbExecute(con, "INSERT INTO lss_surveys (file_id, master, survey_data) VALUES ($1, $2, $3)",
+                   params = list(file_id, master, xml_string))
+  }
+
+  # Process all .lss files
+  purrr::walk(lss_files, process_lss_file, .progress = TRUE)
+  cli::cli_alert_success("All .lss files have been uploaded to the database.")
+  # Disconnect
+  on.exit(DBI::dbDisconnect(con), add = TRUE)
+}
+
+
+
+
+
 
 
 
