@@ -3,7 +3,10 @@
 #' @description This function deletes a survey from Lime Survey.
 #' @param id The survey ID.
 #' @return Response from the API.
-#' @usage LS_DeleteSurvey(id = "id")
+#' @examples
+#' \dontrun{
+#' LS_DeleteSurvey(id = "id")
+#' }
 #' @export
 
 

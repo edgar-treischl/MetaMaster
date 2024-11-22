@@ -19,7 +19,8 @@ This function gets the questions (plot, variable, text)
  from the master survey template.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontrun{
 LS_GetMasterQuestions(id = '1', name = 'master')
-\dontshow{\}) # examplesIf}
+}
+
 }

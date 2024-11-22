@@ -5,7 +5,10 @@
 #' @param name The optional name of the survey. If not provided, the name of
 #'  the survey will be extracted from the template.
 #' @return Results from the API.
-#' @usage LS_SendSurvey(lss = "limesurvey_XXX.lss", name = "MySurvey")
+#' @examples
+#' \dontrun{
+#' LS_SendSurvey(lss = "limesurvey_XXX.lss", name = "MySurvey")
+#' }
 #' @export
 
 LS_SendSurvey <- function(lss, name = NULL) {
@@ -41,7 +44,10 @@ LS_SendSurvey <- function(lss, name = NULL) {
 #' @description This function is wrapper around LS_SendSurvey to send
 #'  several surveys on the fly.
 #' @return Results from the API.
-#' @usage LS_SendSurveys()
+#' @examples
+#' \dontrun{
+#' LS_SendSurveys()
+#' }
 #' @export
 
 

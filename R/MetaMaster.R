@@ -10,7 +10,10 @@
 #'    data fetched from Lime Survey.
 #' @param send_report A logical value indicating if the report should be sent.
 #' @return A message indicating the completion of the process.
-#' @usage build(send_report = TRUE)
+#' @examples
+#' \dontrun{
+#' build(send_report = TRUE)
+#' }
 #' @export
 
 build <- function(send_report = FALSE) {
@@ -266,8 +269,9 @@ prepare_OverallReport <- function(packagename) {
 
 #' Send Test Results
 #' @description This function send the test results to the specified email address.
-#' @examples \dontrun{
-#' send_testrun(sendto = 'john.doe@johndoe.com')
+#' @examples
+#' \dontrun{
+#' send_Report(sendto = "john.doe@johndoe.com")
 #' }
 #' @export
 

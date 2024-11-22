@@ -27,7 +27,7 @@ get_responses(
 
 \item{sResponseType}{\dots}
 
-\item{\dots}{Further arguments to \code{\link{call_limer}}.}
+\item{\dots}{Further arguments to \code{\link{LS_Ask}}.}
 }
 \description{
 This function exports and downloads data from a LimeSurvey survey.

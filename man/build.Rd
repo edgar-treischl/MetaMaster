@@ -4,7 +4,7 @@
 \alias{build}
 \title{Build the Meta Data}
 \usage{
-build(send_report = TRUE)
+build(send_report = FALSE)
 }
 \arguments{
 \item{send_report}{A logical value indicating if the report should be sent.}
@@ -15,4 +15,9 @@ A message indicating the completion of the process.
 \description{
 This function create the metadata based on the raw meta
    data fetched from Lime Survey.
+}
+\examples{
+\dontrun{
+build(send_report = TRUE)
+}
 }

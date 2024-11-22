@@ -22,8 +22,8 @@ This function makes a generic call to the LimeSurvey API.
 }
 \examples{
 \dontrun{
-call_limer(method = "list_surveys")
-call_limer(method = "get_summary",
+LS_Ask(method = "list_surveys")
+LS_Ask(method = "get_summary",
            params = list(iSurveyID = 238481,
                          sStatname = "completed_responses"))
 }

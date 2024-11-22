@@ -16,3 +16,9 @@ A message if successful
 This function reads the manual metadata and uploads
  each sheet as a table in the database.
 }
+\examples{
+\dontrun{
+DB_MetaUpdate(path)
+}
+
+}

@@ -4,7 +4,7 @@
 \alias{LS_SendSurvey}
 \title{Send a Survey Template to Lime Survey}
 \usage{
-LS_SendSurvey(lss = "limesurvey_XXX.lss", name = "MySurvey")
+LS_SendSurvey(lss, name = NULL)
 }
 \arguments{
 \item{lss}{Path to the survey template.}
@@ -17,4 +17,9 @@ Results from the API.
 }
 \description{
 This function sends a survey template to the Lime Survey.
+}
+\examples{
+\dontrun{
+LS_SendSurvey(lss = "limesurvey_XXX.lss", name = "MySurvey")
+}
 }

@@ -3,7 +3,10 @@
 #' @description Some text in Lime Survey are saved as HTML.
 #'  This helper function extracts it from the HTML code.
 #' @param input HTML code
-#' @usage extract_html(input = "Html code here")
+#' @examples
+#' \dontrun{
+#' extract_html(input = "Html code here")
+#' }
 #' @export
 
 extract_html <- function(input) {
@@ -58,7 +61,10 @@ is_html <- function(x) {
 #'
 #' @description This function creates a data frame to test all master templates.
 #'  It creates example surveys for each master template to upload in a test environment.
-#' @usage create_TestSchools()
+#' @examples
+#' \dontrun{
+#' create_TestSchools()
+#' }
 #' @export
 
 create_TestSchools <- function() {
@@ -134,7 +140,10 @@ create_TestSchools <- function() {
 #' @description This function creates a YAML config file with default values.
 #' @param file The name of the YAML file to create. Default is "config.yml".
 #' @param export If TRUE, the function writes the YAML file. Otherwise, it returns the YAML.
-#' @usage create_config(file = "config.yml", export = "TRUE")
+#' @examples
+#' \dontrun{
+#' create_config()
+#' }
 #' @export
 
 create_config <- function(file = "config.yml",

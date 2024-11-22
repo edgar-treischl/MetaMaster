@@ -57,8 +57,8 @@ LS_Connect <- function(server, user, credential) {
 #' @return Results from the API (sometimes plain text, sometimes base64-encoded text).
 #' @import httr
 #' @examples \dontrun{
-#' call_limer(method = "list_surveys")
-#' call_limer(method = "get_summary",
+#' LS_Ask(method = "list_surveys")
+#' LS_Ask(method = "get_summary",
 #'            params = list(iSurveyID = 238481,
 #'                          sStatname = "completed_responses"))
 #' }
@@ -135,7 +135,7 @@ session_cache <- new.env(parent = emptyenv())
 #' @param sCompletionStatus \dots
 #' @param sHeadingType \dots
 #' @param sResponseType \dots
-#' @param \dots Further arguments to \code{\link{call_limer}}.
+#' @param \dots Further arguments to \code{\link{LS_Ask}}.
 #' @export
 #' @examples \dontrun{
 #' get_responses(12345)
@@ -144,7 +144,7 @@ session_cache <- new.env(parent = emptyenv())
 get_responses <- function(iSurveyID, sDocumentType = "csv", sLanguageCode = NULL,
                           sCompletionStatus = "complete", sHeadingType = "code",
                           sResponseType = "long", ...) {
-  # Put all the function's arguments in a list to then be passed to call_limer()
+  # Put all the function's arguments in a list to then be passed to LS_Ask()
   params <- as.list(environment())
   dots <- list(...)
   if(length(dots) > 0) params <- append(params,dots)

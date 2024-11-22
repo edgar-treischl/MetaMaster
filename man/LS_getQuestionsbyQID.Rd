@@ -4,7 +4,7 @@
 \alias{LS_getQuestionsbyQID}
 \title{Superseded: Get Question Title, Plot Name, and Question Text by Question ID}
 \usage{
-#LS_getQuestionsbyQID(qid = "3307")
+LS_getQuestionsbyQID(qid)
 }
 \arguments{
 \item{qid}{Question ID}
@@ -15,4 +15,9 @@ A tibble with columns 'title', 'plot', and 'question'
 \description{
 This function retrieves the question title, plot name,
  and question text for a given question ID.
+}
+\examples{
+\dontrun{
+LS_getQuestionsbyQID(qid = "3307")
+}
 }

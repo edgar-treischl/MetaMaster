@@ -11,6 +11,6 @@ This function send the test results to the specified email address.
 }
 \examples{
 \dontrun{
-send_testrun(sendto = 'john.doe@johndoe.com')
+send_Report(sendto = "john.doe@johndoe.com")
 }
 }

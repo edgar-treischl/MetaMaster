@@ -4,7 +4,7 @@
 \alias{LS_DeleteSurvey}
 \title{Delete a Survey from Lime Survey Instance}
 \usage{
-LS_DeleteSurvey(id = "id")
+LS_DeleteSurvey(id)
 }
 \arguments{
 \item{id}{The survey ID.}
@@ -14,4 +14,9 @@ Response from the API.
 }
 \description{
 This function deletes a survey from Lime Survey.
+}
+\examples{
+\dontrun{
+LS_DeleteSurvey(id = "id")
+}
 }

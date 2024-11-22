@@ -17,3 +17,9 @@ A message indicating if the table was successfully uploaded.
 \description{
 This function sends a table to the database.
 }
+\examples{
+\dontrun{
+DB_send(table, name)
+}
+
+}

@@ -13,3 +13,8 @@ Results from the API.
 This function is wrapper around LS_SendSurvey to send
  several surveys on the fly.
 }
+\examples{
+\dontrun{
+LS_SendSurveys()
+}
+}

@@ -14,3 +14,8 @@ create_config(file = "config.yml", export = "TRUE")
 \description{
 This function creates a YAML config file with default values.
 }
+\examples{
+\dontrun{
+create_config()
+}
+}

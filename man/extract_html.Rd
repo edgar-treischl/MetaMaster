@@ -4,7 +4,7 @@
 \alias{extract_html}
 \title{Extract Text from HTML formated Survey Text}
 \usage{
-extract_html(input = "Html code here")
+extract_html(input)
 }
 \arguments{
 \item{input}{HTML code}
@@ -12,4 +12,9 @@ extract_html(input = "Html code here")
 \description{
 Some text in Lime Survey are saved as HTML.
  This helper function extracts it from the HTML code.
+}
+\examples{
+\dontrun{
+extract_html(input = "Html code here")
+}
 }

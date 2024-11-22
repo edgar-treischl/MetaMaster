@@ -15,3 +15,9 @@ A message indicating if the table was successfully deleted.
 \description{
 This function deletes all observations from a table in a PostgreSQL database.
 }
+\examples{
+\dontrun{
+DB_DeleteFrom(table)
+}
+
+}

@@ -16,3 +16,8 @@ A message indicating if the .lss files were successfully uploaded.
 This function insert all .lss files in the
  lss_surveys table in the PostgreSQL database.
 }
+\examples{
+\dontrun{
+DB_UploadLSS(dir)
+}
+}
