@@ -11,6 +11,8 @@ DB_Table(table = NULL)
 }
 \value{
 A data frame with the table data or a list of available tables.
+
+A data frame with the table data or a list of available tables
 }
 \description{
 This function fetches a table from the database and returns it as a data frame.

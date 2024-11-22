@@ -172,6 +172,7 @@ DB_MetaUpdate <- function(path) {
 #' \dontrun{
 #' DB_Table()
 #' }
+#' @return A data frame with the table data or a list of available tables
 #' @export
 
 
