@@ -4,16 +4,15 @@
 # MetaMaster
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
-The goal of the MetaMaster package is to create meta data for LimeSurvey
-which are reproducible, tested, and, in consequence, error-free. The
-package provides functions to retrieve data via the Lime Survey API
-(`LS_*`); functions to work with a PostgreSQL (`DB_*`) database; and
-functions to build the *Master Meta Data*. Furthermore, the package
-implements functions to perform consistency checks and further helpers,
-for example, to upload survey templates via the API.
+The MetaMaster package creates the *master meta data*. The latter are
+meta data for Lime Survey which are reproducible, tested, and - in
+consequence - error-free. To this end, the package provides functions to
+exchange data via the Lime Survey API (`LS_*`) and functions to work
+with a PostgreSQL (`DB_*`) database. Furthermore, the package implements
+functions to perform consistency checks and further helpers to automate
+the process to build meta data for Lime Survey.
 
 ## Installation
 
