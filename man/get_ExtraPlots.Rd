@@ -2,7 +2,7 @@
 % Please edit documentation in R/getExtraPlots.R
 \name{get_ExtraPlots}
 \alias{get_ExtraPlots}
-\title{Get (extract) Extra Plots from the Manual Meta Data}
+\title{Get Extra Plots from the Manual Data}
 \usage{
 get_ExtraPlots(reporttemplate)
 }

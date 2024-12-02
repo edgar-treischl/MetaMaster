@@ -4,16 +4,18 @@
 \alias{build}
 \title{Build the Meta Data}
 \usage{
-build(send_report = FALSE)
+build(send_report = FALSE, update = FALSE)
 }
 \arguments{
 \item{send_report}{A logical value indicating if the report should be sent.}
+
+\item{update}{Update database.}
 }
 \value{
 A message indicating the completion of the process.
 }
 \description{
-This function create the metadata based on the raw meta
+This function create the meta data based on the raw
    data fetched from Lime Survey.
 }
 \examples{

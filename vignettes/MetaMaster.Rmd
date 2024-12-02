@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 The MetaMaster package creates the *master meta data*. The latter are meta data for Lime Survey which are reproducible, tested, and - in consequence - error-free. To this end, the package provides functions to exchange data via the Lime Survey API (`LS_*`) and functions to work with a PostgreSQL (`DB_*`) database. Furthermore, the package introduces consistency checks and further helpers to automate the process to build meta data for Lime Survey.
 
-In order to use the package, you must provide credentials and other parameters to get access to the Lime Survey API (e.g., user name). The MetaMaster packages relies on the `conig` packages to get access to these parameters [@config]. All necessary parameters need to be available in the `config.yml` file within the working directory. The next console shows an example.
+In order to use the package, you must provide credentials and other parameters to get access to the Lime Survey API (e.g., user name). The MetaMaster packages relies on the `conig` package to get access to these parameters [@config]. All necessary parameters need to be available in the `config.yml` file within the working directory. The next console shows an example.
 
 ``` yaml
 default:
@@ -33,7 +33,7 @@ test:
   tmp.credential: "Password"
 ```
 
-In case there is no config file yet, create a new one with the `create_config()` function which has all default parameters included. Furthermore, the config package picks the default parameters without any adjustments. To use the configuration for a different environment (e.g., `test`), set the environmental variable `R_CONFIG_ACTIVE` accordingly. The master templates for the OES live in the `test` environment which is why we have to set it to build the meta data.
+In case there is no config file yet, create a new one with the `create_config()` function which has all default parameters included. Furthermore, the config package picks the default parameters without any adjustments. To use the configuration for a different environment (e.g., `test`), set the environmental variable `R_CONFIG_ACTIVE`. The master templates for the OES live in the `test` environment which is why we have to set it accordingly to build the meta data.
 
 ```{r}
 #Set the R_CONFIG_ACTIVE
@@ -45,22 +45,23 @@ Sys.setenv(R_CONFIG_ACTIVE = "test")
 
 ## MetaMaster in Action
 
-In order to build the meta data, the following steps are necessary. (1) We need to download the raw meta data via the Lime Survey API. (2) We need to build the Master Meta Data based on the raw data. (3) We need to run consistency checks and may inspect the results in an email report. (4) We need to upload all tables of the Master Meta data to the database. The `build()` function runs the first three these steps in sequence:
+Let's build the master meta data: (1) We need to download the raw data via the Lime Survey API. (2) We need to build the Master Meta Data based on the raw data. (3) We need to run consistency checks and may inspect the results in an email report. (4) We need to upload all tables of the Master Meta data to the database. The `build()` function runs these steps in sequence:
 
 ```{r, eval=FALSE}
-build(send_report = TRUE)
+build(send_report = TRUE, update = TRUE)
 
 # ℹ Starting the build process...
 # ℹ Fetching raw meta data from Lime Survey
-# ✔ Raw meta data exported.                         
+# ✔ Raw meta data exported.                          
 # ℹ Building metadata for the master data...
-# ✔ MetaMaster exported.                                              
+# ✔ MetaMaster exported.                  
+# ✔ The table 'metadata_raw' has been successfully uploaded to the database.
 # ℹ Sending the report...
-#   The email message was sent successfully.                            
+# The email message was sent successfully.                       
 # ✔ By the power of Grayskull: Building process completed.
 ```
 
-If the Meta Master was built and all checks were passed, the last step is to update the database. The `DB_MetaUpdate()` splits the sheets of the Master Meta data and replaces the database with the new tables. The following console shows the steps of the `build()` process in action and the next section outlines what happens under the hood.
+The following console displays the `build()` function and the next section outlines what happens under the hood.
 
 ```{r}
 #Build the Meta Master Data
@@ -125,10 +126,10 @@ LS_GetMasterQuestions(id = "197865", name = "master_01_bfr_allg_gm_elt_00_2022_v
 
 
 
-The `prepare_RawMeta()` function convert the raw data into the Master Meta data. Based on the raw data, we build the two most important tables of the meta data. The templates table contains information about the report template that will be used for the report. And the report table contains information about the variables, plost, and the labels for each report template.
+The `prepare_RawMeta()` function convert the raw data into the Master Meta data. Based on the raw data, we build the two most important tables of the meta data. The templates table contains information about the report template that will be used for the report. And the report table contains information about the variables, plots, and the labels for each report template.
 
 
-In addition, the meta data contains information abouts sets, colors, and further smaller tables which will not(!) be generated automatically. Let's revise them with the `DB_Table()` function, which grabs a table from the data base. The sets table contains information about the (color) sets, the labels, and so on.
+In addition, the meta data includes tables which will not(!) be generated automatically. Let's revise them with the `DB_Table()` function, which grabs a table from the data base. Two different types of tables cannot be generated automatically. This is minor concern since they are small and easy to handle. First, the `sets` table contains information about the (color) of sets, the labels, and so on.
 
 ```{r, eval=FALSE}
 sets <- DB_Table("sets")
@@ -149,9 +150,9 @@ sets
 # # ℹ 44 more rows
 ```
 
-The plots_headers table contains information about plot name and the header(s) that will show up in the report.
+Second, the `plots_headers` (and `plots_headers_ubb`) table contains information about plot name and the header(s) that will be printed in the report.
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 plots_headers <- DB_Table("plots_headers")
 plots_headers
 #> # A tibble: 112 × 5
@@ -170,25 +171,66 @@ plots_headers
 #> # ℹ 102 more rows
 ```
 
-These tables are small and there is no need to create them automatically, but this not mean that errors in these tables will not affect the reporting. The MetaMaster comes with several `check_*` function for this case. The `check_manualmeta()` function checks this data before these tables can be updated on the data base.
+These tables are small and there is no need to create them automatically, but this not mean that errors in these tables will not affect the reporting. The MetaMaster comes with several `check_*` function for this case. The `check_manualmeta()` function checks this data.
 
 ```{r, eval=FALSE}
 check_manualmeta()
 ```
 
+
+
 In a similar sense, we run consistency check for the Meta Master data and the `build()` function includes the `LS_survey_checks*` functions. More precisely, the functions are included in the email template and run automatically if you set the `send_report` parameter to `TRUE`. The next image shows a preview of the email.
 
 ![](preview_mail.png){width="95%"}
 
-Under the hood, the blastula package is used to create the email [@blastula]. The email shows the results of the consistency checks and includes the MetaMaster data as an attachment. The email is sent to the email address that is set in the `config.yml` file if you provide the mail crendentials in the working.
-
-
-Don't forget that the last step is to update the database, which is included in the `build()` function by purpose since it will replace all tables of the master data. The `DB_MetaUpdate()` splits all sheets of the Master Meta data and replaces the database with he new tables. 
+Under the hood, the `blastula` package is used to create the email [@blastula]. The email shows the results of the consistency checks and includes the MetaMaster data as an attachment. The email is sent to the email address that is set in the `config.yml` file. Of course, you need to provide the mail credentials (saved as `my_mail_creds`) as well.
 
 
 ## Further Helpers
 
 The MetaMaster contains further helper functions to work with the Lime Survey API.
+
+### Checks
+
+The `check_distinct()` function checks the distinctness of the survey questions. Based on the raw data, the function counts all unique variable names and text. Next, it counts them and returns them if they are appear more than once. The latter means that variable names and text are not uniquely used.
+
+```{r, eval=FALSE}
+check_distinct(ubb = TRUE)
+# ✖ Thou shalt not pass! Please check these duplicates:
+# # A tibble: 59 × 3
+# # Groups:   variable [27]
+#    variable  text                                                                              n
+#    <chr>     <chr>                                                                         <int>
+#  1 A112a     Die LK achtet konsequent auf die Einhaltung von Regeln.                           2
+#  2 A112a     Die LK achtet auf die Einhaltung von Regeln.                                      2
+#  3 A112b     Die SuS beachten die vereinbarten Regeln.                                         2
+#  4 A112b     Die LK achtet konsequent auf die Einhaltung von Regeln.                           2
+#  5 A113      Die LK geht mit Blick auf die Gruppe und den Einzelnen angemessen mit Störun…     2
+#  6 A113      Die LK geht angemessen mit Störungen um.                                          2
+#  7 A114      Die SuS reagieren auf Signale oder Hinweise der LK.                               2
+#  8 A114      Die SuS beachten die vereinbarten Regeln.                                         2
+#  9 A131W121b Die SuS pflegen einen wertschätzenden Umgang.                                     2
+# 10 A131W121b Die SuS pflegen einen wertschätzenden Umgang                                      2
+# # ℹ 49 more rows
+# # ℹ Use `print(n = ...)` to see more rows
+```
+
+The `check_MasterTemplates()` function checks if all master templates listed in the `master_to_template` table are in LimeSurvey and vice versa.
+
+```{r, eval=FALSE}
+check_MasterTemplates()
+#✔ All Masters templates found in LimeSurvey (et vice versa).
+```
+
+The `check_SurveyTemplates()` function checks if all survey templates listed in the
+`master_to_template` table are in meta data.
+
+```{r, eval=FALSE}
+check_SurveyTemplates()
+#✔ All survey templates found in meta data. 
+```
+
+
 
 ### Sent
 
@@ -204,6 +246,9 @@ The `LS_SendSurveys()` function is a wrapper around `LS_SendSurvey()`. It sends 
 ```{r, eval=FALSE}
 LS_SendSurveys()
 ```
+
+
+
 
 ### Delete
 
@@ -234,7 +279,46 @@ create_TestSchools()
 # 10 197211 master_10_bfr_allg_gy_elt_01_20… tmpl_bf… NA    gy     bfr_all… 0001  0001_20242…
 ```
 
+### Lime Survey Templates
 
+Note that the Lime Survey templates (LSS) are stored in the database and you can make an update via the `DB_UploadLSS()` function.
+
+```{r, eval=FALSE}
+lss_surveys <- DB_Table("lss_surveys")
+lss_surveys$survey_data
+
+# A tibble: 38 × 4
+# id file_id master                               survey_data                              
+#    <int> <chr>   <chr>                                <pq_xml>                          
+#  1   384 153447  master_11_bfr_allg_gy_sus_00_2022_v4 <document>
+#   <LimeSurveyDocType>Survey</LimeSurveyDocType>
+#   <DBVersi…
+#  2   385 165568  master_17_bfr_allg_rs_sus_00_2022_v4 <document>
+#   <LimeSurveyDocType>Survey</LimeSurveyDocType>
+#   <DBVersi…
+#  3   386 197211  tmpl_bfr_allg_gy_elt_01_2022_p2      <document>
+#   <LimeSurveyDocType>Survey</LimeSurveyDocType>
+#   <DBVersi…
+#  4   387 197865  tmpl_bfr_allg_gm_elt_00_2022_p1      <document>
+#   <LimeSurveyDocType>Survey</LimeSurveyDocType>
+#   <DBVersi…
+#  5   388 311393  master_21_bfr_beru_bq_sus_00_2022_v4 <document>
+#   <LimeSurveyDocType>Survey</LimeSurveyDocType>
+#   <DBVersi…
+
+```
+
+In a similar sense, the `LS_UploadTemplates()` function uploads all Lime Survey templates via the API.
+
+```{r, eval=FALSE}
+LS_UploadTemplates()
+```
+
+
+
+## TBD
+
+If the Meta Master was built and all checks were passed, the last step is to update the database. The `DB_MetaUpdate()` splits the sheets of the Master Meta data and replaces the database with the new tables.
 
 
 

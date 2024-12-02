@@ -15,7 +15,8 @@ check_distinct <- function(ubb, export = FALSE) {
   }
 
   # Load the raw data
-  meta_raw <- DB_Table("all_mastertemplates")
+  meta_raw <- DB_Table("metadata_raw")
+  #meta_raw <- DB_Table("all_mastertemplates")
 
   # Add the 'ubb' column based on the 'template' column
   meta_raw$survey <- stringr::str_detect(meta_raw$template, pattern = "_ubb_")
@@ -131,14 +132,18 @@ check_SurveyTemplates <- function() {
   df <- DB_Table("master_to_template")
   MastersTemplates <- df$template
 
-  MetaMasterMeta <- readxl::read_excel(here::here("metadata_raw.xlsx")) |>
-    dplyr::pull(template) |>
-    unique()
+  # MetaMasterMeta <- readxl::read_excel(here::here("metadata_raw.xlsx")) |>
+  #   dplyr::pull(template) |>
+  #   unique()
+
+  MetaMasterMeta <- readxl::read_excel("MetaMaster.xlsx",
+                                       sheet = "templates") |>
+    dplyr::pull(template)
 
   SurveyDifferences <- dplyr::setdiff(MetaMasterMeta, MastersTemplates)
 
   if (rlang::is_empty(SurveyDifferences) == TRUE) {
-    cli::cli_alert_success("All survey templates available.")
+    cli::cli_alert_success("All survey templates found in meta data.")
   }else {
     cli::cli_alert_danger("Thou shalt not pass! These templates are not listed in the template-to-master file:")
     SurveyDifferences

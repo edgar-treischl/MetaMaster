@@ -6,9 +6,10 @@
 
 #' Build the Meta Data
 #'
-#' @description This function create the metadata based on the raw meta
+#' @description This function create the meta data based on the raw
 #'    data fetched from Lime Survey.
 #' @param send_report A logical value indicating if the report should be sent.
+#' @param update Update database.
 #' @return A message indicating the completion of the process.
 #' @examples
 #' \dontrun{
@@ -16,7 +17,8 @@
 #' }
 #' @export
 
-build <- function(send_report = FALSE) {
+build <- function(send_report = FALSE,
+                  update = FALSE)  {
 
   # Ensure that the environment variable R_CONFIG_ACTIVE is set to "test"
   if (!Sys.getenv("R_CONFIG_ACTIVE") == "test") {
@@ -34,6 +36,20 @@ build <- function(send_report = FALSE) {
   cli::cli_alert_info("Building metadata for the master data...")
   prepare_RawMeta(path = "metadata_raw.xlsx", export = TRUE)
 
+
+  if (update) {
+    metadata_raw <- readxl::read_excel("metadata_raw.xlsx")
+    DB_send(metadata_raw, "metadata_raw")
+
+    # templates <- readxl::read_excel("MetaMaster.xlsx", sheet = "templates")
+    # DB_send(templates, "templates")
+    #
+    # reports <- readxl::read_excel("MetaMaster.xlsx", sheet = "reports")
+    # DB_send(reports, "reports")
+  }else {
+    cli::cli_alert_warning("Skipping the update step. To update the DB, set update = TRUE.")
+  }
+  cli::cli_alert_info("Keep in mind that the sets and plots_headers* tables are not updated. Use DB_MetaUpdate to update them.")
   # Optionally send a report if the parameter send_report is TRUE
   if (send_report) {
     cli::cli_alert_info("Sending the report...")
@@ -66,7 +82,10 @@ prepare_RawMeta <- function(path, export = FALSE) {
 
 
   mtt <- DB_Table("master_to_template")
-  mtt <- mtt |> dplyr::select(master_template = surveyls_title, template, report = rpt)
+  mtt <- mtt |> dplyr::select(master_template = surveyls_title,
+                              rpt_overall,
+                              template,
+                              report = rpt)
 
   #masterlist <- Limer_GetMasterTemplates(template = TRUE)
 
@@ -129,7 +148,7 @@ prepare_RawMeta <- function(path, export = FALSE) {
 
   templates <- NULL
 
-  varlist <- c("surveyID", "master_template", "report", "template", "ubb", "stype", "type", "ganztag")
+  varlist <- c("surveyID", "master_template", "report", "template", "ubb", "stype", "type", "ganztag", "rpt_overall")
 
   templates <- mastertemplate |>
     dplyr::select(dplyr::all_of(varlist)) |>
@@ -142,7 +161,7 @@ prepare_RawMeta <- function(path, export = FALSE) {
 
   reports <- NULL
 
-  varlist <- c("report", "plot", "variable", "text", "type")
+  varlist <- c("report", "plot", "variable", "text", "type", "filter")
 
   reports <- mastertemplate |>
     dplyr::select(dplyr::all_of(varlist)) |>
@@ -194,10 +213,23 @@ prepare_RawMeta <- function(path, export = FALSE) {
   plots_headers_ubb <- DB_Table("plots_headers_ubb")
   extraplots <- DB_Table(table = "extraplots")
 
+  master_to_template <- DB_Table("master_to_template")
+  report_packages <- master_to_template |>
+    dplyr::filter(rpt_overall != "NA") |>
+    dplyr::pull(rpt_overall) |>
+    unique()
+
+
+  overallreports <- purrr::map(report_packages,
+                               prepare_OverallReport, .progress = TRUE) |>
+    dplyr::bind_rows()
+
+
 
   mydfs <- list(
     templates = templates,
     reports = reports,
+    overallreports = overallreports,
     set_data = set_data,
     sets = sets,
     plots_headers = plots_headers,
@@ -233,11 +265,15 @@ prepare_OverallReport <- function(packagename) {
   master_to_template <- DB_Table("master_to_template")
 
   allreports <- master_to_template |>
-    dplyr::filter(pckg == packagename) |>
+    dplyr::filter(rpt_overall == packagename) |>
     dplyr::arrange(rpt) |>
     dplyr::pull(rpt) |>
     unique()
 
+  rpt_overall <- master_to_template |>
+    dplyr::filter(rpt_overall == packagename) |>
+    dplyr::pull(rpt_overall) |>
+    unique()
 
   reports <- DB_Table("reports")
 
@@ -252,19 +288,18 @@ prepare_OverallReport <- function(packagename) {
 
   if (identical(allreports, check) == FALSE) {
     cli::cli_abort("Reports are not the same. Check the data.")
-    return(as.list(allreports, check))
+    #return(as.list(allreports, check))
 
   }else {
-    overallreports$report <- packagename
+    overallreports$report <- rpt_overall
     return(overallreports)
   }
 }
 
-
 # master_to_template <- DB_Table("master_to_template")
 # report_packages <- master_to_template |> dplyr::pull(pckg) |> unique()
-# buildOverallReport(packagename = report_packages[1])
-# purrr::map(report_packages[1:17], buildOverallReport)
+# prepare_OverallReport(packagename = report_packages[5])
+# overallreports <- purrr::map(report_packages[1:4], prepare_OverallReport)
 
 #' Send Test Results
 #' @description This function send the test results to the specified email address.

@@ -46,15 +46,16 @@ remotes::install_local("MetaMaster.gz",
 Build the MetaMaster:
 
 ```{r, eval=FALSE}
-MetaMaster::build(send_report = TRUE)
+MetaMaster::build(send_report = TRUE, update = TRUE)
 
 # ℹ Starting the build process...
 # ℹ Fetching raw meta data from Lime Survey
 # ✔ Raw meta data exported.                          
 # ℹ Building metadata for the master data...
-# ✔ MetaMaster exported.                                                              
+# ✔ MetaMaster exported.                  
+# ✔ The table 'metadata_raw' has been successfully uploaded to the database.
 # ℹ Sending the report...
-#   The email message was sent successfully.                            
+# The email message was sent successfully.                       
 # ✔ By the power of Grayskull: Building process completed.
 ```
 

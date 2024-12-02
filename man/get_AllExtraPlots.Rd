@@ -2,14 +2,14 @@
 % Please edit documentation in R/getExtraPlots.R
 \name{get_AllExtraPlots}
 \alias{get_AllExtraPlots}
-\title{Get  Extra Plots for All Report Templates}
+\title{Get Extra Plots for All Report Templates}
 \usage{
 get_AllExtraPlots(export = FALSE, filter = FALSE)
 }
 \arguments{
-\item{export}{Logical. If TRUE, the function will export the result.}
+\item{export}{Export the result.}
 
-\item{filter}{Logical. If TRUE, the function returns the extra plots (W) only.}
+\item{filter}{Only extra plots, not their parent.}
 }
 \description{
 This is a wrapper function that returns all extra plots based
