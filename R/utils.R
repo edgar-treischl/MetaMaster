@@ -189,6 +189,39 @@ create_config <- function(file = "config.yml",
 }
 
 
+#' Export XML/LSS Files from a Data Frame
+#'
+#' @description This function exports XML files from a data frame to the "lssfiles" directory.
+#' @param data Data
+#' @examples
+#' \dontrun{
+#' export_XML(lss_surveys)
+#' }
+#' @export
+
+export_XML <- function(data) {
+
+  # Create the "lssfiles" directory if it doesn't already exist
+  if (!dir.exists("lssfiles")) {
+    dir.create("lssfiles")
+  }
+
+  invisible(data |>
+              purrr::pmap(function(id, file_id, master, survey_data) {
+                # Convert survey_data (pq_xml) to character string
+                xml_data <- as.character(survey_data)
+
+                # Define the file path for the output file
+                file_name <- paste0("lssfiles/", file_id, ".lss")
+
+                # Write the XML data to the file
+                writeLines(xml_data, file_name)
+
+                # Optional: print a message to indicate the file has been exported
+                message(paste("Exported file:", file_name))
+              })
+  )
+}
 
 
 
