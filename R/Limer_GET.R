@@ -157,21 +157,36 @@ LS_GetMasterQuestions <- function(id, name) {
     lslistArray <- lslist |> dplyr::filter(type %in% c("F", "M"))
 
     df <- lslistArray |>
-      dplyr::select(parent_qid, title)
+      dplyr::select(parent_qid, title, type)
 
 
     # Step 1: Extract plot and var titles
 
+    # titles <- df |>
+    #   dplyr::filter(parent_qid == 0) |>
+    #   dplyr::mutate(row_number = dplyr::dense_rank(title)) |>
+    #   dplyr::select(row_number, plot = title, parent = parent_qid)
+
     titles <- df |>
       dplyr::filter(parent_qid == 0) |>
-      dplyr::mutate(row_number = dplyr::dense_rank(title)) |>
-      dplyr::select(row_number, plot = title, parent = parent_qid)
+      dplyr::mutate(
+        # Assign a running number to each title, preserving the original order
+        row_number = as.integer(factor(title, levels = unique(title)))
+      ) |>
+      dplyr::select(row_number, plot = title, parent = parent_qid, qtype = type)
 
+    # var_titles <- df |>
+    #   dplyr::filter(parent_qid != 0) |>
+    #   dplyr::mutate(row_number = dplyr::dense_rank(parent_qid)) |>
+    #   dplyr::select(row_number, title, parentV = parent_qid)
 
     var_titles <- df |>
       dplyr::filter(parent_qid != 0) |>
-      dplyr::mutate(row_number = dplyr::dense_rank(parent_qid)) |>
-      dplyr::select(row_number, title, parentV = parent_qid)
+      dplyr::mutate(
+        # Assign a running number to each unique parent_qid, preserving the order
+        row_number = as.integer(factor(parent_qid, levels = unique(parent_qid)))
+      ) |>
+      dplyr::select(row_number, title, parentV = parent_qid, qtype = type)
 
 
     #Left join the two dataframes on row_number
@@ -181,6 +196,7 @@ LS_GetMasterQuestions <- function(id, name) {
 
     plot <- matched_variables$plot
     varname <- matched_variables$title
+    qtype <- var_titles$qtype
 
     #Step2: Extract questions
     question <- lslistArray |>
@@ -194,7 +210,8 @@ LS_GetMasterQuestions <- function(id, name) {
                                     template = name,
                                     plot = plot,
                                     variable = varname,
-                                    text = questions)
+                                    text = questions,
+                                    question_type = qtype)
 
     #Add filter column
     templateArray <- templateArray |>
@@ -210,6 +227,7 @@ LS_GetMasterQuestions <- function(id, name) {
     plot <- substr(varname, 1, 3)
     varname <- substr(varname, 4, nchar(varname))
     questions <- lslistLRadio$question
+    qtype <- lslistLRadio$type
 
 
     #Some questions are HTML code, we need to extract the text
@@ -235,7 +253,8 @@ LS_GetMasterQuestions <- function(id, name) {
                                      template = name,
                                      plot = plot,
                                      variable = varname,
-                                     text = questions)
+                                     text = questions,
+                                     question_type = qtype)
     #Add filter column
     templateLRadio <- templateLRadio |>
       dplyr::mutate(filter = ifelse(variable %in% filter, "TRUE", "FALSE"))

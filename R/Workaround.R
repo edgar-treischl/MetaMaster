@@ -44,7 +44,7 @@ workaround <- function(sid, master_title) {
   names(LimeSurveyMaster)[names(LimeSurveyMaster) == "plot"] <- "code"
 
   #Which report in this case is the master report
-  report_template <- master_to_template
+  report_template <- DB_Table("master_to_template")
 
   report_template <- report_template |>
     dplyr::filter(surveyls_title == master_title) |>
@@ -56,7 +56,7 @@ workaround <- function(sid, master_title) {
 
   #Get the plots for the master report for that report
 
-  Gisela_plots <- reports
+  Gisela_plots <- DB_Table("reports")
 
   Gisela_plots <- Gisela_plots |>
     dplyr::filter(report == report_template) |>
@@ -129,9 +129,9 @@ workaround <- function(sid, master_title) {
 
 
 
-# workaround(sid = LimeSurveytemplates$sid[26],
-#            master_title = LimeSurveytemplates$surveyls_title[26])
-#
+# workaround(sid = LimeSurveytemplates$sid[2],
+#            master_title = LimeSurveytemplates$surveyls_title[2])
+# #
 # purrr::map2(LimeSurveytemplates$sid,
 #             LimeSurveytemplates$surveyls_title,
 #             workaround, .progress = TRUE)
