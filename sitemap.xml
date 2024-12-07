@@ -13,6 +13,7 @@
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/DB_send.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/LS_Ask.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/LS_Connect.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/LS_DeleteMasterTemplates.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/LS_DeleteSurvey.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/LS_GetMasterData.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/LS_GetMasterQuestions.html</loc></url>
@@ -26,13 +27,16 @@
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/SwapLimesurveyTitles.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/base64_to_df.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/build.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/check_ExtraPlot.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/check_Headers.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/check_MasterTemplates.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/check_Sets.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/check_SurveyTemplates.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/check_distinct.html</loc></url>
-<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/check_manualmeta.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/connect_DB.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/create_TestSchools.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/create_config.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/export_XML.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/extract_html.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/get_AllExtraPlots.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/get_ExtraPlots.html</loc></url>
