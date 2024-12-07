@@ -14,7 +14,7 @@ get_ExtraPlots <- function(reporttemplate) {
 
 
 
-  cli::cli_inform("This function is not ready yet. We need to clarify how extra plots are defined. What about n>2?")
+  #cli::cli_inform("This function is not ready yet. We need to clarify how extra plots are defined. What about n>2?")
   #The source
   report_meta_dev <- DB_Table("reports")
 
@@ -29,7 +29,7 @@ get_ExtraPlots <- function(reporttemplate) {
 
 }
 
-get_ExtraPlots(reporttemplate = "rpt_elt_p1")
+#get_ExtraPlots(reporttemplate = "rpt_elt_p1")
 
 
 #' Get Extra Plots for All Report Templates
@@ -48,7 +48,7 @@ get_ExtraPlots(reporttemplate = "rpt_elt_p1")
 get_AllExtraPlots <- function(export = FALSE,
                               filter = FALSE) {
 
-  cli::cli_inform("This function is not ready yet. We need to clarify how extra plots are defined. What about n>2?")
+  #cli::cli_inform("This function is not ready yet. We need to clarify how extra plots are defined. What about n>2?")
 
   #The source: Get all report names
   gisela_reports <- DB_Table("reports") |>
