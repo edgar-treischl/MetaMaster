@@ -4,7 +4,10 @@
 \alias{create_TestSchools}
 \title{Create Test Schools}
 \usage{
-create_TestSchools()
+create_TestSchools(where)
+}
+\arguments{
+\item{where}{The path to the directory where the master templates are stored.}
 }
 \description{
 This function creates a data frame to test all master templates.

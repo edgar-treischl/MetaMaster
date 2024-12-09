@@ -129,8 +129,6 @@ DB_MetaUpdate <- function(path) {
     cli::cli_abort(glue::glue("The file '{path}' does not exist. Please check the path and try again."))
   }
 
-  #Make consistency checks and abort if necessary
-  check_manualmeta()
 
   # Get sheet names from the Excel file
   #metadata_sheets <- readxl::excel_sheets(path)

@@ -1,9 +1,8 @@
-if (Sys.getenv("NO_TESTS") == "TRUE") {
-  testthat::skip("Skipping tests due to NO_TESTS environment variable")
+if (file.exists("config.yml") == "FALSE") {
+  testthat::skip("Skipping tests due to missing config.yml")
 }
 
 
-#if (TRUE) skip("Some Important Requirement is not available")
 
 test_that("Limer_GetMasterTemplates returns data frame with 3 columns", {
   #skip_on_cran()
@@ -26,15 +25,14 @@ test_that("Limer_GetMasterQuestions returns data frame with 6 columns", {
   master01 <- LS_GetMasterQuestions(id = df$sid[1],
                                    name = df$surveyls_title[1])
 
-  master30 <- LS_GetMasterQuestions(id = df$sid[31],
-                                   name = df$surveyls_title[31])
+  master29 <- LS_GetMasterQuestions(id = df$sid[29],
+                                   name = df$surveyls_title[29])
 
 
   expect_s3_class(master01, "data.frame")
-  expect_s3_class(master30, "data.frame")
-  expect_equal(ncol(master01), 6)
+  expect_s3_class(master29, "data.frame")
+  expect_equal(ncol(master01), 7)
 })
-
 
 
 
