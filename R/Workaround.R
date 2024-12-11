@@ -2,7 +2,7 @@
 # Sys.setenv(R_CONFIG_ACTIVE = "test")
 # #Get master template for all school types
 # LimeSurveytemplates <- LS_GetMasterTemplates()
-
+#
 
 # library(readxl)
 # report <- read_excel("~/bycsdrive/Personal/OES_MetaData/report_meta_devE.xlsx",
@@ -129,8 +129,8 @@ workaround <- function(sid, master_title) {
 
 
 
-# workaround(sid = LimeSurveytemplates$sid[12],
-#            master_title = LimeSurveytemplates$surveyls_title[12])
+# workaround(sid = LimeSurveytemplates$sid[2],
+#            master_title = LimeSurveytemplates$surveyls_title[2])
 #
 # purrr::map2(LimeSurveytemplates$sid,
 #             LimeSurveytemplates$surveyls_title,

@@ -232,21 +232,27 @@ LS_GetMasterQuestions <- function(id, name) {
 
     #Some questions are HTML code, we need to extract the text
     #Work in Progress: Talk with Gisela
-    checkhtml <- is_html(questions[1])
+    checkhtml <- purrr::map(lslist$question, is_html) |>
+      unlist()
 
     #Extract text
-    html_text <- purrr::map(questions, extract_html) |>
-      purrr::flatten_chr()
+    if (all(checkhtml)) {
+      html_text <- purrr::map(questions, extract_html) |>
+        purrr::flatten_chr()
 
-    questions <- stringr::str_trim(html_text)
+      questions <- stringr::str_trim(html_text)
 
-    #And there are manual breaks so nquestions must not nplots
-    nquestions <- length(questions)
-    nplots <- length(plot)
+      #And there are manual breaks so nquestions must not nplots
+      nquestions <- length(questions)
+      nplots <- length(plot)
 
-    if (nplots != nquestions) {
-      questions <- "Reformat HTML Code"
+      if (nplots != nquestions) {
+        questions <- "Reformat HTML Code"
+      }
+    }else {
+      questions <- stringr::str_trim(questions)
     }
+
 
     #Create DF
     templateLRadio <- tibble::tibble(surveyID = id,
