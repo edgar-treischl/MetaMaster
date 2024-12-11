@@ -209,6 +209,11 @@ prepare_RawMeta <- function(path, export = FALSE) {
   set_data <- DB_Table("set_data")
   sets <- DB_Table("sets")
 
+  #Add the set to the reports
+  set_data <- set_data |> dplyr::select(-timestamp)
+  reports <- reports |> dplyr::left_join(set_data, by = "plot")
+
+
   plots_headers <- DB_Table("plots_headers")
   plots_headers_ubb <- DB_Table("plots_headers_ubb")
   extraplots <- DB_Table(table = "extraplots")

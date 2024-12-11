@@ -173,7 +173,7 @@ LS_GetMasterQuestions <- function(id, name) {
         # Assign a running number to each title, preserving the original order
         row_number = as.integer(factor(title, levels = unique(title)))
       ) |>
-      dplyr::select(row_number, plot = title, parent = parent_qid, qtype = type)
+      dplyr::select(row_number, code = title, parent = parent_qid, qtype = type)
 
     # var_titles <- df |>
     #   dplyr::filter(parent_qid != 0) |>
@@ -194,7 +194,7 @@ LS_GetMasterQuestions <- function(id, name) {
       dplyr::left_join(var_titles, by = "row_number")
 
 
-    plot <- matched_variables$plot
+    code <- matched_variables$code
     varname <- matched_variables$title
     qtype <- var_titles$qtype
 
@@ -208,7 +208,7 @@ LS_GetMasterQuestions <- function(id, name) {
     #Create DF
     templateArray <- tibble::tibble(surveyID = id,
                                     template = name,
-                                    plot = plot,
+                                    code = code,
                                     variable = varname,
                                     text = questions,
                                     question_type = qtype)
@@ -224,13 +224,13 @@ LS_GetMasterQuestions <- function(id, name) {
     lslistLRadio <- lslist |> dplyr::filter(type %in% c("!", "L", "S", "T"))
 
     varname <- lslistLRadio$title
-    plot <- substr(varname, 1, 3)
+    code <- substr(varname, 1, 3)
     varname <- substr(varname, 4, nchar(varname))
     questions <- lslistLRadio$question
     qtype <- lslistLRadio$type
 
 
-    #Some questions are HTML code, we need to extract the text
+    #Some questions are HTML code, we need to extract the text plot
     #Work in Progress: Talk with Gisela
     checkhtml <- purrr::map(lslist$question, is_html) |>
       unlist()
@@ -244,7 +244,7 @@ LS_GetMasterQuestions <- function(id, name) {
 
       #And there are manual breaks so nquestions must not nplots
       nquestions <- length(questions)
-      nplots <- length(plot)
+      nplots <- length(code)
 
       if (nplots != nquestions) {
         questions <- "Reformat HTML Code"
@@ -257,7 +257,7 @@ LS_GetMasterQuestions <- function(id, name) {
     #Create DF
     templateLRadio <- tibble::tibble(surveyID = id,
                                      template = name,
-                                     plot = plot,
+                                     code = code,
                                      variable = varname,
                                      text = questions,
                                      question_type = qtype)
