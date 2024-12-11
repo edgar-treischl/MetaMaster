@@ -15,9 +15,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-The MetaMaster package creates the *master meta data*. The latter are meta data for Lime Survey which are reproducible, tested, and - in consequence - error-free. To this end, the package provides functions to exchange data via the Lime Survey API (`LS_*`) and functions to work with a PostgreSQL (`DB_*`) database. Furthermore, the package introduces consistency checks and further helpers to automate the process to build meta data for Lime Survey.
+The MetaMaster package creates the *master meta data*. The latter are meta data for Lime Survey which are reproducible, tested, and - in consequence - error-free. To this end, the package provides functions to exchange data via the Lime Survey API (`LS_*`) and to work with a PostgreSQL (`DB_*`) database. Furthermore, the package introduces consistency checks and further helpers to automate the process to build meta data for Lime Survey.
 
-In order to use the package, you must provide credentials and other parameters to get access to the Lime Survey API (e.g., user name). The MetaMaster packages relies on the `conig` package to get access to these parameters [@config]. All necessary parameters need to be available in the `config.yml` file within the working directory. The next console shows an example.
+In order to use the package, you must provide credentials and other parameters to get access to the Lime Survey API (e.g., user name). The MetaMaster packages relies on the `config` package and all necessary parameters need to be available in the `config.yml` file in the working directory [@config]. The next console shows an example.
 
 ``` yaml
 default:
@@ -33,7 +33,7 @@ test:
   tmp.credential: "Password"
 ```
 
-In case there is no config file yet, create a new one with the `create_config()` function which has all default parameters included. Furthermore, the config package picks the default parameters without any adjustments. To use the configuration for a different environment (e.g., `test`), set the environmental variable `R_CONFIG_ACTIVE`. The master templates for the OES live in the `test` environment which is why we have to set it accordingly to build the meta data.
+In case there is no config file yet, create a new one with the `create_config()` function which has all default parameters included. Furthermore, the config package picks the *default* parameters without any adjustments. To use the configuration for a different environment (e.g., `test`), update the environmental variable `R_CONFIG_ACTIVE`. The master templates of the OES live in the `test` environment which is why we set it accordingly to build the meta data.
 
 ```{r}
 #Set the R_CONFIG_ACTIVE
@@ -45,7 +45,7 @@ Sys.setenv(R_CONFIG_ACTIVE = "test")
 
 ## MetaMaster in Action
 
-Let's build the master meta data: (1) We need to download the raw data via the Lime Survey API. (2) We need to build the Master Meta Data based on the raw data. (3) We need to run consistency checks and may inspect the results in an email report. (4) We need to upload all tables of the Master Meta data to the database. The `build()` function runs these steps in sequence:
+Let's build the master meta data: (1) We download the raw data via the Lime Survey API. (2) We build the master meta data based on the raw data. (3) We run consistency checks and inspect the results in an email report. (4) We update the results to the database. The `build()` function runs these steps in sequence:
 
 ```{r, eval=FALSE}
 build(send_report = TRUE, update = TRUE)
@@ -72,7 +72,7 @@ build
 
 ## MetaMaster Under the Hood
 
-The `LS_GetMasterData()` function creates the raw meta data. The function gets all master templates from the LimeSurvey API and retrieves for each master the survey question, id, so on. The function returns a tibble or exports the data if the `export` parameter is set to `TRUE`.
+In the first relevant step, the `LS_GetMasterData()` function creates the raw meta data. The function gets all master templates from the LimeSurvey API and retrieves for each master the survey question, id, so on. The function returns a tibble or exports the data if the `export` parameter is set to `TRUE`.
 
 ```{r, eval=FALSE}
 #Get the survey questions for the first three master templates
@@ -80,7 +80,7 @@ LS_GetMasterData(export = TRUE)
 # ✔ Master Data exported.  
 ```
 
-The `LS_GetMasterData()` is a wrapper function that combines the `LS_GetMasterTemplates()` and the `LS_GetMasterQuestions()` function. Under the hood, the `LS_GetMasterTemplates()` function gets all master templates from the Lime Survey API first. The function returns a tibble with the survey id, the survey title, and the template name (from the master to template file).
+The `LS_GetMasterData()` is a wrapper function that combines the `LS_GetMasterTemplates()` and the `LS_GetMasterQuestions()` function. Under the hood, the `LS_GetMasterTemplates()` function returns all templates from the Lime Survey API if their name start with `master_`. More precisely, it returns a tibble with the survey id, the survey title, and the template name (from the master to template file).
 
 ```{r, eval=FALSE}
 LS_GetMasterTemplates(template = TRUE)
@@ -126,7 +126,7 @@ LS_GetMasterQuestions(id = "197865", name = "master_01_bfr_allg_gm_elt_00_2022_v
 
 
 
-The `prepare_RawMeta()` function convert the raw data into the Master Meta data. Based on the raw data, we build the two most important tables of the meta data. The templates table contains information about the report template that will be used for the report. And the report table contains information about the variables, plots, and the labels for each report template.
+In the next step, the `prepare_RawMeta()` function convert the raw data into the master meta data. Based on the raw data, we build two important tables. The `templates` table contains information about the used report templates. And the `report` table contains information about individual variables, plots, and the labels for each report. Both are automatically updated if the `update` parameter is set to `TRUE`.
 
 
 In addition, the meta data includes tables which will not(!) be generated automatically. Let's revise them with the `DB_Table()` function, which grabs a table from the data base. Two different types of tables cannot be generated automatically. This is minor concern since they are small and easy to handle. First, the `sets` table contains information about the (color) of sets, the labels, and so on.
@@ -150,45 +150,40 @@ sets
 # # ℹ 44 more rows
 ```
 
-Second, the `plots_headers` (and `plots_headers_ubb`) table contains information about plot name and the header(s) that will be printed in the report.
+Second, the `header_reports` table contains information about plot name and the header(s) that will be printed in the report.
 
 ```{r, eval=FALSE}
-plots_headers <- DB_Table("plots_headers")
-plots_headers
-#> # A tibble: 112 × 5
-#>     sort plot  header1                               header2 timestamp          
-#>    <dbl> <chr> <chr>                                 <chr>   <dttm>             
-#>  1     1 A11   A1 Klassenführung                     A1.1 D… 2024-11-07 14:32:35
-#>  2     2 A12   A1 Klassenführung                     A1.2 D… 2024-11-07 14:32:35
-#>  3     3 A13   A1 Klassenführung                     A1.3 D… 2024-11-07 14:32:35
-#>  4     4 A21   A2 Nachvollziehbarkeit des Lernangeb… A2.1 D… 2024-11-07 14:32:35
-#>  5     5 A22   A2 Nachvollziehbarkeit des Lernangeb… A2.2 D… 2024-11-07 14:32:35
-#>  6     6 A32   A3 Variation der Lehr- und Lernmetho… A3.2 D… 2024-11-07 14:32:35
-#>  7     7 A41   A4  Schülerorientierung               A4.1 B… 2024-11-07 14:32:35
-#>  8     8 A42   A4 Schülerorientierung                A4.2 A… 2024-11-07 14:32:35
-#>  9     9 A43   A4 Schülerorientierung                A4.3 D… 2024-11-07 14:32:35
-#> 10    10 A51   A5 Berücksichtigung unterschiedliche… A5.1 D… 2024-11-07 14:32:35
-#> # ℹ 102 more rows
+header_reports <- DB_Table("header_reports")
+header_reports
+
+# # A tibble: 141 × 6
+#     sort plot  header1                            header2 timestamp           report
+#    <dbl> <chr> <chr>                              <chr>   <dttm>              <chr> 
+#  1     1 A11   A1 Klassenführung                  A1.1 D… 2024-12-07 10:04:12 Survey
+#  2     2 A12   A1 Klassenführung                  A1.2 D… 2024-12-07 10:04:12 Survey
+#  3     3 A13   A1 Klassenführung                  A1.3 D… 2024-12-07 10:04:12 Survey
+#  4     4 A21   A2 Nachvollziehbarkeit des Lernan… A2.1 D… 2024-12-07 10:04:12 Survey
+#  5     5 A22   A2 Nachvollziehbarkeit des Lernan… A2.2 D… 2024-12-07 10:04:12 Survey
+#  6     6 A32   A3 Variation der Lehr- und Lernme… A3.2 D… 2024-12-07 10:04:12 Survey
+#  7     7 A41   A4  Schülerorientierung            A4.1 B… 2024-12-07 10:04:12 Survey
+#  8     8 A42   A4 Schülerorientierung             A4.2 A… 2024-12-07 10:04:12 Survey
+#  9     9 A43   A4 Schülerorientierung             A4.3 D… 2024-12-07 10:04:12 Survey
+# 10    10 A51   A5 Berücksichtigung unterschiedli… A5.1 D… 2024-12-07 10:04:12 Survey
+# # ℹ 131 more rows
+# # ℹ Use `print(n = ...)` to see more rows
 ```
 
-These tables are small and there is no need to create them automatically, but this not mean that errors in these tables will not affect the reporting. The MetaMaster comes with several `check_*` function for this case. The `check_manualmeta()` function checks this data.
-
-```{r, eval=FALSE}
-check_manualmeta()
-```
-
-
-
-In a similar sense, we run consistency check for the Meta Master data and the `build()` function includes the `LS_survey_checks*` functions. More precisely, the functions are included in the email template and run automatically if you set the `send_report` parameter to `TRUE`. The next image shows a preview of the email.
+These tables are small and there is no need to create them automatically, but this not mean that errors in these tables will not affect the reporting. Irrespective of the table, the MetaMaster comes with several `check_*` functions for consistency checks (see next section for more details). Those `check_*` functions are included in the `build()` function. More precisely,  the `blastula` package is used to create the email and the `check_*` functions are embedded in the email template that runs automatically if you set the `send_report` parameter to `TRUE` [@blastula]. The next image shows a preview of the email.
 
 ![](preview_mail.png){width="95%"}
 
-Under the hood, the `blastula` package is used to create the email [@blastula]. The email shows the results of the consistency checks and includes the MetaMaster data as an attachment. The email is sent to the email address that is set in the `config.yml` file. Of course, you need to provide the mail credentials (saved as `my_mail_creds`) as well.
+Thus, ehe email shows the results of the consistency checks and includes the MetaMaster data as an attachment. In order to use this feature, set the corresponding paramters in the `config.yml` file and you need to provide the mail credentials (saved as `my_mail_creds`) if they are not available. By default, the email is sent from an to the OES email address.
 
 
-## Further Helpers
 
-The MetaMaster contains further helper functions to work with the Lime Survey API.
+## Further Friends of the MetaMaster
+
+The MetaMaster contains further helper functions to work with the Lime Survey API. Functions that check the consitency of the meta data; functions to interact with the Lime Survey API; and functions to create test scenarios. The following section provides a short overview.
 
 ### Checks
 
@@ -230,6 +225,20 @@ check_SurveyTemplates()
 #✔ All survey templates found in meta data. 
 ```
 
+In addition, the package has `check` function for all tables that are not build via the LimeSurvey API. All of this function run some standard checks to prevent common errors with regard to the reporting. Thus, we check if all names are as expected, no missing values are created by chance and so on.
+
+```{r}
+#Check the sets
+check_Sets()
+# ℹ Checking sets data.
+# ✖ Some sets are not defined but are listed in the reports data. Check: "Freitext" and "NA".
+```
+
+```{r}
+check_Headers()
+# ℹ Checking header reports data.
+# ✔ The header_reports data looks awesome!
+```
 
 
 ### Sent
@@ -308,17 +317,12 @@ lss_surveys$survey_data
 
 ```
 
-In a similar sense, the `LS_UploadTemplates()` function uploads all Lime Survey templates via the API.
+In a similar sense, the `LS_UploadTemplates()` function uploads all Lime Survey master templates via the API. It takes each master template and uploads as a survey template to Lime Survey.
 
 ```{r, eval=FALSE}
 LS_UploadTemplates()
 ```
 
-
-
-## TBD
-
-If the Meta Master was built and all checks were passed, the last step is to update the database. The `DB_MetaUpdate()` splits the sheets of the Master Meta data and replaces the database with the new tables.
 
 
 
