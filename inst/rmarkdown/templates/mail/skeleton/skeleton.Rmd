@@ -12,7 +12,7 @@ get <- config::get(file = here::here("config.yml"))
 report_to <- get$report_to
 
 split <- strsplit(report_to, "@")[[1]]
-string <- split[1]
+mailstring <- split[1]
 
 
 ```
@@ -24,9 +24,9 @@ string <- split[1]
 <br>
 
 
-## Dear `r string`,
+## Dear `r mailstring`,
 
-dies ist eine automatisierte Mail mit den Ergebnissen des Metamasters Testlaufs (siehe Anhang). Zuerst die Ergebnisse der Konsistenzchecks.
+dies ist eine automatisierte Mail mit den Ergebnissen des Metamasters Testlaufs. Zuerst die Ergebnisse der Konsistenzchecks.
 
 ### Konsistenzchecks
 
@@ -57,6 +57,26 @@ Die eingesetzen Surveytemplates können wir nicht mit der API abgleichen, aber w
 
 ```{r}
 check_SurveyTemplates()
+```
+
+Passen die Daten für die ganzen Zusatz/Extraplots?
+
+```{r}
+check_ExtraPlot()
+```
+
+
+Sind die Sets vollständig?
+
+
+```{r}
+check_Sets()
+```
+
+Und die ganzen Überschriften für die Reports? 
+
+```{r}
+check_Headers()
 ```
 
 

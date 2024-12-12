@@ -8,7 +8,7 @@
 #' connect_DB()
 #' }
 #'
-#' @export
+#' @noRd
 
 connect_DB <- function() {
   get <- config::get(file = here::here("config.yml"))

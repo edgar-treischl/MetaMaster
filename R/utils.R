@@ -7,7 +7,8 @@
 #' \dontrun{
 #' extract_html(input = "Html code here")
 #' }
-#' @export
+#' @noRd
+
 
 extract_html <- function(input) {
   rvest::minimal_html(input) |>
@@ -23,7 +24,7 @@ extract_html <- function(input) {
 #'  function removes the white spaces and combines the text again.
 #' @param input_vector A character vector.
 #' @examples remove_and_combine(input_vector = "What   a difference  a day makes.")
-#' @export
+#' @noRd
 
 remove_and_combine <- function(input_vector) {
   # Use strsplit to split each string by one or more whitespace characters
@@ -44,7 +45,7 @@ remove_and_combine <- function(input_vector) {
 #'  This function uses the `xml2` package to parse the input as HTML.
 #' @param x A character string
 #' @examples extract_html(input = "Html code here")
-#' @export
+#' @noRd
 
 is_html <- function(x) {
   tryCatch({

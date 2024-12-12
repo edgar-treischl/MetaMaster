@@ -2,7 +2,7 @@
 # Sys.setenv(R_CONFIG_ACTIVE = "test")
 # #Get master template for all school types
 # LimeSurveytemplates <- LS_GetMasterTemplates()
-#
+
 
 # library(readxl)
 # report <- read_excel("~/bycsdrive/Personal/OES_MetaData/report_meta_devE.xlsx",
@@ -31,7 +31,7 @@
 #'             LimeSurveytemplates$surveyls_title,
 #'             workaround, .progress = TRUE)
 #' }
-#' @export
+#' @noRd
 
 workaround <- function(sid, master_title) {
   #Get master meta data from LimeSurvey
@@ -129,8 +129,8 @@ workaround <- function(sid, master_title) {
 
 
 
-# workaround(sid = LimeSurveytemplates$sid[2],
-#            master_title = LimeSurveytemplates$surveyls_title[2])
+# workaround(sid = LimeSurveytemplates$sid[8],
+#            master_title = LimeSurveytemplates$surveyls_title[8])
 #
 # purrr::map2(LimeSurveytemplates$sid,
 #             LimeSurveytemplates$surveyls_title,
@@ -151,7 +151,7 @@ workaround <- function(sid, master_title) {
 #' lssfile <- list.files("automation_2024_11_18", pattern = ".lss", full.names = TRUE)
 #' SwapLimesurveyTitles(file = lssfile)
 #' }
-#' @export
+#' @noRd
 
 
 SwapLimesurveyTitles <- function(file) {
