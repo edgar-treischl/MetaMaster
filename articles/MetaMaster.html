@@ -66,16 +66,15 @@
 latter are meta data for Lime Survey which are reproducible, tested, and
 - in consequence - error-free. To this end, the package provides
 functions to exchange data via the Lime Survey API (<code>LS_*</code>)
-and functions to work with a PostgreSQL (<code>DB_*</code>) database.
-Furthermore, the package introduces consistency checks and further
-helpers to automate the process to build meta data for Lime Survey.</p>
+and to work with a PostgreSQL (<code>DB_*</code>) database. Furthermore,
+the package introduces consistency checks and further helpers to
+automate the process to build meta data for Lime Survey.</p>
 <p>In order to use the package, you must provide credentials and other
 parameters to get access to the Lime Survey API (e.g., user name). The
-MetaMaster packages relies on the <code>conig</code> package to get
-access to these parameters <span class="citation">(Allaire 2023)</span>.
-All necessary parameters need to be available in the
-<code>config.yml</code> file within the working directory. The next
-console shows an example.</p>
+MetaMaster packages relies on the <code>config</code> package and all
+necessary parameters need to be available in the <code>config.yml</code>
+file in the working directory <span class="citation">(Allaire
+2023)</span>. The next console shows an example.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">default</span><span class="kw">:</span></span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.server</span><span class="kw">:</span><span class="at"> </span><span class="st">"Name"</span></span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="at">  </span><span class="fu">api_url</span><span class="kw">:</span><span class="at"> </span><span class="st">"URL"</span></span>
@@ -89,12 +88,12 @@ console shows an example.</p>
 <span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="at">  </span><span class="fu">tmp.credential</span><span class="kw">:</span><span class="at"> </span><span class="st">"Password"</span></span></code></pre></div>
 <p>In case there is no config file yet, create a new one with the
 <code><a href="../reference/create_config.html">create_config()</a></code> function which has all default parameters
-included. Furthermore, the config package picks the default parameters
-without any adjustments. To use the configuration for a different
-environment (e.g., <code>test</code>), set the environmental variable
-<code>R_CONFIG_ACTIVE</code>. The master templates for the OES live in
-the <code>test</code> environment which is why we have to set it
-accordingly to build the meta data.</p>
+included. Furthermore, the config package picks the <em>default</em>
+parameters without any adjustments. To use the configuration for a
+different environment (e.g., <code>test</code>), update the
+environmental variable <code>R_CONFIG_ACTIVE</code>. The master
+templates of the OES live in the <code>test</code> environment which is
+why we set it accordingly to build the meta data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Set the R_CONFIG_ACTIVE</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MetaMaster</span><span class="op">)</span></span>
@@ -102,12 +101,11 @@ accordingly to build the meta data.</p>
 <div class="section level2">
 <h2 id="metamaster-in-action">MetaMaster in Action<a class="anchor" aria-label="anchor" href="#metamaster-in-action"></a>
 </h2>
-<p>Let’s build the master meta data: (1) We need to download the raw
-data via the Lime Survey API. (2) We need to build the Master Meta Data
-based on the raw data. (3) We need to run consistency checks and may
-inspect the results in an email report. (4) We need to upload all tables
-of the Master Meta data to the database. The <code><a href="../reference/build.html">build()</a></code>
-function runs these steps in sequence:</p>
+<p>Let’s build the master meta data: (1) We download the raw data via
+the Lime Survey API. (2) We build the master meta data based on the raw
+data. (3) We run consistency checks and inspect the results in an email
+report. (4) We update the results to the database. The
+<code><a href="../reference/build.html">build()</a></code> function runs these steps in sequence:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/build.html">build</a></span><span class="op">(</span>send_report <span class="op">=</span> <span class="cn">TRUE</span>, update <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -152,17 +150,18 @@ the next section outlines what happens under the hood.</p>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;     cli::cli_alert_success("By the power of Grayskull: Building process completed.")</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x5622e1016588&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x563d31005b00&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:MetaMaster&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="metamaster-under-the-hood">MetaMaster Under the Hood<a class="anchor" aria-label="anchor" href="#metamaster-under-the-hood"></a>
 </h2>
-<p>The <code><a href="../reference/LS_GetMasterData.html">LS_GetMasterData()</a></code> function creates the raw meta
-data. The function gets all master templates from the LimeSurvey API and
-retrieves for each master the survey question, id, so on. The function
-returns a tibble or exports the data if the <code>export</code>
-parameter is set to <code>TRUE</code>.</p>
+<p>In the first relevant step, the <code><a href="../reference/LS_GetMasterData.html">LS_GetMasterData()</a></code>
+function creates the raw meta data. The function gets all master
+templates from the LimeSurvey API and retrieves for each master the
+survey question, id, so on. The function returns a tibble or exports the
+data if the <code>export</code> parameter is set to
+<code>TRUE</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Get the survey questions for the first three master templates</span></span>
 <span><span class="fu"><a href="../reference/LS_GetMasterData.html">LS_GetMasterData</a></span><span class="op">(</span>export <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -170,10 +169,10 @@ parameter is set to <code>TRUE</code>.</p>
 <p>The <code><a href="../reference/LS_GetMasterData.html">LS_GetMasterData()</a></code> is a wrapper function that
 combines the <code><a href="../reference/LS_GetMasterTemplates.html">LS_GetMasterTemplates()</a></code> and the
 <code><a href="../reference/LS_GetMasterQuestions.html">LS_GetMasterQuestions()</a></code> function. Under the hood, the
-<code><a href="../reference/LS_GetMasterTemplates.html">LS_GetMasterTemplates()</a></code> function gets all master templates
-from the Lime Survey API first. The function returns a tibble with the
-survey id, the survey title, and the template name (from the master to
-template file).</p>
+<code><a href="../reference/LS_GetMasterTemplates.html">LS_GetMasterTemplates()</a></code> function returns all templates from
+the Lime Survey API if their name start with <code>master_</code>. More
+precisely, it returns a tibble with the survey id, the survey title, and
+the template name (from the master to template file).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_GetMasterTemplates.html">LS_GetMasterTemplates</a></span><span class="op">(</span>template <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># # A tibble: 95 × 3</span></span>
@@ -214,12 +213,13 @@ the filter indicator.</p>
 <span><span class="co"># 10 197865   master_01_bfr_allg_gm_elt_00_2022_v4 E03   A631A063      Mein Sohn/meine … FALSE </span></span>
 <span><span class="co"># # ℹ 19 more rows</span></span>
 <span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
-<p>The <code><a href="../reference/prepare_RawMeta.html">prepare_RawMeta()</a></code> function convert the raw data into
-the Master Meta data. Based on the raw data, we build the two most
-important tables of the meta data. The templates table contains
-information about the report template that will be used for the report.
-And the report table contains information about the variables, plots,
-and the labels for each report template.</p>
+<p>In the next step, the <code><a href="../reference/prepare_RawMeta.html">prepare_RawMeta()</a></code> function convert
+the raw data into the master meta data. Based on the raw data, we build
+two important tables. The <code>templates</code> table contains
+information about the used report templates. And the <code>report</code>
+table contains information about individual variables, plots, and the
+labels for each report. Both are automatically updated if the
+<code>update</code> parameter is set to <code>TRUE</code>.</p>
 <p>In addition, the meta data includes tables which will not(!) be
 generated automatically. Let’s revise them with the
 <code><a href="../reference/DB_Table.html">DB_Table()</a></code> function, which grabs a table from the data
@@ -244,53 +244,54 @@ sets, the labels, and so on.</p>
 <span><span class="co">#  9 set03 3     eher zufrieden       3     #a6dba0 black      2024-11-07 14:32:34</span></span>
 <span><span class="co"># 10 set03 4     sehr zufrieden       4     #008837 white      2024-11-07 14:32:34</span></span>
 <span><span class="co"># # ℹ 44 more rows</span></span></code></pre></div>
-<p>Second, the <code>plots_headers</code> (and
-<code>plots_headers_ubb</code>) table contains information about plot
-name and the header(s) that will be printed in the report.</p>
+<p>Second, the <code>header_reports</code> table contains information
+about plot name and the header(s) that will be printed in the
+report.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">plots_headers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DB_Table.html">DB_Table</a></span><span class="op">(</span><span class="st">"plots_headers"</span><span class="op">)</span></span>
-<span><span class="va">plots_headers</span></span>
-<span><span class="co">#&gt; # A tibble: 112 × 5</span></span>
-<span><span class="co">#&gt;     sort plot  header1                               header2 timestamp          </span></span>
-<span><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;                                 &lt;chr&gt;   &lt;dttm&gt;             </span></span>
-<span><span class="co">#&gt;  1     1 A11   A1 Klassenführung                     A1.1 D… 2024-11-07 14:32:35</span></span>
-<span><span class="co">#&gt;  2     2 A12   A1 Klassenführung                     A1.2 D… 2024-11-07 14:32:35</span></span>
-<span><span class="co">#&gt;  3     3 A13   A1 Klassenführung                     A1.3 D… 2024-11-07 14:32:35</span></span>
-<span><span class="co">#&gt;  4     4 A21   A2 Nachvollziehbarkeit des Lernangeb… A2.1 D… 2024-11-07 14:32:35</span></span>
-<span><span class="co">#&gt;  5     5 A22   A2 Nachvollziehbarkeit des Lernangeb… A2.2 D… 2024-11-07 14:32:35</span></span>
-<span><span class="co">#&gt;  6     6 A32   A3 Variation der Lehr- und Lernmetho… A3.2 D… 2024-11-07 14:32:35</span></span>
-<span><span class="co">#&gt;  7     7 A41   A4  Schülerorientierung               A4.1 B… 2024-11-07 14:32:35</span></span>
-<span><span class="co">#&gt;  8     8 A42   A4 Schülerorientierung                A4.2 A… 2024-11-07 14:32:35</span></span>
-<span><span class="co">#&gt;  9     9 A43   A4 Schülerorientierung                A4.3 D… 2024-11-07 14:32:35</span></span>
-<span><span class="co">#&gt; 10    10 A51   A5 Berücksichtigung unterschiedliche… A5.1 D… 2024-11-07 14:32:35</span></span>
-<span><span class="co">#&gt; # ℹ 102 more rows</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">header_reports</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DB_Table.html">DB_Table</a></span><span class="op">(</span><span class="st">"header_reports"</span><span class="op">)</span></span>
+<span><span class="va">header_reports</span></span>
+<span></span>
+<span><span class="co"># # A tibble: 141 × 6</span></span>
+<span><span class="co">#     sort plot  header1                            header2 timestamp           report</span></span>
+<span><span class="co">#    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;                              &lt;chr&gt;   &lt;dttm&gt;              &lt;chr&gt; </span></span>
+<span><span class="co">#  1     1 A11   A1 Klassenführung                  A1.1 D… 2024-12-07 10:04:12 Survey</span></span>
+<span><span class="co">#  2     2 A12   A1 Klassenführung                  A1.2 D… 2024-12-07 10:04:12 Survey</span></span>
+<span><span class="co">#  3     3 A13   A1 Klassenführung                  A1.3 D… 2024-12-07 10:04:12 Survey</span></span>
+<span><span class="co">#  4     4 A21   A2 Nachvollziehbarkeit des Lernan… A2.1 D… 2024-12-07 10:04:12 Survey</span></span>
+<span><span class="co">#  5     5 A22   A2 Nachvollziehbarkeit des Lernan… A2.2 D… 2024-12-07 10:04:12 Survey</span></span>
+<span><span class="co">#  6     6 A32   A3 Variation der Lehr- und Lernme… A3.2 D… 2024-12-07 10:04:12 Survey</span></span>
+<span><span class="co">#  7     7 A41   A4  Schülerorientierung            A4.1 B… 2024-12-07 10:04:12 Survey</span></span>
+<span><span class="co">#  8     8 A42   A4 Schülerorientierung             A4.2 A… 2024-12-07 10:04:12 Survey</span></span>
+<span><span class="co">#  9     9 A43   A4 Schülerorientierung             A4.3 D… 2024-12-07 10:04:12 Survey</span></span>
+<span><span class="co"># 10    10 A51   A5 Berücksichtigung unterschiedli… A5.1 D… 2024-12-07 10:04:12 Survey</span></span>
+<span><span class="co"># # ℹ 131 more rows</span></span>
+<span><span class="co"># # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>These tables are small and there is no need to create them
 automatically, but this not mean that errors in these tables will not
-affect the reporting. The MetaMaster comes with several
-<code>check_*</code> function for this case. The
-<code>check_manualmeta()</code> function checks this data.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">check_manualmeta</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>In a similar sense, we run consistency check for the Meta Master data
-and the <code><a href="../reference/build.html">build()</a></code> function includes the
-<code>LS_survey_checks*</code> functions. More precisely, the functions
-are included in the email template and run automatically if you set the
-<code>send_report</code> parameter to <code>TRUE</code>. The next image
-shows a preview of the email.</p>
+affect the reporting. Irrespective of the table, the MetaMaster comes
+with several <code>check_*</code> functions for consistency checks (see
+next section for more details). Those <code>check_*</code> functions are
+included in the <code><a href="../reference/build.html">build()</a></code> function. More precisely, the
+<code>blastula</code> package is used to create the email and the
+<code>check_*</code> functions are embedded in the email template that
+runs automatically if you set the <code>send_report</code> parameter to
+<code>TRUE</code> <span class="citation">(Iannone and Cheng
+2024)</span>. The next image shows a preview of the email.</p>
 <p><img src="preview_mail.png" style="width:95.0%"></p>
-<p>Under the hood, the <code>blastula</code> package is used to create
-the email <span class="citation">(Iannone and Cheng 2024)</span>. The
-email shows the results of the consistency checks and includes the
-MetaMaster data as an attachment. The email is sent to the email address
-that is set in the <code>config.yml</code> file. Of course, you need to
-provide the mail credentials (saved as <code>my_mail_creds</code>) as
-well.</p>
+<p>Thus, ehe email shows the results of the consistency checks and
+includes the MetaMaster data as an attachment. In order to use this
+feature, set the corresponding paramters in the <code>config.yml</code>
+file and you need to provide the mail credentials (saved as
+<code>my_mail_creds</code>) if they are not available. By default, the
+email is sent from an to the OES email address.</p>
 </div>
 <div class="section level2">
-<h2 id="further-helpers">Further Helpers<a class="anchor" aria-label="anchor" href="#further-helpers"></a>
+<h2 id="further-friends-of-the-metamaster">Further Friends of the MetaMaster<a class="anchor" aria-label="anchor" href="#further-friends-of-the-metamaster"></a>
 </h2>
 <p>The MetaMaster contains further helper functions to work with the
-Lime Survey API.</p>
+Lime Survey API. Functions that check the consitency of the meta data;
+functions to interact with the Lime Survey API; and functions to create
+test scenarios. The following section provides a short overview.</p>
 <div class="section level3">
 <h3 id="checks">Checks<a class="anchor" aria-label="anchor" href="#checks"></a>
 </h3>
@@ -299,7 +300,7 @@ the survey questions. Based on the raw data, the function counts all
 unique variable names and text. Next, it counts them and returns them if
 they are appear more than once. The latter means that variable names and
 text are not uniquely used.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_distinct.html">check_distinct</a></span><span class="op">(</span>ubb <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># ✖ Thou shalt not pass! Please check these duplicates:</span></span>
 <span><span class="co"># # A tibble: 59 × 3</span></span>
@@ -321,15 +322,29 @@ text are not uniquely used.</p>
 <p>The <code><a href="../reference/check_MasterTemplates.html">check_MasterTemplates()</a></code> function checks if all
 master templates listed in the <code>master_to_template</code> table are
 in LimeSurvey and vice versa.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_MasterTemplates.html">check_MasterTemplates</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#✔ All Masters templates found in LimeSurvey (et vice versa).</span></span></code></pre></div>
 <p>The <code><a href="../reference/check_SurveyTemplates.html">check_SurveyTemplates()</a></code> function checks if all
 survey templates listed in the <code>master_to_template</code> table are
 in meta data.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_SurveyTemplates.html">check_SurveyTemplates</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#✔ All survey templates found in meta data. </span></span></code></pre></div>
+<p>In addition, the package has <code>check</code> function for all
+tables that are not build via the LimeSurvey API. All of this function
+run some standard checks to prevent common errors with regard to the
+reporting. Thus, we check if all names are as expected, no missing
+values are created by chance and so on.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#Check the sets</span></span>
+<span><span class="fu"><a href="../reference/check_Sets.html">check_Sets</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># ℹ Checking sets data.</span></span>
+<span><span class="co"># ✖ Some sets are not defined but are listed in the reports data. Check: "Freitext" and "NA".</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/check_Headers.html">check_Headers</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># ℹ Checking header reports data.</span></span>
+<span><span class="co"># ✔ The header_reports data looks awesome!</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="sent">Sent<a class="anchor" aria-label="anchor" href="#sent"></a>
@@ -338,13 +353,13 @@ in meta data.</p>
 Lime Survey. The function needs the path to the survey template and the
 name of the survey template. It expects the survey template to be in the
 LimeSurvey LSS format.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_SendSurvey.html">LS_SendSurvey</a></span><span class="op">(</span>lss <span class="op">=</span> <span class="st">"limesurveyMod.lss"</span>, </span>
 <span>              name <span class="op">=</span> <span class="st">"mastertemplate"</span><span class="op">)</span></span></code></pre></div>
 <p>The <code><a href="../reference/LS_SendSurveys.html">LS_SendSurveys()</a></code> function is a wrapper around
 <code><a href="../reference/LS_SendSurvey.html">LS_SendSurvey()</a></code>. It sends all survey templates in the
 working directory to Lime Survey.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_SendSurveys.html">LS_SendSurveys</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -353,7 +368,7 @@ working directory to Lime Survey.</p>
 <p>The <code><a href="../reference/LS_DeleteSurvey.html">LS_DeleteSurvey()</a></code> function deletes a survey from
 LimeSurvey. The function needs the survey ID of the survey template. Be
 careful, there is no way to restore a deleted survey.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_DeleteSurvey.html">LS_DeleteSurvey</a></span><span class="op">(</span>sid <span class="op">=</span> <span class="st">"123456"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -364,7 +379,7 @@ for the MetaMaster. The function creates for each master template a test
 school. The function returns a tibble with the survey id, the survey
 title, the template name, the school, the new name, the snr, and the
 test school.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/create_TestSchools.html">create_TestSchools</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># # A tibble: 38 × 8</span></span>
 <span><span class="co">#       sid surveyls_title                   template file  school new_name snr   test_school</span></span>
@@ -386,7 +401,7 @@ test school.</p>
 <p>Note that the Lime Survey templates (LSS) are stored in the database
 and you can make an update via the <code><a href="../reference/DB_UploadLSS.html">DB_UploadLSS()</a></code>
 function.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lss_surveys</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DB_Table.html">DB_Table</a></span><span class="op">(</span><span class="st">"lss_surveys"</span><span class="op">)</span></span>
 <span><span class="va">lss_surveys</span><span class="op">$</span><span class="va">survey_data</span></span>
 <span></span>
@@ -409,18 +424,11 @@ function.</p>
 <span><span class="co">#   &lt;LimeSurveyDocType&gt;Survey&lt;/LimeSurveyDocType&gt;</span></span>
 <span><span class="co">#   &lt;DBVersi…</span></span></code></pre></div>
 <p>In a similar sense, the <code><a href="../reference/LS_UploadTemplates.html">LS_UploadTemplates()</a></code> function
-uploads all Lime Survey templates via the API.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+uploads all Lime Survey master templates via the API. It takes each
+master template and uploads as a survey template to Lime Survey.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/LS_UploadTemplates.html">LS_UploadTemplates</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-</div>
-<div class="section level2">
-<h2 id="tbd">TBD<a class="anchor" aria-label="anchor" href="#tbd"></a>
-</h2>
-<p>If the Meta Master was built and all checks were passed, the last
-step is to update the database. The <code><a href="../reference/DB_MetaUpdate.html">DB_MetaUpdate()</a></code> splits
-the sheets of the Master Meta data and replaces the database with the
-new tables.</p>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
