@@ -11,8 +11,12 @@ bibliography: references.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  eval = FALSE,
   comment = "#>"
 )
+
+library(MetaMaster)
+# Sys.setenv(R_CONFIG_ACTIVE = "test")
 ```
 
 The MetaMaster package creates the *master meta data*. The latter are meta data for Lime Survey which are reproducible, tested, and - in consequence - error-free. To this end, the package provides functions to exchange data via the Lime Survey API (`LS_*`) and to work with a PostgreSQL (`DB_*`) database. Furthermore, the package introduces consistency checks and further helpers to automate the process to build meta data for Lime Survey.
@@ -47,7 +51,7 @@ Sys.setenv(R_CONFIG_ACTIVE = "test")
 
 Let's build the master meta data: (1) We download the raw data via the Lime Survey API. (2) We build the master meta data based on the raw data. (3) We run consistency checks and inspect the results in an email report. (4) We update the results to the database. The `build()` function runs these steps in sequence:
 
-```{r, eval=FALSE}
+```{r}
 build(send_report = TRUE, update = TRUE)
 
 # ℹ Starting the build process...
@@ -63,7 +67,7 @@ build(send_report = TRUE, update = TRUE)
 
 The following console displays the `build()` function and the next section outlines what happens under the hood.
 
-```{r}
+```{r, eval = TRUE}
 #Build the Meta Master Data
 build
 ```
@@ -74,7 +78,7 @@ build
 
 In the first relevant step, the `LS_GetMasterData()` function creates the raw meta data. The function gets all master templates from the LimeSurvey API and retrieves for each master the survey question, id, so on. The function returns a tibble or exports the data if the `export` parameter is set to `TRUE`.
 
-```{r, eval=FALSE}
+```{r}
 #Get the survey questions for the first three master templates
 LS_GetMasterData(export = TRUE)
 # ✔ Master Data exported.  
@@ -82,7 +86,7 @@ LS_GetMasterData(export = TRUE)
 
 The `LS_GetMasterData()` is a wrapper function that combines the `LS_GetMasterTemplates()` and the `LS_GetMasterQuestions()` function. Under the hood, the `LS_GetMasterTemplates()` function returns all templates from the Lime Survey API if their name start with `master_`. More precisely, it returns a tibble with the survey id, the survey title, and the template name (from the master to template file).
 
-```{r, eval=FALSE}
+```{r}
 LS_GetMasterTemplates(template = TRUE)
 # # A tibble: 95 × 3
 #    sid    surveyls_title                       template                       
@@ -103,7 +107,7 @@ LS_GetMasterTemplates(template = TRUE)
 
 The `LS_GetMasterQuestions()` function gets the survey questions for a specific master template. The function needs the survey id and the template name as input. The function returns a tibble with the survey id, the template name, the plot, the variable, the text, and the filter indicator.
 
-```{r, eval=FALSE}
+```{r}
 LS_GetMasterQuestions(id = "197865", name = "master_01_bfr_allg_gm_elt_00_2022_v4")
 
 # # A tibble: 29 × 6
@@ -131,7 +135,7 @@ In the next step, the `prepare_RawMeta()` function convert the raw data into the
 
 In addition, the meta data includes tables which will not(!) be generated automatically. Let's revise them with the `DB_Table()` function, which grabs a table from the data base. Two different types of tables cannot be generated automatically. This is minor concern since they are small and easy to handle. First, the `sets` table contains information about the (color) of sets, the labels, and so on.
 
-```{r, eval=FALSE}
+```{r}
 sets <- DB_Table("sets")
 sets
 # # A tibble: 54 × 7
@@ -152,7 +156,7 @@ sets
 
 Second, the `header_reports` table contains information about plot name and the header(s) that will be printed in the report.
 
-```{r, eval=FALSE}
+```{r}
 header_reports <- DB_Table("header_reports")
 header_reports
 
@@ -189,7 +193,7 @@ The MetaMaster contains further helper functions to work with the Lime Survey AP
 
 The `check_distinct()` function checks the distinctness of the survey questions. Based on the raw data, the function counts all unique variable names and text. Next, it counts them and returns them if they are appear more than once. The latter means that variable names and text are not uniquely used.
 
-```{r, eval=FALSE}
+```{r}
 check_distinct(ubb = TRUE)
 # ✖ Thou shalt not pass! Please check these duplicates:
 # # A tibble: 59 × 3
@@ -212,7 +216,7 @@ check_distinct(ubb = TRUE)
 
 The `check_MasterTemplates()` function checks if all master templates listed in the `master_to_template` table are in LimeSurvey and vice versa.
 
-```{r, eval=FALSE}
+```{r}
 check_MasterTemplates()
 #✔ All Masters templates found in LimeSurvey (et vice versa).
 ```
@@ -220,7 +224,7 @@ check_MasterTemplates()
 The `check_SurveyTemplates()` function checks if all survey templates listed in the
 `master_to_template` table are in meta data.
 
-```{r, eval=FALSE}
+```{r}
 check_SurveyTemplates()
 #✔ All survey templates found in meta data. 
 ```
@@ -245,14 +249,14 @@ check_Headers()
 
 The `LS_SendSurvey()` function sends a survey template to Lime Survey. The function needs the path to the survey template and the name of the survey template. It expects the survey template to be in the LimeSurvey LSS format.
 
-```{r, eval=FALSE}
+```{r}
 LS_SendSurvey(lss = "limesurveyMod.lss", 
               name = "mastertemplate")
 ```
 
 The `LS_SendSurveys()` function is a wrapper around `LS_SendSurvey()`. It sends all survey templates in the working directory to Lime Survey.
 
-```{r, eval=FALSE}
+```{r}
 LS_SendSurveys()
 ```
 
@@ -263,7 +267,7 @@ LS_SendSurveys()
 
 The `LS_DeleteSurvey()` function deletes a survey from LimeSurvey. The function needs the survey ID of the survey template. Be careful, there is no way to restore a deleted survey.
 
-```{r, eval=FALSE}
+```{r}
 LS_DeleteSurvey(sid = "123456")
 ```
 
@@ -271,7 +275,7 @@ LS_DeleteSurvey(sid = "123456")
 
 The `create_TestSchools()` function creates test scenarios for the MetaMaster. The function creates for each master template a test school. The function returns a tibble with the survey id, the survey title, the template name, the school, the new name, the snr, and the test school.
 
-```{r, eval=FALSE}
+```{r}
 create_TestSchools()
 # # A tibble: 38 × 8
 #       sid surveyls_title                   template file  school new_name snr   test_school
@@ -292,7 +296,7 @@ create_TestSchools()
 
 Note that the Lime Survey templates (LSS) are stored in the database and you can make an update via the `DB_UploadLSS()` function.
 
-```{r, eval=FALSE}
+```{r}
 lss_surveys <- DB_Table("lss_surveys")
 lss_surveys$survey_data
 
@@ -319,7 +323,7 @@ lss_surveys$survey_data
 
 In a similar sense, the `LS_UploadTemplates()` function uploads all Lime Survey master templates via the API. It takes each master template and uploads as a survey template to Lime Survey.
 
-```{r, eval=FALSE}
+```{r}
 LS_UploadTemplates()
 ```
 
