@@ -225,4 +225,43 @@ export_XML <- function(data) {
 }
 
 
+#' Fix plotnames to length 5
+#'
+#' @description This function exports XML files from a data frame to the "lssfiles" directory.
+#' @param data Data
+#' @examples
+#' \dontrun{
+#' export_XML(lss_surveys)
+#' }
+#' @noRd
+
+fix_plotnames <- function() {
+  cli::cli_abort("This function is not implemented. Use code to fix length of plot names.")
+  set_data <- DB_Table("set_data")
+  set_data
+
+  set_data$plot_new <- set_data$plot
+  set_data$plot_new
+
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "A1", replacement = "A01")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "A2", replacement = "A02")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "A4", replacement = "A04")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "A6", replacement = "A06")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "ZA", replacement = "ZFA")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "Zab", replacement = "ZFab")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "ZE", replacement = "ZFE")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "ZEb", replacement = "ZFEb")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "ZL", replacement = "ZFL")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "ZLb", replacement = "ZFLb")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "ZS", replacement = "ZFS")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "ZSb", replacement = "ZFSb")
+  set_data$plot_new <- stringr::str_replace_all(set_data$plot_new, pattern = "Dauer", replacement = "Durat")
+
+  set_data$plot_new <- stringr::str_pad(set_data$plot_new, width = 5, side = "right", pad = "x")
+
+
+
+  set_data <- set_data |> dplyr::select(-timestamp, -plot)
+  sets <- sets |> dplyr::left_join(set_data, by = "set", relationship = "many-to-many")
+}
 

@@ -31,7 +31,7 @@
 #'             LimeSurveytemplates$surveyls_title,
 #'             workaround, .progress = TRUE)
 #' }
-#' @noRd
+#' @export
 
 workaround <- function(sid, master_title) {
   #Get master meta data from LimeSurvey
@@ -64,20 +64,31 @@ workaround <- function(sid, master_title) {
 
   Gisela_plots$plot_meta_filled <- Gisela_plots$plot_meta
 
+  # Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "A1", replacement = "A01")
+  # Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "A2", replacement = "A02")
+  # Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "A4", replacement = "A04")
+  # Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "A6", replacement = "A06")
+  # Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZE", replacement = "ZFE")
+  # Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZS", replacement = "ZFS")
+  # Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZA", replacement = "ZFA")
+  # Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZL", replacement = "ZFL")
+
   Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "A1", replacement = "A01")
   Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "A2", replacement = "A02")
   Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "A4", replacement = "A04")
   Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "A6", replacement = "A06")
-  Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZE", replacement = "ZFE")
-  Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZS", replacement = "ZFS")
   Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZA", replacement = "ZFA")
-  Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZL", replacement = "ZL")
-
-
+  Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "Zab", replacement = "ZFab")
+  Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZE", replacement = "ZFE")
+  Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZEb", replacement = "ZFEb")
+  Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZL", replacement = "ZFL")
+  Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZLb", replacement = "ZFLb")
+  Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZS", replacement = "ZFS")
+  Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "ZSb", replacement = "ZFSb")
+  Gisela_plots$plot_meta_filled <- stringr::str_replace_all(Gisela_plots$plot_meta_filled, pattern = "Dauer", replacement = "Durat")
 
   #Add characters to the plot_old column
-  Gisela_plots$plot_meta_filled <- stringr::str_pad(Gisela_plots$plot_meta_filled, width = 4, side = "right", pad = "a")
-
+  Gisela_plots$plot_meta_filled <- stringr::str_pad(Gisela_plots$plot_meta_filled, width = 5, side = "right", pad = "x")
 
   #Filter out the plots that are not unique
   #MasterGiselaLS$filter <- stringr::str_detect(MasterGiselaLS$plot_meta, pattern = "W")
@@ -129,8 +140,8 @@ workaround <- function(sid, master_title) {
 
 
 
-# workaround(sid = LimeSurveytemplates$sid[8],
-#            master_title = LimeSurveytemplates$surveyls_title[8])
+# workaround(sid = LimeSurveytemplates$sid[1],
+#            master_title = LimeSurveytemplates$surveyls_title[1])
 #
 # purrr::map2(LimeSurveytemplates$sid,
 #             LimeSurveytemplates$surveyls_title,

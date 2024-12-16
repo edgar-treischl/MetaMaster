@@ -1,15 +1,15 @@
 # library(MetaMaster)
+# Sys.setenv(R_CONFIG_ACTIVE = "default")
 #
 # library(tidyverse)
 #
 #
 # df <- list(
-#   id = 1,
+#   id = 3,
 #   lastpage = 1,
 #   startlanguage = "de",
 #   seed = 1453197542,
-#   `1036621` = 1,
-#   `1036622` = 1
+#   `812284XQ1` = "Bla [1]"
 # )
 #
 #
@@ -26,8 +26,8 @@
 #
 # #Get list of questions
 # lslist <- LS_Ask(method = "add_response",
-#                  params = list(iSurveyID = "515139",
-#                                ResponseData = df))
+#                  params = list(iSurveyID = "812284",
+#                                aResponseData = df))
 #
 #
 # lslist

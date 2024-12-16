@@ -161,7 +161,7 @@ prepare_RawMeta <- function(path, export = FALSE) {
 
   reports <- NULL
 
-  varlist <- c("report", "plot", "variable", "text", "type", "filter")
+  varlist <- c("report", "code", "variable", "text", "type", "filter")
 
   reports <- mastertemplate |>
     dplyr::select(dplyr::all_of(varlist)) |>
@@ -211,6 +211,8 @@ prepare_RawMeta <- function(path, export = FALSE) {
 
   #Add the set to the reports
   set_data <- set_data |> dplyr::select(-timestamp)
+  reports$plot <- stringr::str_sub(reports$variable, -4)
+
   reports <- reports |> dplyr::left_join(set_data, by = "plot")
 
 
@@ -225,16 +227,15 @@ prepare_RawMeta <- function(path, export = FALSE) {
     unique()
 
 
-  overallreports <- purrr::map(report_packages,
-                               prepare_OverallReport, .progress = TRUE) |>
-    dplyr::bind_rows()
+  # overallreports <- purrr::map(report_packages,
+  #                              prepare_OverallReport, .progress = TRUE) |>
+  #   dplyr::bind_rows()
 
 
 
   mydfs <- list(
     templates = templates,
     reports = reports,
-    overallreports = overallreports,
     set_data = set_data,
     sets = sets,
     plots_headers = plots_headers,
