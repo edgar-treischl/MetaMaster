@@ -35,13 +35,16 @@
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/create_TestSchools.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/create_config.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/export_XML.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/extract_html.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/get_AllExtraPlots.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/get_ExtraPlots.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/get_responses.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/get_session_key.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/index.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/is_html.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/prepare_OverallReport.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/prepare_RawMeta.html</loc></url>
+<url><loc>https://github.com/edgar-treischl/MetaMaster/reference/prepare_SurveyItems.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/send_Report.html</loc></url>
 <url><loc>https://github.com/edgar-treischl/MetaMaster/reference/workaround.html</loc></url>
 </urlset>
