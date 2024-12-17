@@ -232,7 +232,7 @@ LS_GetMasterQuestions <- function(id, name) {
 
     #Some questions are HTML code, we need to extract the text plot
     #Work in Progress: Talk with Gisela
-    checkhtml <- purrr::map(lslist$question, is_html) |>
+    checkhtml <- purrr::map(questions, is_html) |>
       unlist()
 
     #Extract text
@@ -247,7 +247,7 @@ LS_GetMasterQuestions <- function(id, name) {
       nplots <- length(code)
 
       if (nplots != nquestions) {
-        questions <- "Reformat HTML Code"
+        questions <- lslistLRadio$question
       }
     }else {
       questions <- stringr::str_trim(questions)

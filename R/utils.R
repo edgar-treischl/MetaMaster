@@ -7,7 +7,7 @@
 #' \dontrun{
 #' extract_html(input = "Html code here")
 #' }
-#' @noRd
+#' @export
 
 
 extract_html <- function(input) {
@@ -45,7 +45,7 @@ remove_and_combine <- function(input_vector) {
 #'  This function uses the `xml2` package to parse the input as HTML.
 #' @param x A character string
 #' @examples extract_html(input = "Html code here")
-#' @noRd
+#' @export
 
 is_html <- function(x) {
   tryCatch({
@@ -263,5 +263,84 @@ fix_plotnames <- function() {
 
   set_data <- set_data |> dplyr::select(-timestamp, -plot)
   sets <- sets |> dplyr::left_join(set_data, by = "set", relationship = "many-to-many")
+}
+
+
+#' Prepare Survey Items
+#'
+#' @description This function prepares survey items by normalizing spaces, removing parentheses,
+#'  handling special cases, and replacing certain strings.
+#' @param string Text string
+#' @examples prepare_SurveyItems(string = "Die Betreuerinnen und Betreuer können sich gut ...")
+#' @export
+#'
+
+prepare_SurveyItems <- function(string) {
+  # beispiellabels <- c("Die Betreuerinnen (und Betreuer) können sich gut in der Gruppe durchsetzen. Das bedeutet zum Beispiel: Sie sorgen für Ruhe, wenn Ihr mal laut seid.",
+  #                     "... definiert mit mir Ziele und Maßnahmen für meine berufliche Weiterentwicklung.",
+  #                     "Wir Schülerinnen und Schüler nutzen digitale Medien im Unterricht ungefähr ...",
+  #                     "Welches Fach hast Du in der letzten Stunde besucht? Damit meinen wir das Fach bevor Du mit diesem Fragebogen angefangen hast.",
+  #                     "Plenum")
+  #
+  # beispiellabels <- beispiellabels[1]
+
+  # Step 1: Normalize spaces
+  text <- gsub("\\s+", " ", string)
+
+  # Step 2: Remove parentheses
+  text <- gsub("\\([^)]*\\)", "", text)
+
+  # Step 3: Handle special case or extract first sentence
+  pattern <- "\\.\\.\\.|[.!?]"
+  matches <- gregexpr(pattern, text)[[1]]
+
+  # Check if text starts with actual dots (not quotes)
+  if (grepl("^\\.\\.+", text)) {
+    final_result <- trimws(text)
+  } else {
+    pattern <- "\\.\\.\\.|[.!?]"
+    matches <- gregexpr(pattern, text)[[1]]
+
+    if (length(matches) > 0 && matches[1] > 0) {
+      end_pos <- matches[1]
+      match_length <- attr(matches, "match.length")[1]
+      result <- substr(text, 1, end_pos + match_length - 1)
+      result <- trimws(gsub("\\s+", " ", result))
+      final_result <- result
+    } else {
+      final_result <- trimws(gsub("\\s+", " ", text))
+    }
+  }
+
+  result <- final_result
+
+  replacements <- list(
+    "Schülerinnen und Schüler" = "SuS",
+    "einer Schülerin oder einem Schüler" = "SuS",
+    "jede Schülerin und jeden Schüler" = "alle SuS",
+    "Die Betreuerinnen und Betreuer" = "Die Betreuer",
+    "Ausbilderinnen und Ausbilder" = "Ausbildungspartner",
+    "Lehrinnen und Lehrer" = "LK",
+    "Die Lehrerin oder der Lehrer" = "Die LK",
+    "die Lehrerin oder der Lehrer" = "die LK",
+    "Lehrkräfte" = "LK",
+    "Schulleitung" = "SL",
+    "Schulpersonal" = "Personal",
+    "Lehrerkonferenzen bzw. Teamkonferenzen" = "Lehrer-/Teamkonferenzen",
+    "Kolleginnen und Kollegen meiner Schule" = "Kolleg/Innen",
+    "Kolleginnen und Kollegen" = "Kolleg/Innen",
+    "Mein Sohn/meine Tochter" = "Mein/e Sohn/Tochter",
+    "unseren Sohn/unsere Tochter" = "unsere/n Tochter/Sohn",
+    "unsere Tochter/unseren Sohn" = "unsere/n Tochter/Sohn",
+    "Meine Klassenlehrerin oder mein Klassenlehrer" = "Mein Klassenlehrer"
+  )
+
+  #result <- "Ich finde dich haben sich gerne."
+  for (pattern in names(replacements)) {
+    if (stringr::str_detect(result, pattern)) {
+      result <- stringr::str_replace_all(result, pattern, replacements[[pattern]])
+    }
+  }
+  return(result)
 }
 

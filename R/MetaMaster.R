@@ -172,34 +172,51 @@ prepare_RawMeta <- function(path, export = FALSE) {
   reports$timestamp <- Sys.time()
 
 
+  # #prepare_SurveyItems(metadata_raw$text[1])
+  #
+  # #with purrr
+  # purrr::map(metadata_raw$text[1:5], prepare_SurveyItems)
+  #
+  # #with furrr
+  # num_cores <- parallel::detectCores()
+  # workers <- max(1, num_cores - 1)  #
+  #
+  # #plan(multicore, workers = 4)  # Adjust workers based on your CPU cores
+  # future::plan(future::multisession, workers = num_cores)  #
+  #
+  # furrr::future_map(metadata_raw$text[1:5], prepare_SurveyItems)
+
+  cli::cli_abort("This function is not yet implemented. Fix survey items first.")
+
+
 
   #Give me some rules to shorten your strings#####################################
-  reports$text <- stringr::str_remove_all(reports$text, "\\s*\\([^\\)]*\\)")
-
-  reports$text <- stringr::str_replace_all(reports$text,
-                                           pattern = "Sch\u00FChlerinnen und Sch\u00F6ler",
-                                           replacement = "SuS")
-
-  reports$text <- stringr::str_replace_all(reports$text,
-                                           pattern = "Ausbilderinnen und Ausbilder",
-                                           replacement = "Ausbildungspartner")
-
-  reports$text <- stringr::str_replace_all(reports$text,
-                                           pattern = "Lehrinnen und Lehrer",
-                                           replacement = "LK")
-
-  reports$text <- stringr::str_replace_all(reports$text,
-                                           pattern = "Schulleitung",
-                                           replacement = "SL")
-
-  reports$text <- stringr::str_replace_all(reports$text,
-                                           pattern = "Schulpersonal",
-                                           replacement = "Personal")
-
-
-  reports$text <- stringr::str_replace_all(reports$text,
-                                           pattern = "Lehrerkonferenzen bzw. Teamkonferenzen",
-                                           replacement = "Lehrer-/Teamkonferenzen")
+  # reports$text <- stringr::str_remove_all(reports$text, "\\s*\\([^\\)]*\\)")
+  #
+  # reports$text <- stringr::str_replace_all(reports$text,
+  #                                          pattern = "Sch\u00FChlerinnen und Sch\u00F6ler",
+  #                                          replacement = "SuS")
+  #
+  # reports$text <- stringr::str_replace_all(reports$text,
+  #                                          pattern = "Ausbilderinnen und Ausbilder",
+  #                                          replacement = "Ausbildungspartner")
+  #
+  # reports$text <- stringr::str_replace_all(reports$text,
+  #                                          pattern = "Lehrinnen und Lehrer",
+  #                                          replacement = "LK")
+  #
+  # reports$text <- stringr::str_replace_all(reports$text,
+  #                                          pattern = "Schulleitung",
+  #                                          replacement = "SL")
+  #
+  # reports$text <- stringr::str_replace_all(reports$text,
+  #                                          pattern = "Schulpersonal",
+  #                                          replacement = "Personal")
+  #
+  #
+  # reports$text <- stringr::str_replace_all(reports$text,
+  #                                          pattern = "Lehrerkonferenzen bzw. Teamkonferenzen",
+  #                                          replacement = "Lehrer-/Teamkonferenzen")
 
 
 

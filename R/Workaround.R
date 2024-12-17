@@ -140,8 +140,8 @@ workaround <- function(sid, master_title) {
 
 
 
-# workaround(sid = LimeSurveytemplates$sid[1],
-#            master_title = LimeSurveytemplates$surveyls_title[1])
+# workaround(sid = LimeSurveytemplates$sid[29],
+#            master_title = LimeSurveytemplates$surveyls_title[29])
 #
 # purrr::map2(LimeSurveytemplates$sid,
 #             LimeSurveytemplates$surveyls_title,
@@ -221,6 +221,10 @@ utils::globalVariables(c("plot_meta"))
 
 
 
-
+# beispiellabels <- c("Die Betreuerinnen und Betreuer können sich gut in der Gruppe durchsetzen. Das bedeutet zum Beispiel: Sie sorgen für Ruhe, wenn Ihr mal laut seid."
+#                     "... definiert mit mir Ziele und Maßnahmen für meine berufliche Weiterentwicklung.",
+#                     "Wir Schülerinnen und Schüler nutzen digitale Medien im Unterricht ungefähr ...",
+#                     "Welches Fach hast Du in der letzten Stunde besucht? Damit meinen wir das Fach bevor Du mit diesem Fragebogen angefangen hast.",
+#                     "Plenum")
 
 
